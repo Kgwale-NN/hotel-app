@@ -192,3 +192,88 @@ export async function createAccommodation(
     });
   }
 }
+
+export async function createRoom(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { id } = req.params;
+  const body = req.body;
+
+  const uuidPattern =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  if (typeof id !== "string" || !uuidPattern.test(id)) {
+    res.status(400).json({
+      message: "A valid accommodation ID is required.",
+    });
+    return;
+  }
+
+  if (
+    !body ||
+    typeof body !== "object" ||
+    Array.isArray(body) ||
+    Object.keys(body).some((key) => key !== "room_number")
+  ) {
+    res.status(400).json({
+      message: "Provide a JSON object containing room_number only.",
+    });
+    return;
+  }
+
+  if (
+    typeof body.room_number !== "string" ||
+    !/^[A-Za-z0-9-]{1,20}$/.test(body.room_number.trim())
+  ) {
+    res.status(400).json({
+      message:
+        "Room number must contain 1–20 letters, numbers or hyphens.",
+    });
+    return;
+  }
+
+  const roomNumber = body.room_number.trim().toUpperCase();
+
+  try {
+    const accommodation = await pool.query(
+      "SELECT id FROM accommodations WHERE id = $1",
+      [id]
+    );
+
+    if (accommodation.rows.length === 0) {
+      res.status(404).json({
+        message: "Accommodation not found.",
+      });
+      return;
+    }
+
+    const result = await pool.query(
+      `
+      INSERT INTO rooms (accommodation_id, room_number)
+      VALUES ($1, $2)
+      ON CONFLICT (accommodation_id, room_number) DO NOTHING
+      RETURNING id, accommodation_id, room_number, is_active
+      `,
+      [id, roomNumber]
+    );
+
+    if (result.rows.length === 0) {
+      res.status(409).json({
+        message: "This room number already exists for this accommodation.",
+      });
+      return;
+    }
+
+    res.status(201).json({
+      message: "Room created successfully.",
+      data: result.rows[0],
+    });
+  } catch {
+    console.error("Unable to create room.");
+
+    res.status(500).json({
+      message: "Unable to create room.",
+    });
+  }
+}
