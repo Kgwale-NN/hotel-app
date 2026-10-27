@@ -1,10 +1,12 @@
 import express from "express";
 import healthRouter from "./routes/health.routes";
 import accommodationsRouter from "./routes/accommodations.routes";
+import { sessionMiddleware } from "./config/session";
 
 const app = express();
 
 app.use(express.json());
+app.use(sessionMiddleware);
 
 app.use("/api/health", healthRouter);
 app.use("/api/accommodations", accommodationsRouter);
