@@ -5,6 +5,8 @@ import {
   googleClient,
   googleClientId,
 } from "../config/google";
+import pool from "../config/db";
+import { findOrCreateGoogleUser } from "../services/auth.service";
 
 export async function startGoogleLogin(
   req: Request,
@@ -126,20 +128,91 @@ export async function googleCallback(
       throw new Error("Invalid Google identity.");
     }
 
-    // Temporary response while we verify the Google integration.
-    // Database account creation comes in the next section.
-    res.status(200).json({
-      message: "Google identity verified successfully.",
-      data: {
-        name: profile.name ?? "",
-        email: profile.email,
-      },
+    const userId = await findOrCreateGoogleUser({
+      providerUserId: profile.sub,
+      email: profile.email,
+      fullName:
+        profile.name?.trim().slice(0, 150) || "Hotel Haven Guest",
+      avatarUrl: profile.picture ?? null,
     });
+
+    // Replace the pre-login session ID after successful authentication.
+    await new Promise<void>((resolve, reject) => {
+      req.session.regenerate((error) => {
+        if (error) reject(error);
+        else resolve();
+      });
+    });
+
+    req.session.userId = userId;
+
+    await new Promise<void>((resolve, reject) => {
+      req.session.save((error) => {
+        if (error) reject(error);
+        else resolve();
+      });
+    });
+
+    res.redirect("/api/auth/me");
+
   } catch {
     console.error("Google identity verification failed.");
 
     res.status(401).json({
       message: "Google sign-in failed. Please start again.",
+    });
+  }
+}
+
+export async function getCurrentUser(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const userId = req.session.userId;
+
+  if (!userId) {
+    res.status(401).json({
+      message: "You must sign in first.",
+    });
+    return;
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        email,
+        full_name,
+        phone,
+        avatar_url,
+        role,
+        created_at
+      FROM users
+      WHERE id = $1
+      `,
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      req.session.destroy(() => {
+        res.clearCookie("hotel_haven.sid", { path: "/" });
+
+        res.status(401).json({
+          message: "Your account is unavailable. Please sign in again.",
+        });
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: result.rows[0],
+    });
+  } catch {
+    console.error("Unable to retrieve the current user.");
+
+    res.status(500).json({
+      message: "Unable to retrieve your account.",
     });
   }
 }
