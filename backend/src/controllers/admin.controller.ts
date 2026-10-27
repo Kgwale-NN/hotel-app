@@ -277,3 +277,143 @@ export async function createRoom(
     });
   }
 }
+
+export async function updateAccommodation(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { id } = req.params;
+  const body = req.body;
+
+  const uuidPattern =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  if (typeof id !== "string" || !uuidPattern.test(id)) {
+    res.status(400).json({
+      message: "A valid accommodation ID is required.",
+    });
+    return;
+  }
+
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    res.status(400).json({
+      message: "A JSON object is required.",
+    });
+    return;
+  }
+
+  const textLimits: Record<string, number> = {
+    name: 150,
+    description: 10000,
+    room_type: 50,
+    bed_description: 150,
+  };
+
+  const allowedFields = [
+    ...Object.keys(textLimits),
+    "capacity",
+    "price_per_night",
+    "is_active",
+  ];
+
+  const fields = Object.keys(body);
+
+  if (
+    fields.length === 0 ||
+    fields.some((field) => !allowedFields.includes(field))
+  ) {
+    res.status(400).json({
+      message: "Provide at least one supported accommodation field.",
+    });
+    return;
+  }
+
+  const updates: string[] = [];
+  const values: (string | number | boolean)[] = [];
+
+  for (const field of fields) {
+    let value = body[field];
+
+    if (Object.hasOwn(textLimits, field)) {
+      if (
+        typeof value !== "string" ||
+        value.trim().length === 0 ||
+        value.trim().length > textLimits[field]
+      ) {
+        res.status(400).json({
+          message:
+            `${field} must contain between 1 and ${textLimits[field]} characters.`,
+        });
+        return;
+      }
+
+      value = value.trim();
+    }
+
+    if (
+      field === "capacity" &&
+      (!Number.isInteger(value) || value < 1 || value > 32767)
+    ) {
+      res.status(400).json({
+        message: "Capacity must be a whole number between 1 and 32767.",
+      });
+      return;
+    }
+
+    if (
+      field === "price_per_night" &&
+      (
+        typeof value !== "string" ||
+        !/^(0|[1-9]\d{0,9})(\.\d{1,2})?$/.test(value)
+      )
+    ) {
+      res.status(400).json({
+        message:
+          "Price must be a non-negative decimal string with at most two decimal places.",
+      });
+      return;
+    }
+
+    if (field === "is_active" && typeof value !== "boolean") {
+      res.status(400).json({
+        message: "is_active must be true or false.",
+      });
+      return;
+    }
+
+    values.push(value);
+    updates.push(`${field} = $${values.length}`);
+  }
+
+  values.push(id);
+
+  try {
+    const result = await pool.query(
+      `
+      UPDATE accommodations
+      SET ${updates.join(", ")}, updated_at = NOW()
+      WHERE id = $${values.length}
+      RETURNING *
+      `,
+      values
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        message: "Accommodation not found.",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Accommodation updated successfully.",
+      data: result.rows[0],
+    });
+  } catch {
+    console.error("Unable to update accommodation.");
+
+    res.status(500).json({
+      message: "Unable to update accommodation.",
+    });
+  }
+}

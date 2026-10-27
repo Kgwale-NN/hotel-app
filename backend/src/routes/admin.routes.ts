@@ -2,7 +2,9 @@ import { Router } from "express";
 import {
   getAdminAccommodations,
   createAccommodation,
-    createRoom
+    createRoom,
+      updateAccommodation
+
 } from "../controllers/admin.controller";
 import {
   requireAuth,
@@ -32,6 +34,12 @@ adminRouter.post(
   "/accommodations/:id/rooms",
   requireCsrf,
   createRoom
+);
+
+adminRouter.patch(
+  "/accommodations/:id",
+  requireCsrf,
+  updateAccommodation
 );
 
 export default adminRouter;
