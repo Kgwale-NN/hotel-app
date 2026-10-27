@@ -216,3 +216,55 @@ export async function getCurrentUser(
     });
   }
 }
+
+export async function getCsrfToken(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    if (!req.session.csrfToken) {
+      req.session.csrfToken = randomBytes(32).toString("hex");
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      req.session.save((error) => {
+        if (error) reject(error);
+        else resolve();
+      });
+    });
+
+    res.status(200).json({
+      csrfToken: req.session.csrfToken,
+    });
+  } catch {
+    console.error("Unable to create the security token.");
+
+    res.status(500).json({
+      message: "Unable to prepare your request.",
+    });
+  }
+}
+
+export function logout(req: Request, res: Response): void {
+  req.session.destroy((error) => {
+    if (error) {
+      console.error("Unable to destroy the session.");
+
+      res.status(500).json({
+        message: "Unable to sign out. Please try again.",
+      });
+      return;
+    }
+
+    res.clearCookie("hotel_haven.sid", {
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.status(200).json({
+      message: "Signed out successfully.",
+    });
+  });
+}
