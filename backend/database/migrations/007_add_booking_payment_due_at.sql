@@ -1,0 +1,6 @@
+BEGIN;
+
+ALTER TABLE bookings
+    ADD COLUMN payment_due_at TIMESTAMPTZ;
+
+COMMIT;
