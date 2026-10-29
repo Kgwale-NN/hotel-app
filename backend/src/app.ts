@@ -9,6 +9,7 @@ import bookingsRouter from "./routes/bookings.routes";
 import favouritesRouter from "./routes/favourites.routes";
 import reviewsRouter from "./routes/reviews.routes";
 import notificationsRouter from "./routes/notifications.routes";
+import paymentsRouter from "./routes/payments.routes";
 
 const app = express();
 app.use(
@@ -30,6 +31,7 @@ app.use("/api/bookings", bookingsRouter);
 app.use("/api/favourites", favouritesRouter);
 app.use("/api/reviews", reviewsRouter);
 app.use("/api/notifications", notificationsRouter);
+app.use("/api/payments", paymentsRouter);
 
 app.use((_req, res) => {
   res.status(404).json({

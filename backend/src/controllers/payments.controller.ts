@@ -1,3 +1,4 @@
+import { isValidPaystackSignature } from "../services/paystack.service";
 import { randomUUID } from "crypto";
 import { Request, Response } from "express";
 import pool from "../config/db";
@@ -124,5 +125,184 @@ export async function initializeBookingPayment(
     }
   } catch {
     res.status(500).json({ message: "Unable to initialize booking payment." });
+  }
+}
+
+type PaystackWebhookEvent = {
+  event?: unknown;
+  data?: {
+    reference?: unknown;
+    status?: unknown;
+    amount?: unknown;
+    currency?: unknown;
+  };
+};
+
+type WebhookPaymentRow = {
+  id: string;
+  booking_id: string;
+  user_id: string;
+  amount: string;
+  currency: string;
+  status: string;
+  booking_status: string;
+  payment_due_at: Date | null;
+};
+
+export async function handlePaystackWebhook(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const rawBody = (req as Request & { rawBody?: Buffer }).rawBody;
+
+  if (
+    !rawBody ||
+    !isValidPaystackSignature(rawBody, req.get("x-paystack-signature"))
+  ) {
+    res.status(401).json({ message: "Invalid Paystack signature." });
+    return;
+  }
+
+  const event = req.body as PaystackWebhookEvent;
+
+  if (event.event !== "charge.success") {
+    res.sendStatus(200);
+    return;
+  }
+
+  const data = event.data;
+
+  if (
+    !data ||
+    typeof data.reference !== "string" ||
+    data.status !== "success" ||
+    typeof data.amount !== "number" ||
+    !Number.isSafeInteger(data.amount) ||
+    typeof data.currency !== "string"
+  ) {
+    res.status(400).json({ message: "Invalid payment event." });
+    return;
+  }
+
+  const client = await pool.connect();
+  let transactionStarted = false;
+
+  try {
+    await client.query("BEGIN");
+    transactionStarted = true;
+
+    const result = await client.query<WebhookPaymentRow>(
+      `
+      SELECT
+        p.id,
+        p.booking_id,
+        b.user_id,
+        p.amount,
+        p.currency,
+        p.status,
+        b.status AS booking_status,
+        b.payment_due_at
+      FROM payments AS p
+      JOIN bookings AS b ON b.id = p.booking_id
+      WHERE p.provider = 'paystack'
+        AND p.provider_payment_id = $1
+      FOR UPDATE OF p, b
+      `,
+      [data.reference]
+    );
+
+    const payment = result.rows[0];
+
+    if (!payment) {
+      await client.query("COMMIT");
+      transactionStarted = false;
+      res.sendStatus(200);
+      return;
+    }
+
+    const expectedAmount = Math.round(Number(payment.amount) * 100);
+
+    if (
+      !Number.isSafeInteger(expectedAmount) ||
+      data.amount !== expectedAmount ||
+      data.currency.toUpperCase() !== payment.currency.toUpperCase()
+    ) {
+      await client.query("ROLLBACK");
+      transactionStarted = false;
+      res.status(400).json({ message: "Payment details do not match." });
+      return;
+    }
+
+    if (payment.status === "succeeded") {
+      await client.query("COMMIT");
+      transactionStarted = false;
+      res.sendStatus(200);
+      return;
+    }
+
+    await client.query(
+      `
+      UPDATE payments
+      SET status = 'succeeded', paid_at = NOW(), updated_at = NOW()
+      WHERE id = $1
+      `,
+      [payment.id]
+    );
+
+    const deadlineIsFuture =
+      payment.payment_due_at !== null &&
+      new Date(payment.payment_due_at).getTime() > Date.now();
+
+    if (payment.booking_status === "pending" && deadlineIsFuture) {
+      await client.query(
+        `
+        UPDATE bookings
+        SET status = 'confirmed', updated_at = NOW()
+        WHERE id = $1
+        `,
+        [payment.booking_id]
+      );
+
+      await client.query(
+        `
+        INSERT INTO notifications (user_id, booking_id, type, title, message)
+        VALUES ($1, $2, 'booking_update', 'Booking confirmed',
+                'Your online payment was received and your booking is confirmed.')
+        `,
+        [payment.user_id, payment.booking_id]
+      );
+    } else {
+      if (payment.booking_status === "pending") {
+        await client.query(
+          `
+          UPDATE bookings
+          SET status = 'expired', updated_at = NOW()
+          WHERE id = $1
+          `,
+          [payment.booking_id]
+        );
+      }
+
+      await client.query(
+        `
+        INSERT INTO notifications (user_id, booking_id, type, title, message)
+        VALUES ($1, $2, 'booking_update', 'Payment needs review',
+                'Payment was received after the booking could be confirmed. Please contact the hotel.')
+        `,
+        [payment.user_id, payment.booking_id]
+      );
+    }
+
+    await client.query("COMMIT");
+    transactionStarted = false;
+    res.sendStatus(200);
+  } catch {
+    if (transactionStarted) {
+      await client.query("ROLLBACK");
+    }
+
+    res.status(500).json({ message: "Unable to process payment event." });
+  } finally {
+    client.release();
   }
 }
