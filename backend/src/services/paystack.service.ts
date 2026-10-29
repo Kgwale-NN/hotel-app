@@ -1,3 +1,5 @@
+import { createHmac, timingSafeEqual } from "crypto";
+
 type InitializeCheckoutInput = {
   email: string;
   amountMinorUnits: number;
@@ -54,4 +56,26 @@ export async function initializePaystackCheckout(
   }
 
   return result.data;
+}
+
+export function isValidPaystackSignature(
+  rawBody: Buffer,
+  signature: string | undefined
+): boolean {
+  const secretKey = process.env.PAYSTACK_SECRET_KEY;
+
+  if (!secretKey || !signature || !/^[a-f0-9]{128}$/i.test(signature)) {
+    return false;
+  }
+
+  const expected = createHmac("sha512", secretKey)
+    .update(rawBody)
+    .digest();
+
+  const received = Buffer.from(signature, "hex");
+
+  return (
+    expected.length === received.length &&
+    timingSafeEqual(expected, received)
+  );
 }

@@ -11,8 +11,14 @@ import reviewsRouter from "./routes/reviews.routes";
 import notificationsRouter from "./routes/notifications.routes";
 
 const app = express();
+app.use(
+  express.json({
+    verify: (req, _res, buffer) => {
+      (req as typeof req & { rawBody?: Buffer }).rawBody = buffer;
+    },
+  })
+);
 
-app.use(express.json());
 app.use(sessionMiddleware);
 
 app.use("/api/health", healthRouter);
