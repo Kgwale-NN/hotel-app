@@ -3,6 +3,8 @@ import { randomUUID } from "crypto";
 import { Request, Response } from "express";
 import pool from "../config/db";
 import { initializePaystackCheckout } from "../services/paystack.service";
+import { verifyPaystackTransaction } from "../services/paystack.service";
+import { PoolClient } from "pg";
 
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -185,8 +187,7 @@ if (existingPayment) {
     }
 
     res.status(500).json({ message: "Unable to initialize booking payment." });
-  }git add .\database\migrations\008_add_paystack_checkout_url.sql .\src\controllers\payments.controller.ts
-git commit -m "fix(payments): prevent duplicate checkout attempts"
+  }
 }
 
 type PaystackWebhookEvent = {
@@ -366,4 +367,151 @@ export async function handlePaystackWebhook(
   } finally {
     client.release();
   }
+
+  
 }
+
+type VerifiedPaymentRow = {
+  id: string;
+  booking_id: string;
+  user_id: string;
+  amount: string;
+  currency: string;
+  payment_status: string;
+  booking_status: string;
+  payment_due_at: Date | null;
+};
+
+export async function verifyBookingPayment(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const reference = req.body?.reference;
+  const userId = req.session.userId;
+
+  if (typeof reference !== "string" || !reference.trim()) {
+    res.status(400).json({ message: "A payment reference is required." });
+    return;
+  }
+
+let client: PoolClient | undefined;
+  let transactionStarted = false;
+
+  try {
+    const verified = await verifyPaystackTransaction(reference);
+
+    client = await pool.connect();
+    await client.query("BEGIN");
+    transactionStarted = true;
+
+    const result = await client.query<VerifiedPaymentRow>(
+      `
+      SELECT
+        p.id,
+        p.booking_id,
+        b.user_id,
+        p.amount,
+        p.currency,
+        p.status AS payment_status,
+        b.status AS booking_status,
+        b.payment_due_at
+      FROM payments AS p
+      JOIN bookings AS b ON b.id = p.booking_id
+      WHERE p.provider = 'paystack'
+        AND p.provider_payment_id = $1
+        AND b.user_id = $2
+      FOR UPDATE OF p, b
+      `,
+      [reference, userId]
+    );
+
+    const payment = result.rows[0];
+
+    if (!payment) {
+      await client.query("ROLLBACK");
+      transactionStarted = false;
+      res.status(404).json({ message: "Payment not found." });
+      return;
+    }
+
+    const expectedAmount = Math.round(Number(payment.amount) * 100);
+
+    if (
+      verified.reference !== reference ||
+      verified.amount !== expectedAmount ||
+      verified.currency.toUpperCase() !== payment.currency.toUpperCase()
+    ) {
+      await client.query("ROLLBACK");
+      transactionStarted = false;
+      res.status(400).json({ message: "Verified payment details do not match." });
+      return;
+    }
+
+    if (verified.status !== "success") {
+      if (verified.status === "failed" || verified.status === "abandoned") {
+        await client.query(
+          `
+          UPDATE payments
+          SET status = 'failed', updated_at = NOW()
+          WHERE id = $1
+            AND status IN ('pending', 'processing')
+          `,
+          [payment.id]
+        );
+      }
+
+      await client.query("COMMIT");
+      transactionStarted = false;
+      res.status(200).json({ data: { payment_status: verified.status } });
+      return;
+    }
+
+    if (payment.payment_status !== "succeeded") {
+      await client.query(
+        `
+        UPDATE payments
+        SET status = 'succeeded', paid_at = NOW(), updated_at = NOW()
+        WHERE id = $1
+        `,
+        [payment.id]
+      );
+    }
+
+    const deadlineIsFuture =
+      payment.payment_due_at !== null &&
+      new Date(payment.payment_due_at).getTime() > Date.now();
+
+    if (payment.booking_status === "pending" && deadlineIsFuture) {
+      await client.query(
+        `UPDATE bookings SET status = 'confirmed', updated_at = NOW() WHERE id = $1`,
+        [payment.booking_id]
+      );
+    } else if (payment.booking_status === "pending") {
+      await client.query(
+        `UPDATE bookings SET status = 'expired', updated_at = NOW() WHERE id = $1`,
+        [payment.booking_id]
+      );
+    }
+
+    await client.query("COMMIT");
+    transactionStarted = false;
+    res.status(200).json({
+      data: {
+        payment_status: "succeeded",
+        booking_status:
+          payment.booking_status === "pending" && deadlineIsFuture
+            ? "confirmed"
+            : payment.booking_status,
+      },
+    });
+  } catch {
+    if (client && transactionStarted) {
+      await client.query("ROLLBACK");
+    }
+
+    res.status(502).json({ message: "Unable to verify booking payment." });
+  } finally {
+    client?.release();
+  }
+}
+
