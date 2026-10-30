@@ -75,6 +75,43 @@ export async function initializeBookingPayment(
       return;
     }
 
+    const existingPaymentResult = await pool.query<{
+  id: string;
+  provider_payment_id: string | null;
+  checkout_url: string | null;
+}>(
+  `
+  SELECT id, provider_payment_id, checkout_url
+  FROM payments
+  WHERE booking_id = $1
+    AND provider = 'paystack'
+    AND status IN ('pending', 'processing')
+  ORDER BY created_at DESC
+  LIMIT 1
+  `,
+  [booking.id]
+);
+
+const existingPayment = existingPaymentResult.rows[0];
+
+if (existingPayment) {
+  if (!existingPayment.checkout_url) {
+    res.status(409).json({
+      message: "A Paystack checkout is being prepared. Please retry shortly.",
+    });
+    return;
+  }
+
+  res.status(200).json({
+    data: {
+      payment_id: existingPayment.id,
+      checkout_url: existingPayment.checkout_url,
+      reference: existingPayment.provider_payment_id,
+    },
+  });
+  return;
+}
+
     const amountMinorUnits = Number(booking.amount_minor_units);
 
     if (!Number.isSafeInteger(amountMinorUnits) || amountMinorUnits <= 0) {
@@ -104,6 +141,17 @@ export async function initializeBookingPayment(
         bookingId: booking.id,
       });
 
+
+      await pool.query(
+  `
+  UPDATE payments
+  SET checkout_url = $1, updated_at = NOW()
+  WHERE id = $2
+  `,
+  [checkout.authorization_url, paymentResult.rows[0].id]
+);
+
+
       res.status(201).json({
         data: {
           payment_id: paymentResult.rows[0].id,
@@ -123,9 +171,22 @@ export async function initializeBookingPayment(
 
       res.status(502).json({ message: "Unable to start Paystack checkout." });
     }
-  } catch {
+   } catch (error: unknown) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "23505"
+    ) {
+      res.status(409).json({
+        message: "A payment attempt is already in progress for this booking.",
+      });
+      return;
+    }
+
     res.status(500).json({ message: "Unable to initialize booking payment." });
-  }
+  }git add .\database\migrations\008_add_paystack_checkout_url.sql .\src\controllers\payments.controller.ts
+git commit -m "fix(payments): prevent duplicate checkout attempts"
 }
 
 type PaystackWebhookEvent = {
