@@ -58,6 +58,42 @@ export async function initializePaystackCheckout(
   return result.data;
 }
 
+type VerifyPaystackResponse = {
+  status: boolean;
+  message: string;
+  data?: {
+    status: string;
+    reference: string;
+    amount: number;
+    currency: string;
+  };
+};
+
+export async function verifyPaystackTransaction(reference: string) {
+  const secretKey = process.env.PAYSTACK_SECRET_KEY;
+
+  if (!secretKey) {
+    throw new Error("PAYSTACK_SECRET_KEY is not configured.");
+  }
+
+  const response = await fetch(
+    `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${secretKey}`,
+      },
+    }
+  );
+
+  const result = (await response.json()) as VerifyPaystackResponse;
+
+  if (!response.ok || !result.status || !result.data) {
+    throw new Error(result.message || "Paystack could not verify the transaction.");
+  }
+
+  return result.data;
+}
+
 export function isValidPaystackSignature(
   rawBody: Buffer,
   signature: string | undefined
