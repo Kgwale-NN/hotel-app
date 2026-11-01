@@ -122,3 +122,41 @@ export async function updateProfile(
     });
   }
 }
+
+export async function updateMarketingPreference(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const marketingOptIn = req.body?.marketing_opt_in;
+
+  if (typeof marketingOptIn !== "boolean") {
+    res.status(400).json({
+      message: "marketing_opt_in must be true or false.",
+    });
+    return;
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      UPDATE users
+      SET marketing_opt_in = $1, updated_at = NOW()
+      WHERE id = $2
+      RETURNING marketing_opt_in
+      `,
+      [marketingOptIn, res.locals.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ message: "Account not found." });
+      return;
+    }
+
+    res.status(200).json({ data: result.rows[0] });
+  } catch {
+    console.error("Unable to update marketing preference.");
+    res.status(500).json({
+      message: "Unable to update marketing preference.",
+    });
+  }
+}

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getCurrentUser } from "../controllers/auth.controller";
-import { updateProfile } from "../controllers/profile.controller";
+import { updateProfile , updateMarketingPreference} from "../controllers/profile.controller";
 import { requireAuth } from "../middleware/auth.middleware";
 import { requireCsrf } from "../middleware/csrf.middleware";
 
@@ -15,5 +15,11 @@ profileRouter.use(requireAuth);
 
 profileRouter.get("/", getCurrentUser);
 profileRouter.patch("/", requireCsrf, updateProfile);
+
+profileRouter.patch(
+  "/marketing-preference",
+  requireCsrf,
+  updateMarketingPreference
+);
 
 export default profileRouter;
