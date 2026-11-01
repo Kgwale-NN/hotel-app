@@ -1,0 +1,6 @@
+BEGIN;
+
+ALTER TABLE users
+    ADD COLUMN marketing_opt_in BOOLEAN NOT NULL DEFAULT FALSE;
+
+COMMIT;
