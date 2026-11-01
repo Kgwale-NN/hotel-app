@@ -504,9 +504,18 @@ let client: PoolClient | undefined;
             : payment.booking_status,
       },
     });
-  } catch {
+    } catch (error: unknown) {
     if (client && transactionStarted) {
       await client.query("ROLLBACK");
+    }
+
+    const message = error instanceof Error ? error.message : "";
+
+    if (message.toLowerCase().includes("transaction reference not found")) {
+      res.status(404).json({
+        message: "Paystack could not find a transaction with this reference.",
+      });
+      return;
     }
 
     res.status(502).json({ message: "Unable to verify booking payment." });
