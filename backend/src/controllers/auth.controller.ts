@@ -185,6 +185,7 @@ export async function getCurrentUser(
         email,
         full_name,
         phone,
+        marketing_opt_in,
         avatar_url,
         role,
         created_at
