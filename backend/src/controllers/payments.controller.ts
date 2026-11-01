@@ -466,6 +466,8 @@ let client: PoolClient | undefined;
       return;
     }
 
+    const paymentWasAlreadySuccessful = payment.payment_status === "succeeded";
+
     if (payment.payment_status !== "succeeded") {
       await client.query(
         `
@@ -486,11 +488,39 @@ let client: PoolClient | undefined;
         `UPDATE bookings SET status = 'confirmed', updated_at = NOW() WHERE id = $1`,
         [payment.booking_id]
       );
+
+      if (!paymentWasAlreadySuccessful) {
+        await client.query(
+          `
+          INSERT INTO notifications (user_id, booking_id, type, title, message)
+          VALUES ($1, $2, 'booking_confirmation', 'Booking confirmed', $3)
+          `,
+          [
+            payment.user_id,
+            payment.booking_id,
+            "Your online payment was received and your booking is confirmed.",
+          ]
+        );
+      }
     } else if (payment.booking_status === "pending") {
       await client.query(
         `UPDATE bookings SET status = 'expired', updated_at = NOW() WHERE id = $1`,
         [payment.booking_id]
       );
+
+      if (!paymentWasAlreadySuccessful) {
+        await client.query(
+          `
+          INSERT INTO notifications (user_id, booking_id, type, title, message)
+          VALUES ($1, $2, 'booking_update', 'Payment needs review', $3)
+          `,
+          [
+            payment.user_id,
+            payment.booking_id,
+            "Payment was received after the booking could be confirmed. Please contact the hotel.",
+          ]
+        );
+      }
     }
 
     await client.query("COMMIT");
