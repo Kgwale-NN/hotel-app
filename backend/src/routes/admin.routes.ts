@@ -14,6 +14,7 @@ import {
   replaceAccommodationAmenities,
   updateAdminBookingStatus,
   updateAdminBookingDetails,
+  sendPromotionNotification
 
 } from "../controllers/admin.controller";
 import {
@@ -35,6 +36,11 @@ adminRouter.use(requireAdmin);
 
 adminRouter.get("/accommodations", getAdminAccommodations);
 adminRouter.get("/bookings", getAdminBookings);
+adminRouter.post(
+  "/promotions",
+  requireCsrf,
+  sendPromotionNotification
+);
 adminRouter.patch("/bookings/:bookingId", requireCsrf, updateAdminBookingStatus);
 adminRouter.patch(
   "/bookings/:bookingId/details",

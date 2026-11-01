@@ -1385,3 +1385,56 @@ export async function updateAdminBookingDetails(
     client?.release();
   }
 }
+
+export async function sendPromotionNotification(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const body = req.body;
+
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    res.status(400).json({ message: "A JSON object is required." });
+    return;
+  }
+
+  const title =
+    typeof body.title === "string" ? body.title.trim() : "";
+  const message =
+    typeof body.message === "string" ? body.message.trim() : "";
+
+  if (title.length < 1 || title.length > 150) {
+    res.status(400).json({
+      message: "Title must contain between 1 and 150 characters.",
+    });
+    return;
+  }
+
+  if (message.length < 1 || message.length > 2000) {
+    res.status(400).json({
+      message: "Message must contain between 1 and 2000 characters.",
+    });
+    return;
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      INSERT INTO notifications (user_id, type, title, message)
+      SELECT id, 'promotion', $1, $2
+      FROM users
+      WHERE marketing_opt_in = TRUE
+      `,
+      [title, message]
+    );
+
+    res.status(201).json({
+      data: { sent_count: result.rowCount ?? 0 },
+      message: "Promotion notifications sent.",
+    });
+  } catch {
+    console.error("Unable to send promotion notifications.");
+    res.status(500).json({
+      message: "Unable to send promotion notifications.",
+    });
+  }
+}
