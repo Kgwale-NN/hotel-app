@@ -10,9 +10,9 @@
   min-height: 100vh;
   align-items: flex-end;
   padding: 3rem 8vw;
-background:
-  linear-gradient(0deg, rgb(0 0 0 / 58%), rgb(0 0 0 / 8%) 75%),
-  url('../../assets/hotel-hero.jpg') center / cover no-repeat;
+   background:
+    linear-gradient(0deg, rgb(0 0 0 / 58%), rgb(0 0 0 / 8%) 75%),
+    url('../../assets/hero.jpg') center 68% / cover no-repeat;
 }
 
 .heroContent {

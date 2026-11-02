@@ -1,6 +1,7 @@
 import SiteHeader from '../layout/SiteHeader'
 import styles from './HomePage.module.css'
 import HotelIntroduction from './HotelIntroduction'
+import HotelStory from './HotelStory'
 
 function HomePage() {
   return (
@@ -17,7 +18,8 @@ function HomePage() {
         </div>
       </section>
 
-     <HotelIntroduction />
+      <HotelIntroduction />
+      <HotelStory />
 
       <section className={styles.booking} id="booking">
         <h2>Ready to plan your stay?</h2>
