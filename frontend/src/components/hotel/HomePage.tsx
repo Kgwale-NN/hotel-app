@@ -1,5 +1,6 @@
 import SiteHeader from '../layout/SiteHeader'
 import styles from './HomePage.module.css'
+import HotelIntroduction from './HotelIntroduction'
 
 function HomePage() {
   return (
@@ -16,14 +17,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className={styles.introduction} id="about">
-        <p className={styles.eyebrow}>WELCOME</p>
-        <h2>A stay shaped around you.</h2>
-        <p>
-          Discover a welcoming place to rest, explore, and make your stay
-          memorable.
-        </p>
-      </section>
+     <HotelIntroduction />
 
       <section className={styles.booking} id="booking">
         <h2>Ready to plan your stay?</h2>
