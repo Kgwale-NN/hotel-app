@@ -1,0 +1,87 @@
+.homePage {
+  min-height: 100vh;
+  color: #fff;
+  background: #f7f5f0;
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  align-items: flex-end;
+  padding: 3rem 8vw;
+background:
+  linear-gradient(0deg, rgb(0 0 0 / 58%), rgb(0 0 0 / 8%) 75%),
+  url('../../assets/hotel-hero.jpg') center / cover no-repeat;
+}
+
+.heroContent {
+  max-width: 700px;
+  padding-bottom: 5vh;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  font-family: Arial, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+}
+
+.heroContent h1 {
+  max-width: 650px;
+  margin: 0;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.discoverLink {
+  display: inline-flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 2rem;
+  color: inherit;
+  font-family: Arial, sans-serif;
+  text-decoration: none;
+}
+
+.introduction,
+.booking {
+  padding: 6rem 8vw;
+  color: #24342c;
+  text-align: center;
+}
+
+.introduction h2,
+.booking h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 400;
+}
+
+.introduction > p:last-child,
+.booking > p {
+  max-width: 550px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.booking {
+  background: #e9e7df;
+}
+
+@media (max-width: 600px) {
+  .hero {
+    min-height: 85vh;
+    padding: 2rem 1.5rem;
+  }
+
+  .heroContent {
+    padding-bottom: 2rem;
+  }
+
+  .introduction,
+  .booking {
+    padding: 4rem 1.5rem;
+  }
+}
