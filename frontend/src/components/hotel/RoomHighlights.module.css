@@ -1,0 +1,101 @@
+.section {
+  padding: 6rem 8vw;
+  color: #24342c;
+  background: #f7f5f0;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  font-family: Arial, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-align: center;
+}
+
+.title {
+  margin: 0 0 3rem;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-weight: 400;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  overflow: hidden;
+  background: #fff;
+}
+
+.image,
+.imageFallback {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.imageFallback {
+  display: grid;
+  place-items: center;
+  color: #59645d;
+  background: #e9e7df;
+  font-family: Arial, sans-serif;
+}
+
+.cardContent {
+  padding: 1.5rem;
+}
+
+.roomType {
+  margin: 0 0 0.5rem;
+  color: #59645d;
+  font-family: Arial, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cardContent h3 {
+  margin: 0 0 1rem;
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.cardContent p {
+  line-height: 1.5;
+}
+
+.cardContent p span {
+  color: #59645d;
+}
+
+.cardContent a {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: #24342c;
+  text-underline-offset: 0.25rem;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .section {
+    padding: 4rem 1.5rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
