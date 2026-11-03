@@ -1,0 +1,77 @@
+.bookingForm {
+  display: grid;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: #fff;
+  color: #182a36;
+}
+
+.bookingForm h2 {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 400;
+}
+
+.bookingForm form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+.bookingForm label {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.bookingForm input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem;
+  border: 1px solid #c9c5bd;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.bookingForm button {
+  min-height: 3rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #182a36;
+  background: #182a36;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bookingForm button:hover {
+  background: #294454;
+}
+
+@media (max-width: 760px) {
+  .bookingForm form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bookingForm button {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 440px) {
+  .bookingForm {
+    padding: 1.25rem;
+  }
+
+  .bookingForm form {
+    grid-template-columns: 1fr;
+  }
+
+  .bookingForm button {
+    grid-column: auto;
+  }
+}

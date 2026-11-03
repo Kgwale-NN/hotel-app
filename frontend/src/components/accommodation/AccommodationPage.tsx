@@ -7,6 +7,7 @@ import havenSuitePhoto from "../../assets/Haven Suite.jpg";
 import deluxeRoomPhoto from "../../assets/Deluxe Room.jpg";
 import familySuitePhoto from "../../assets/Family Suite.jpg";
 import styles from './AccommodationPage.module.css'
+import BookingForm from '../booking/BookingForm'
 
 const roomPhotoByName: Record<string, string> = {
   'Deluxe Room': deluxeRoomPhoto,
@@ -149,8 +150,8 @@ function AccommodationPage() {
 
       <div className={styles.bookingBar}>
         <p><strong>{accommodation.currency} {Number(accommodation.price_per_night).toLocaleString('en-ZA')}</strong> / night</p>
-        <Link className={styles.bookingLink} to="/#booking">Book this stay</Link>
-      </div>
+        <BookingForm />      
+        </div>
     </main>
   )
 }
