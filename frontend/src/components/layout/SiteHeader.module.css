@@ -12,10 +12,18 @@
 }
 
 .sideLink {
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: inherit;
+  cursor: pointer;
   font-family: Arial, sans-serif;
   font-size: 0.9rem;
   text-decoration: none;
+}
+
+.header > .sideLink:first-child {
+  justify-self: start;
 }
 
 .sideLink:last-child {
