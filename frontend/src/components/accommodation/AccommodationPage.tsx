@@ -150,7 +150,7 @@ function AccommodationPage() {
 
       <div className={styles.bookingBar}>
         <p><strong>{accommodation.currency} {Number(accommodation.price_per_night).toLocaleString('en-ZA')}</strong> / night</p>
-        <BookingForm />      
+        <BookingForm accommodationId={id ?? ''} />      
         </div>
     </main>
   )
