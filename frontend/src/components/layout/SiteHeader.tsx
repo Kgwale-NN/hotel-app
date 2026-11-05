@@ -23,9 +23,14 @@ function SiteHeader() {
           <span className={styles.brandName}>Hotel Heaven</span>
         </a>
 
-        <a href="#booking" className={styles.sideLink}>
-          Book now
-        </a>
+        <div className={styles.headerActions}>
+          <a href="/api/auth/google" className={styles.sideLink}>
+            Sign in
+          </a>
+          <a href="#booking" className={styles.sideLink}>
+            Book now
+          </a>
+        </div>
       </header>
 
       {menuOpen && <SiteMenu onClose={() => setMenuOpen(false)} />}

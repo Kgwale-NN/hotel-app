@@ -11,6 +11,13 @@
   color: white;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 1.25rem;
+}
+
 .sideLink {
   padding: 0;
   border: 0;
