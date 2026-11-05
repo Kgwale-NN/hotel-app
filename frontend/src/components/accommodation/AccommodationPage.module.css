@@ -18,6 +18,40 @@
   font-weight: 400;
 }
 
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.favouriteButton {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border: 1px solid #b8ad98;
+  color: #24342c;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.favouriteButton:hover:not(:disabled) {
+  color: #fff;
+  background: #24342c;
+}
+
+.favouriteButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.favouriteMessage {
+  margin: 0.5rem 0 0;
+  color: #59645d;
+}
+
 .description {
   max-width: 680px;
   color: #59645d;
@@ -203,6 +237,11 @@
 @media (max-width: 600px) {
   .page {
     padding: 1.25rem 1rem 5rem;
+  }
+
+  .titleRow {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .stayFacts {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getAccommodationById } from '../../api/accommodations'
+import { addFavourite } from '../../api/favourites'
 import type { AccommodationDetail } from '../../types/accommodation'
 import gardenRoomPhoto from "../../assets/Garden Room.jpg";
 import havenSuitePhoto from "../../assets/Haven Suite.jpg";
@@ -22,6 +23,28 @@ function AccommodationPage() {
     useState<AccommodationDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [favouriteMessage, setFavouriteMessage] = useState('')
+  const [savingFavourite, setSavingFavourite] = useState(false)
+
+  async function handleSaveFavourite() {
+    if (!id || savingFavourite) return
+
+    setSavingFavourite(true)
+    setFavouriteMessage('')
+
+    try {
+      await addFavourite(id)
+      setFavouriteMessage('Added to your favourites.')
+    } catch (caughtError: unknown) {
+      setFavouriteMessage(
+        caughtError instanceof Error
+          ? caughtError.message
+          : 'Could not add this accommodation to favourites.',
+      )
+    } finally {
+      setSavingFavourite(false)
+    }
+  }
 
   useEffect(() => {
     let isCurrent = true
@@ -64,7 +87,22 @@ function AccommodationPage() {
     <main className={styles.page}>
       <Link className={styles.backLink} to="/">← Back to rooms</Link>
 
-      <h1 className={styles.title}>{accommodation.name}</h1>
+      <div className={styles.titleRow}>
+        <h1 className={styles.title}>{accommodation.name}</h1>
+        <button
+          className={styles.favouriteButton}
+          type="button"
+          onClick={handleSaveFavourite}
+          disabled={savingFavourite}
+        >
+          {savingFavourite ? 'Saving…' : '♡ Save to favourites'}
+        </button>
+      </div>
+      {favouriteMessage && (
+        <p className={styles.favouriteMessage} role="status">
+          {favouriteMessage}
+        </p>
+      )}
       <p className={styles.description}>{accommodation.description}</p>
 
       <div className={styles.stayFacts} aria-label="Room details">
