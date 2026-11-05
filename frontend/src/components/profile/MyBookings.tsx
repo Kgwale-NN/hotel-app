@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import styles from './MyBookings.module.css'
 import {
   cancelMyBooking,
   getMyBookings,
@@ -18,7 +19,7 @@ function MyBookings() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [cancellingId, setCancellingId] = useState('')
-const [actionMessage, setActionMessage] = useState('')
+  const [actionMessage, setActionMessage] = useState('')
 
   useEffect(() => {
     let isCurrent = true
@@ -44,54 +45,71 @@ const [actionMessage, setActionMessage] = useState('')
   }, [])
 
   async function handleCancel(bookingId: string) {
-  setCancellingId(bookingId)
-  setActionMessage('')
+    setCancellingId(bookingId)
+    setActionMessage('')
 
-  try {
-    await cancelMyBooking(bookingId)
+    try {
+      await cancelMyBooking(bookingId)
 
-    setBookings((currentBookings) =>
-      currentBookings.map((booking) =>
-        booking.id === bookingId
-          ? { ...booking, status: 'cancelled' }
-          : booking,
-      ),
-    )
+      setBookings((currentBookings) =>
+        currentBookings.map((booking) =>
+          booking.id === bookingId
+            ? { ...booking, status: 'cancelled' }
+            : booking,
+        ),
+      )
 
-    setActionMessage('Booking cancelled.')
-  } catch (err: unknown) {
-    setActionMessage(
-      err instanceof Error ? err.message : 'Could not cancel the booking.',
-    )
-  } finally {
-    setCancellingId('')
+      setActionMessage('Booking cancelled.')
+    } catch (err: unknown) {
+      setActionMessage(
+        err instanceof Error ? err.message : 'Could not cancel the booking.',
+      )
+    } finally {
+      setCancellingId('')
+    }
   }
-}
 
-  if (loading) return <main><p>Loading your bookings…</p></main>
-  if (error) return <main><p role="alert">{error}</p></main>
+  if (loading) {
+    return (
+      <main className={styles.page}>
+        <p>Loading your bookings…</p>
+      </main>
+    )
+  }
+
+  if (error) {
+    return (
+      <main className={styles.page}>
+        <p role="alert">{error}</p>
+      </main>
+    )
+  }
 
   return (
-    <main>
-      <h1>My bookings</h1>
-      {actionMessage && <p role="status">{actionMessage}</p>}
+    <main className={styles.page}>
+      <h1 className={styles.title}>My bookings</h1>
+      {actionMessage && (
+        <p className={styles.notice} role="status">
+          {actionMessage}
+        </p>
+      )}
 
       {bookings.length === 0 ? (
-        <p>You don’t have any bookings yet.</p>
+        <p className={styles.bookingInfo}>You don’t have any bookings yet.</p>
       ) : (
-        <div>
+        <div className={styles.bookingList}>
           {bookings.map((booking) => (
-            <article key={booking.id}>
-              <h2>{booking.hotel_name}</h2>
-              <p>
+            <article className={styles.bookingCard} key={booking.id}>
+              <h2 className={styles.hotelName}>{booking.hotel_name}</h2>
+              <p className={styles.bookingInfo}>
                 {formatDate(booking.check_in)} – {formatDate(booking.check_out)}
               </p>
-              <p>
+              <p className={styles.bookingInfo}>
                 {booking.adults} adults · {booking.children} children
               </p>
-              <p>Status: {booking.status}</p>
+              <p className={styles.status}>Status: {booking.status}</p>
 
-              <ul>
+              <ul className={styles.roomList}>
                 {booking.rooms.map((room) => (
                   <li key={room.room_id}>
                     {room.accommodation_name} · Room {room.room_number} ·{' '}
@@ -102,6 +120,7 @@ const [actionMessage, setActionMessage] = useState('')
 
               {booking.status === 'pending' && (
                 <button
+                  className={styles.cancelButton}
                   type="button"
                   onClick={() => handleCancel(booking.id)}
                   disabled={Boolean(cancellingId)}

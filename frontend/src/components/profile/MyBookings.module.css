@@ -1,0 +1,80 @@
+.page {
+  width: min(100% - 2rem, 900px);
+  margin: 0 auto;
+  padding: 3rem 0;
+  color: #1b2d36;
+}
+
+.title {
+  margin: 0 0 1.5rem;
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+}
+
+.notice {
+  margin-bottom: 1.5rem;
+  color: #52665b;
+}
+
+.bookingList {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.bookingCard {
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid #e5e0d7;
+  background: #fff;
+}
+
+.hotelName {
+  margin: 0 0 0.75rem;
+  font-family: Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.bookingInfo {
+  margin: 0.5rem 0;
+  color: #52605b;
+}
+
+.status {
+  display: inline-block;
+  margin: 0.5rem 0;
+  padding: 0.35rem 0.65rem;
+  background: #f1eee7;
+  color: #40564a;
+  text-transform: capitalize;
+}
+
+.roomList {
+  margin: 0.75rem 0 1.25rem;
+  padding-left: 1.25rem;
+  line-height: 1.7;
+}
+
+.cancelButton {
+  padding: 0.75rem 1.1rem;
+  border: 0;
+  background: #1b2d36;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #304b57;
+}
+
+.cancelButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 2rem 0;
+  }
+}
