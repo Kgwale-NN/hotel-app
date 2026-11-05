@@ -6,6 +6,27 @@ export type AvailableRoom = {
   currency: string
   is_available: boolean
 }
+export type MyBooking = {
+  id: string
+  hotel_id: string
+  hotel_name: string
+  check_in: string
+  check_out: string
+  adults: number
+  children: number
+  status: string
+  payment_due_at: string | null
+  currency: string
+  taxes_and_fees: string
+  created_at: string
+  rooms: {
+    room_id: string
+    room_number: string
+    accommodation_id: string
+    accommodation_name: string
+    price_per_night: string
+  }[]
+}
 
 export async function getAvailableRooms(
   accommodationId: string,
@@ -98,4 +119,49 @@ export async function createBookingPayment(bookingId: string) {
     checkout_url: string
     reference: string
   }
+}
+
+export async function getMyBookings(): Promise<MyBooking[]> {
+  const response = await fetch('/api/bookings')
+
+  if (!response.ok) {
+    throw new Error(
+      response.status === 401
+        ? 'Sign in to view your bookings.'
+        : 'Could not load your bookings.',
+    )
+  }
+
+  const result: { data: MyBooking[] } = await response.json()
+  return result.data
+}
+
+export async function cancelMyBooking(bookingId: string) {
+  const csrfResponse = await fetch('/api/auth/csrf')
+
+  if (!csrfResponse.ok) {
+    throw new Error('Could not prepare the cancellation request.')
+  }
+
+  const { csrfToken }: { csrfToken: string } = await csrfResponse.json()
+
+  const response = await fetch(
+    `/api/bookings/${encodeURIComponent(bookingId)}/cancel`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken,
+      },
+      body: JSON.stringify({ reason: 'Cancelled by guest' }),
+    },
+  )
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result.message ?? 'Could not cancel the booking.')
+  }
+
+  return result.data
 }
