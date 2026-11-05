@@ -65,3 +65,37 @@ export async function createBooking(input: {
 
   return result.data
 }
+
+export async function createBookingPayment(bookingId: string) {
+  const csrfResponse = await fetch('/api/auth/csrf')
+
+  if (!csrfResponse.ok) {
+    throw new Error('Could not prepare the payment request.')
+  }
+
+  const { csrfToken }: { csrfToken: string } = await csrfResponse.json()
+
+  const response = await fetch(
+    `/api/bookings/${encodeURIComponent(bookingId)}/payments`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken,
+      },
+      body: JSON.stringify({}),
+    },
+  )
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result.message ?? 'Could not start payment.')
+  }
+
+  return result.data as {
+    payment_id: string
+    checkout_url: string
+    reference: string
+  }
+}

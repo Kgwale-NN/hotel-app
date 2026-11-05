@@ -1,6 +1,11 @@
 import styles from './BookingForm.module.css'
 import { useState, type FormEvent } from 'react'
-import { getAvailableRooms, type AvailableRoom, createBooking } from '../../api/bookings'
+import {
+    createBooking,
+    createBookingPayment,
+    getAvailableRooms,
+    type AvailableRoom,
+} from '../../api/bookings'
 
 type BookingFormProps = {
     accommodationId: string
@@ -61,9 +66,8 @@ function BookingForm({ accommodationId }: BookingFormProps) {
                 children: Number(children),
             })
 
-            setBookingMessage(
-                `Reservation created. Booking reference: ${booking.id}`,
-            )
+            const payment = await createBookingPayment(booking.id)
+            window.location.assign(payment.checkout_url)
         } catch (error) {
             setBookingMessage(
                 error instanceof Error ? error.message : 'Could not create the reservation.',
