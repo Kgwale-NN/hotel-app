@@ -27,7 +27,17 @@
 
 .card {
   overflow: hidden;
+  border: 1px solid rgba(36, 52, 44, 0.1);
   background: #fff;
+  box-shadow: 0 10px 30px rgba(36, 52, 44, 0.06);
+  transition:
+    transform 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(36, 52, 44, 0.12);
 }
 
 .image,
@@ -39,6 +49,11 @@
 
 .image {
   object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+.card:hover .image {
+  transform: scale(1.03);
 }
 
 .imageFallback {
@@ -50,7 +65,7 @@
 }
 
 .cardContent {
-  padding: 1.5rem;
+  padding: 1.75rem;
 }
 
 .roomType {
@@ -79,8 +94,18 @@
 .cardContent a {
   display: inline-block;
   margin-top: 0.75rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #24342c;
   color: #24342c;
-  text-underline-offset: 0.25rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+
+.cardContent a:hover {
+  color: #8a704b;
+  border-color: #8a704b;
 }
 
 @media (max-width: 900px) {
