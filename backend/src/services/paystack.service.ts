@@ -31,6 +31,13 @@ export async function initializePaystackCheckout(
     throw new Error("Payment amount must be a positive whole number of minor units.");
   }
 
+  const callbackUrl = process.env.PAYSTACK_CALLBACK_URL || (process.env.NODE_ENV !== 'production' ? 'http://localhost:5173/payments/return' : '');
+  if (!callbackUrl) throw new Error('PAYSTACK_CALLBACK_URL is required in production.');
+  const parsedCallback = new URL(callbackUrl);
+  if (!['http:', 'https:'].includes(parsedCallback.protocol) || (process.env.NODE_ENV === 'production' && parsedCallback.protocol !== 'https:')) {
+    throw new Error('PAYSTACK_CALLBACK_URL must be an HTTP(S) URL, using HTTPS in production.');
+  }
+
   const response = await fetch(
     "https://api.paystack.co/transaction/initialize",
     {
@@ -44,6 +51,7 @@ export async function initializePaystackCheckout(
         amount: String(input.amountMinorUnits),
         currency: input.currency,
         reference: input.reference,
+        callback_url: parsedCallback.toString(),
         metadata: { booking_id: input.bookingId },
       }),
     }

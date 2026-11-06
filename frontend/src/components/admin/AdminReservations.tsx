@@ -41,11 +41,11 @@ export default function AdminReservations() {
       if (mode === 'complete') {
         await completeAdminBooking(booking.id)
       } else {
-      await changeAdminBooking(booking.id, mode === 'edit' ? {
-        check_in: data.get('check_in'), check_out: data.get('check_out'),
-        adults: Number(data.get('adults')), children: Number(data.get('children')),
-        special_requests: String(data.get('special_requests') || '').trim() || null,
-      } : { status: mode === 'approve' ? 'confirmed' : 'cancelled', ...(mode === 'cancel' ? { cancellation_reason: data.get('reason') } : {}) }, mode === 'edit')
+        await changeAdminBooking(booking.id, mode === 'edit' ? {
+          check_in: data.get('check_in'), check_out: data.get('check_out'),
+          adults: Number(data.get('adults')), children: Number(data.get('children')),
+          special_requests: String(data.get('special_requests') || '').trim() || null,
+        } : { status: mode === 'approve' ? 'confirmed' : 'cancelled', ...(mode === 'cancel' ? { cancellation_reason: data.get('reason') } : {}) }, mode === 'edit')
       }
       setPanel(null)
       setNotice('Reservation updated successfully.')

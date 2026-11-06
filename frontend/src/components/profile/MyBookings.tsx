@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import styles from './MyBookings.module.css'
-import { cancelMyBooking, getMyBookings, type MyBooking, } from '../../api/bookings'
+import { createBookingPayment, cancelMyBooking, getMyBookings, type MyBooking, } from '../../api/bookings'
 
 function formatDate(date: string) {
     return new Intl.DateTimeFormat('en-ZA', {
@@ -17,6 +17,7 @@ function MyBookings() {
     const [error, setError] = useState('')
     const [cancellingId, setCancellingId] = useState('')
     const [actionMessage, setActionMessage] = useState('')
+    const [payingId, setPayingId] = useState('')
 
     useEffect(() => {
         let isCurrent = true
@@ -40,6 +41,18 @@ function MyBookings() {
             isCurrent = false
         }
     }, [])
+
+    async function handlePayment(bookingId: string) {
+        if (payingId || cancellingId) return
+        setPayingId(bookingId)
+        setActionMessage('')
+        try {
+            const payment = await createBookingPayment(bookingId)
+            window.location.assign(payment.checkout_url)
+        } catch (error: unknown) {
+            setActionMessage(error instanceof Error ? error.message : 'Could not start payment.')
+        } finally { setPayingId('') }
+    }
 
     async function handleCancel(bookingId: string) {
         setCancellingId(bookingId)
@@ -115,12 +128,13 @@ function MyBookings() {
                                 ))}
                             </ul>
 
+                            {booking.status === 'pending' && <button type="button" disabled={Boolean(cancellingId || payingId)} onClick={() => void handlePayment(booking.id)}>{payingId === booking.id ? 'Opening checkout…' : 'Continue payment'}</button>}
                             {booking.status === 'pending' && (
                                 <button
                                     className={styles.cancelButton}
                                     type="button"
                                     onClick={() => handleCancel(booking.id)}
-                                    disabled={Boolean(cancellingId)}
+                                    disabled={Boolean(cancellingId || payingId)}
                                 >
                                     {cancellingId === booking.id ? 'Cancelling…' : 'Cancel booking'}
                                 </button>

@@ -529,8 +529,8 @@ let client: PoolClient | undefined;
       data: {
         payment_status: "succeeded",
         booking_status:
-          payment.booking_status === "pending" && deadlineIsFuture
-            ? "confirmed"
+          payment.booking_status === "pending"
+            ? (deadlineIsFuture ? "confirmed" : "expired")
             : payment.booking_status,
       },
     });
