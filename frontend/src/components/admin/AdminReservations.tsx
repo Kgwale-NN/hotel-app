@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { changeAdminBooking, getAdminBookings, type AdminBooking, type BookingStatus } from '../../api/adminBookings'
+import { changeAdminBooking, completeAdminBooking, getAdminBookings, type AdminBooking, type BookingStatus } from '../../api/adminBookings'
 import styles from './AdminReservations.module.css'
 
 const statuses: BookingStatus[] = ['pending', 'confirmed', 'cancelled', 'completed', 'expired']
@@ -19,7 +19,7 @@ export default function AdminReservations() {
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [busy, setBusy] = useState(false)
-  const [panel, setPanel] = useState<{ id: string; mode: 'edit' | 'cancel' | 'approve' } | null>(null)
+  const [panel, setPanel] = useState<{ id: string; mode: 'edit' | 'cancel' | 'approve' | 'complete' } | null>(null)
 
   useEffect(() => {
     let current = true
@@ -38,11 +38,15 @@ export default function AdminReservations() {
     setError('')
     setNotice('')
     try {
+      if (mode === 'complete') {
+        await completeAdminBooking(booking.id)
+      } else {
       await changeAdminBooking(booking.id, mode === 'edit' ? {
         check_in: data.get('check_in'), check_out: data.get('check_out'),
         adults: Number(data.get('adults')), children: Number(data.get('children')),
         special_requests: String(data.get('special_requests') || '').trim() || null,
       } : { status: mode === 'approve' ? 'confirmed' : 'cancelled', ...(mode === 'cancel' ? { cancellation_reason: data.get('reason') } : {}) }, mode === 'edit')
+      }
       setPanel(null)
       setNotice('Reservation updated successfully.')
       setBookings(await getAdminBookings())
@@ -83,11 +87,12 @@ export default function AdminReservations() {
             {booking.special_requests && <p className={styles.notes}><strong>Guest requests:</strong> {booking.special_requests}</p>}
             {booking.cancellation_reason && <p className={styles.notes}><strong>Cancellation reason:</strong> {booking.cancellation_reason}</p>}
             {booking.status === 'pending' && <div className={styles.actions}><button disabled={busy} onClick={() => { setPanel({ id: booking.id, mode: 'approve' }); setError('') }}>Approve reservation</button><button disabled={busy} className={styles.secondary} onClick={() => { setPanel({ id: booking.id, mode: 'edit' }); setError('') }}>Edit details</button><button disabled={busy} className={styles.cancel} onClick={() => { setPanel({ id: booking.id, mode: 'cancel' }); setError('') }}>Cancel reservation</button></div>}
+            {booking.status === 'confirmed' && <div className={styles.actions}><button disabled={busy} onClick={() => { setPanel({ id: booking.id, mode: 'complete' }); setError('') }}>Mark stay completed</button></div>}
             {panel?.id === booking.id && <form key={`${booking.id}-${panel.mode}`} className={styles.editor} onSubmit={event => submit(event, booking)}>
-              <h3>{panel.mode === 'edit' ? 'Edit reservation' : panel.mode === 'cancel' ? 'Cancel this reservation?' : 'Approve this reservation?'}</h3>
+              <h3>{panel.mode === 'edit' ? 'Edit reservation' : panel.mode === 'cancel' ? 'Cancel this reservation?' : panel.mode === 'complete' ? 'Complete this stay?' : 'Approve this reservation?'}</h3>
               {panel.mode === 'edit' ? <div className={styles.editGrid}>
                 <label>Check-in<input name="check_in" type="date" defaultValue={inputDate(booking.check_in)} required /></label><label>Check-out<input name="check_out" type="date" defaultValue={inputDate(booking.check_out)} required /></label><label>Adults<input name="adults" type="number" min="1" step="1" defaultValue={booking.adults} required /></label><label>Children<input name="children" type="number" min="0" step="1" defaultValue={booking.children} required /></label><label className={styles.wide}>Special requests<textarea name="special_requests" maxLength={2000} defaultValue={booking.special_requests || ''} /></label>
-              </div> : panel.mode === 'cancel' ? <label>Reason for cancellation<textarea name="reason" maxLength={500} placeholder="Cancelled by admin" /></label> : <p>Payment must have succeeded before a reservation can be approved.</p>}
+              </div> : panel.mode === 'cancel' ? <label>Reason for cancellation<textarea name="reason" maxLength={500} placeholder="Cancelled by admin" /></label> : <p>{panel.mode === 'complete' ? 'Confirm that the guest has checked out. The checkout date must have arrived. Completing the stay allows the guest to leave a review.' : 'Payment must have succeeded before a reservation can be approved.'}</p>}
               <div className={styles.actions}><button disabled={busy} type="submit">{busy ? 'Saving…' : panel.mode === 'edit' ? 'Save changes' : 'Confirm'}</button><button disabled={busy} type="button" className={styles.secondary} onClick={() => setPanel(null)}>Keep unchanged</button></div>
             </form>}
           </article>)}

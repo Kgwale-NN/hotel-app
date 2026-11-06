@@ -36,3 +36,12 @@ export async function changeAdminBooking(id: string, body: object, details = fal
     body: JSON.stringify(body),
   }))
 }
+
+export async function completeAdminBooking(id: string): Promise<void> {
+  const { csrfToken } = await readResponse(await fetch('/api/auth/csrf'))
+  await readResponse(await fetch(`/api/admin/bookings/${encodeURIComponent(id)}/complete`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+    body: JSON.stringify({}),
+  }))
+}

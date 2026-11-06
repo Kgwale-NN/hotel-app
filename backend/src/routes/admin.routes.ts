@@ -1,3 +1,4 @@
+import { completeAdminBooking } from '../controllers/booking-completion.controller';
 import { getAdminHotels, getAdminAccommodationDetail } from '../controllers/admin-inventory.controller';
 import { Router } from "express";
 import {
@@ -39,6 +40,7 @@ adminRouter.get("/hotels", getAdminHotels);
 adminRouter.get("/accommodations/:id", getAdminAccommodationDetail);
 adminRouter.get("/accommodations", getAdminAccommodations);
 adminRouter.get("/bookings", getAdminBookings);
+adminRouter.post("/bookings/:bookingId/complete", requireCsrf, completeAdminBooking);
 adminRouter.post(
   "/promotions",
   requireCsrf,
