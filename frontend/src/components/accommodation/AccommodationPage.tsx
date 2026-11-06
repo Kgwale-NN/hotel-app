@@ -9,8 +9,8 @@ import deluxeRoomPhoto from "../../assets/Deluxe Room.jpg";
 import familySuitePhoto from "../../assets/Family Suite.jpg";
 import styles from './AccommodationPage.module.css'
 import BookingForm from '../booking/BookingForm'
-import { getAccommodationReviews } from '../../api/reviews'
-import type { AccommodationReviews } from '../../types/review'
+import AccommodationReviewsSection from '../reviews/AccommodationReviews'
+
 
 const roomPhotoByName: Record<string, string> = {
   'Deluxe Room': deluxeRoomPhoto,
@@ -27,8 +27,8 @@ function AccommodationPage() {
   const [error, setError] = useState<string | null>(null)
   const [favouriteMessage, setFavouriteMessage] = useState('')
   const [savingFavourite, setSavingFavourite] = useState(false)
-const [reviews, setReviews] = useState<AccommodationReviews | null>(null)
-const [reviewsError, setReviewsError] = useState('')
+
+
   async function handleSaveFavourite() {
     if (!id || savingFavourite) return
 
@@ -49,27 +49,7 @@ const [reviewsError, setReviewsError] = useState('')
     }
   }
 
-  useEffect(() => {
-  if (!id) return
 
-  let isCurrent = true
-
-  getAccommodationReviews(id)
-    .then((data) => {
-      if (isCurrent) setReviews(data)
-    })
-    .catch((error: unknown) => {
-      if (isCurrent) {
-        setReviewsError(
-          error instanceof Error ? error.message : 'Could not load reviews.',
-        )
-      }
-    })
-
-  return () => {
-    isCurrent = false
-  }
-}, [id])
 
   useEffect(() => {
     let isCurrent = true
@@ -211,42 +191,7 @@ const [reviewsError, setReviewsError] = useState('')
         </section>
       )}
 
-      <section aria-labelledby="reviews-title">
-  <h2 id="reviews-title">Guest reviews</h2>
-
-  {reviewsError ? (
-    <p role="alert">{reviewsError}</p>
-  ) : reviews ? (
-    <>
-      <p>
-        {reviews.average_rating
-          ? `${Number(reviews.average_rating).toFixed(1)} / 5`
-          : 'No rating yet'}
-        {' · '}
-        {reviews.count} {reviews.count === 1 ? 'review' : 'reviews'}
-      </p>
-
-      {reviews.reviews.length === 0 ? (
-        <p>No guest reviews yet.</p>
-      ) : (
-        reviews.reviews.map((review) => (
-          <article key={review.id}>
-            <h3>{review.guest_name}</h3>
-            <p>{review.rating} / 5</p>
-            <p>{review.comment}</p>
-            <time dateTime={review.created_at}>
-              {new Intl.DateTimeFormat('en-ZA', {
-                dateStyle: 'long',
-              }).format(new Date(review.created_at))}
-            </time>
-          </article>
-        ))
-      )}
-    </>
-  ) : (
-    <p>Loading guest reviews…</p>
-  )}
-</section>
+      <AccommodationReviewsSection key={accommodation.id} accommodationId={accommodation.id} />
 
       <div className={styles.bookingBar}>
         <p><strong>{accommodation.currency} {Number(accommodation.price_per_night).toLocaleString('en-ZA')}</strong> / night</p>
