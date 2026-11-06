@@ -13,9 +13,6 @@ function HomePage() {
         <div className={styles.heroContent}>
           <p className={styles.eyebrow}>A PLACE TO REMEMBER</p>
           <h1>Find your place to slow down.</h1>
-          <a className={styles.discoverLink} href="#about">
-            Discover the hotel <span aria-hidden="true">↓</span>
-          </a>
         </div>
       </section>
 
