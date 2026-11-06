@@ -1,3 +1,5 @@
+import { rateLimit } from 'express-rate-limit';
+import { registerWithPassword, loginWithPassword } from '../controllers/password-auth.controller';
 import { Router } from "express";
 import {
   startGoogleLogin,
@@ -10,6 +12,13 @@ import { requireAuth } from "../middleware/auth.middleware";
 import { requireCsrf } from "../middleware/csrf.middleware"
 
 const authRouter = Router();
+const passwordAuthLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { message: 'Too many account attempts. Please try again in 15 minutes.' },
+});
 
 authRouter.use((_req, res, next) => {
   res.setHeader("Cache-Control", "no-store");
@@ -17,6 +26,9 @@ authRouter.use((_req, res, next) => {
   next();
 });
 
+authRouter.get('/form-token', passwordAuthLimit, getCsrfToken);
+authRouter.post('/register', passwordAuthLimit, requireCsrf, registerWithPassword);
+authRouter.post('/login', passwordAuthLimit, requireCsrf, loginWithPassword);
 authRouter.get("/google", startGoogleLogin);
 authRouter.get("/google/callback", googleCallback);
 

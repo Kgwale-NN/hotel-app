@@ -89,3 +89,19 @@ All `/admin` routes require a signed-in admin. Mutations also require CSRF.
 - Add configurable notification preferences and the actual email/SMS delivery provider if required.
 - Add automated API and database integration tests, rate limiting, production origin/security configuration, and deployment instructions.
 - Manually verify the newer admin inventory, search, review, notification, and cancellation endpoints against the running app.
+
+## Email and password accounts
+
+Apply `database/migrations/010_add_password_credentials.sql` before using email registration.
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| GET | `/api/auth/form-token` | Create a session-bound CSRF token before registration or login |
+| POST | `/api/auth/register` | Register using `full_name`, `email`, `password`, and optional `remember_me` |
+| POST | `/api/auth/login` | Sign in using `email`, `password`, and optional `remember_me` |
+
+Both POST routes require the session cookie and `X-CSRF-Token`. New accounts always receive the normal `guest` role; client-supplied roles are rejected. Registration requires a password of 15–128 characters. Passwords use salted scrypt hashes. Account attempts are limited to 20 requests per IP per 15 minutes in each backend process, including form-token requests. Remember me creates a 30-day cookie; otherwise a browser-session cookie is used. Google accounts continue to use Google; password registration cannot overwrite an existing account.
+
+Google authentication returns to `/auth/return` on `FRONTEND_URL` (default `http://localhost:5173` for development). Set the deployed HTTPS frontend origin in production.
+
+Authentication tests: `npm run build`, then `node --test tests/password-auth.test.cjs`. Database calls in these tests are mocked.

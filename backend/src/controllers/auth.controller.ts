@@ -33,6 +33,8 @@ export async function startGoogleLogin(
         scope: ["openid", "email", "profile"],
         state,
         prompt: "select_account",
+        login_hint: typeof req.query.login_hint === "string" && req.query.login_hint.length <= 254
+          ? req.query.login_hint : undefined,
       })
     );
 
@@ -153,7 +155,13 @@ export async function googleCallback(
       });
     });
 
-    res.redirect("/api/auth/me");
+    const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV !== 'production' ? 'http://localhost:5173' : '');
+    if (!frontendUrl) throw new Error('FRONTEND_URL is required in production.');
+    const returnUrl = new URL('/auth/return', frontendUrl);
+    if (!['http:', 'https:'].includes(returnUrl.protocol) || (process.env.NODE_ENV === 'production' && returnUrl.protocol !== 'https:')) {
+      throw new Error('FRONTEND_URL must use HTTPS in production.');
+    }
+    res.redirect(returnUrl.toString());
 
   } catch {
     console.error("Google identity verification failed.");
