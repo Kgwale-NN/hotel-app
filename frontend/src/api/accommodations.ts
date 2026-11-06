@@ -5,6 +5,7 @@ import type {
 
 type AccommodationListResponse = {
   data: AccommodationSummary[]
+  pagination: { total_pages: number }
 }
 
 type AccommodationDetailResponse = {
@@ -14,16 +15,20 @@ type AccommodationDetailResponse = {
 export async function getFeaturedAccommodations(): Promise<
   AccommodationSummary[]
 > {
-  const response = await fetch(
-    '/api/accommodations?page_size=3&sort=name_asc',
-  )
-
-  if (!response.ok) {
-    throw new Error('Could not load accommodations.')
-  }
-
-  const result: AccommodationListResponse = await response.json()
-  return result.data
+  const rooms: AccommodationSummary[] = []
+  let page = 1
+  let totalPages = 1
+  do {
+    const response = await fetch(
+      '/api/accommodations?page_size=100&sort=name_asc&page=' + page,
+    )
+    if (!response.ok) throw new Error('Could not load accommodations.')
+    const result: AccommodationListResponse = await response.json()
+    rooms.push(...result.data)
+    totalPages = result.pagination.total_pages
+    page += 1
+  } while (page <= totalPages)
+  return rooms
 }
 
 export async function getAccommodationById(

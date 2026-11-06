@@ -21,11 +21,18 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 3rem) / 3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
   gap: 1.5rem;
 }
 
 .card {
+  min-width: 0;
+  scroll-snap-align: start;
   overflow: hidden;
   border: 1px solid rgba(36, 52, 44, 0.1);
   background: #fff;
@@ -110,7 +117,7 @@
 
 @media (max-width: 900px) {
   .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-columns: calc((100% - 1.5rem) / 2);
   }
 }
 
@@ -120,7 +127,18 @@
   }
 
   .grid {
-    grid-template-columns: 1fr;
+    grid-auto-columns: 100%;
     gap: 1rem;
   }
 }
+
+.grid::-webkit-scrollbar { display: none; }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.allRooms { color: #24342c; text-decoration: none; border-bottom: 1px solid #8a704b; padding-bottom: .4rem; font-size: .9rem; }
+.allRooms span { margin-left: .6rem; }
+.controls { display: flex; gap: .65rem; }
+.controls button { display: grid; place-items: center; width: 46px; height: 46px; padding: 0; border: 1px solid #b8bdb5; border-radius: 50%; background: transparent; color: #24342c; font-size: 1.4rem; cursor: pointer; transition: background 200ms, color 200ms; }
+.controls button:hover:enabled { background: #24342c; color: #fff; }
+.controls button:disabled { opacity: .3; cursor: default; }
+.controls button:focus-visible, .grid:focus-visible, .allRooms:focus-visible { outline: 2px solid #8a704b; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .card, .image { transition: none; } }

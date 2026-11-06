@@ -1,21 +1,33 @@
-import { useEffect, useState } from 'react'
+import { roomPhotoByName } from '../../data/roomPhotos'
+import { useEffect, useRef, useState } from 'react'
 import { getFeaturedAccommodations } from '../../api/accommodations'
 import type { AccommodationSummary } from '../../types/accommodation'
 import styles from './RoomHighlights.module.css'
 import { Link } from 'react-router-dom'
-import deluxeRoomPhoto from '../../assets/Deluxe Room.jpg'
-import familySuitePhoto from '../../assets/Family Suite.jpg'
-import gardenRoomPhoto from '../../assets/Garden Room.jpg'
-import havenSuitePhoto from '../../assets/Haven Suite.jpg'
 
-const roomPhotoByName: Record<string, string> = {
-  'Deluxe Room': deluxeRoomPhoto,
-  'Family Suite': familySuitePhoto,
-  'Garden Room': gardenRoomPhoto,
-  'Haven Suite': havenSuitePhoto,
-}
 
 function RoomHighlights() {
+    const trackRef = useRef<HTMLDivElement>(null)
+    const [canGoBack, setCanGoBack] = useState(false)
+    const [canGoForward, setCanGoForward] = useState(false)
+
+    function updateControls() {
+        const track = trackRef.current
+        if (!track) return
+        setCanGoBack(track.scrollLeft > 2)
+        setCanGoForward(track.scrollLeft + track.clientWidth < track.scrollWidth - 2)
+    }
+
+    function moveRooms(direction: number) {
+        const track = trackRef.current
+        if (!track) return
+        const card = track.firstElementChild as HTMLElement | null
+        if (!card) return
+        const gap = parseFloat(getComputedStyle(track).columnGap) || 0
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        track.scrollBy({ left: direction * (card.offsetWidth + gap), behavior: reducedMotion ? 'instant' : 'smooth' })
+    }
+
     const [accommodations, setAccommodations] = useState<
         AccommodationSummary[]
     >([])
@@ -47,11 +59,26 @@ function RoomHighlights() {
         }
     }, [])
 
+    useEffect(() => {
+        const track = trackRef.current
+        if (!track) return
+        const observer = new ResizeObserver(updateControls)
+        observer.observe(track)
+        updateControls()
+        return () => observer.disconnect()
+    }, [accommodations, isLoading])
+
     return (
-        <section className={styles.section} id="rooms">
+        <section className={styles.section} id="rooms" aria-labelledby="room-highlights-title">
             <p className={styles.eyebrow}>FIND YOUR STAY</p>
-            <h2 className={styles.title}>Rooms and suites</h2>
-            <Link to="/accommodations">Search all rooms</Link>
+            <h2 id="room-highlights-title" className={styles.title}>Rooms and suites</h2>
+            <div className={styles.toolbar}>
+                <Link className={styles.allRooms} to="/accommodations">Search all rooms <span aria-hidden="true">↗</span></Link>
+                <div className={styles.controls} aria-label="Room carousel controls">
+                    <button type="button" onClick={() => moveRooms(-1)} disabled={!canGoBack} aria-label="Previous rooms" aria-controls="room-carousel">←</button>
+                    <button type="button" onClick={() => moveRooms(1)} disabled={!canGoForward} aria-label="Next rooms" aria-controls="room-carousel">→</button>
+                </div>
+            </div>
 
             {isLoading && <p role="status">Loading rooms...</p>}
             {error && <p role="alert">{error}</p>}
@@ -61,7 +88,7 @@ function RoomHighlights() {
             )}
 
             {!isLoading && accommodations.length > 0 && (
-                <div className={styles.grid}>
+                <div ref={trackRef} id="room-carousel" className={styles.grid} onScroll={updateControls} role="region" aria-label="Rooms and suites carousel" tabIndex={0}>
                     {accommodations.map((accommodation) => (
                         <article className={styles.card} key={accommodation.id}>
                             {accommodation.cover_image || roomPhotoByName[accommodation.name] ? (

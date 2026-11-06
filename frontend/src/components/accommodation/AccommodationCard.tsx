@@ -1,14 +1,10 @@
+import { roomPhotoByName } from '../../data/roomPhotos'
 import { Link } from 'react-router-dom'
 import type { AccommodationSummary } from '../../types/accommodation'
-import deluxe from '../../assets/Deluxe Room.jpg'
-import family from '../../assets/Family Suite.jpg'
-import garden from '../../assets/Garden Room.jpg'
-import haven from '../../assets/Haven Suite.jpg'
 import styles from '../hotel/RoomHighlights.module.css'
 
-const photos: Record<string, string> = { 'Deluxe Room': deluxe, 'Family Suite': family, 'Garden Room': garden, 'Haven Suite': haven }
 export default function AccommodationCard({ accommodation }: { accommodation: AccommodationSummary }) {
-  const photo = accommodation.cover_image || photos[accommodation.name]
+  const photo = accommodation.cover_image || roomPhotoByName[accommodation.name]
   return <article className={styles.card}>
     {photo ? <img className={styles.image} src={photo} alt={accommodation.name} loading="lazy" /> : <div className={styles.imageFallback}>Photo coming soon</div>}
     <div className={styles.cardContent}>

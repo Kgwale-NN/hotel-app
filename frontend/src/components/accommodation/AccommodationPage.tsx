@@ -1,24 +1,15 @@
+import { roomPhotoByName } from '../../data/roomPhotos'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getAccommodationById } from '../../api/accommodations'
 import { addFavourite } from '../../api/favourites'
 import type { AccommodationDetail } from '../../types/accommodation'
-import gardenRoomPhoto from "../../assets/Garden Room.jpg";
-import havenSuitePhoto from "../../assets/Haven Suite.jpg";
-import deluxeRoomPhoto from "../../assets/Deluxe Room.jpg";
-import familySuitePhoto from "../../assets/Family Suite.jpg";
 import styles from './AccommodationPage.module.css'
 import BookingForm from '../booking/BookingForm'
 import ShareAccommodation from './ShareAccommodation'
 import AccommodationReviewsSection from '../reviews/AccommodationReviews'
 
 
-const roomPhotoByName: Record<string, string> = {
-  'Deluxe Room': deluxeRoomPhoto,
-  'Garden Room': gardenRoomPhoto,
-  'Haven Suite': havenSuitePhoto,
-  'Family Suite': familySuitePhoto,
-}
 
 function AccommodationPage() {
   const { id } = useParams()

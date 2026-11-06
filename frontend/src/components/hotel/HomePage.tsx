@@ -36,9 +36,9 @@ function HomePage() {
   </div>
 </section>
 
+      <RoomHighlights />
       <HotelIntroduction />
       <HotelStory />
-      <RoomHighlights />
 
       <section className={styles.booking} id="booking">
         <h2>Ready to plan your stay?</h2>
