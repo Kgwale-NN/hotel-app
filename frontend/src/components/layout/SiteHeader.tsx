@@ -24,11 +24,12 @@ function SiteHeader() {
         </a>
 
         <div className={styles.headerActions}>
+          <a href="/admin/reservations" className={styles.sideLink}>Admin</a>
           <a href="/api/auth/google" className={styles.sideLink}>
             Sign in
           </a>
           <a href="#booking" className={styles.sideLink}>
-            Book now
+            Book now 
           </a>
         </div>
       </header>

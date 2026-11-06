@@ -1,0 +1,47 @@
+.page { min-height: 100vh; background: #f5f2ec; color: #253b33; font-family: Arial, sans-serif; }
+.header { background: #253b33; color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.5rem clamp(1rem, 5vw, 5rem); }
+.header a { color: inherit; text-decoration: none; font-size: .85rem; }
+.brand { letter-spacing: .12em; }
+.brand span { display: block; font-size: .65rem; margin-top: .5rem; letter-spacing: .06em; opacity: .7; }
+.content { max-width: 1200px; margin: auto; padding: 3.5rem 1.25rem 5rem; }
+.eyebrow { letter-spacing: .2em; font-size: .65rem; color: #717d72; }
+.content h1 { font: 400 clamp(2.5rem, 6vw, 4rem) Georgia, serif; margin: .6rem 0; }
+.intro { color: #657269; line-height: 1.6; }
+.summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.summary > div { border: 1px solid #d9ded4; padding: 1.4rem; }
+.summary span { font-size: .8rem; color: #657269; display: block; }
+.summary strong { display: block; margin-top: .7rem; font: 400 2.3rem Georgia, serif; }
+.filters { display: grid; grid-template-columns: 1fr 240px; gap: 1rem; margin: 2rem 0 1.2rem; }
+.page label { display: grid; gap: .5rem; font-size: .8rem; }
+.page input, .page select, .page textarea { width: 100%; min-width: 0; border: 1px solid #c9d0c5; background: #fff; padding: .85rem; color: #253b33; font: inherit; border-radius: 0; }
+.page textarea { min-height: 85px; resize: vertical; }
+.page button { padding: .8rem 1.1rem; border: 1px solid #253b33; background: #253b33; color: #fff; cursor: pointer; font-size: .8rem; }
+.page button:disabled { opacity: .5; cursor: wait; }
+.page button:hover:not(:disabled) { filter: brightness(.9); }
+.page :focus-visible { outline: 3px solid #a68c50; outline-offset: 3px; }
+.count { font-size: .8rem; color: #657269; }
+.list { display: grid; gap: 1.3rem; }
+.card { background: #fff; border: 1px solid #e0e3db; padding: clamp(1rem, 3vw, 2rem); }
+.cardHeading { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.cardHeading h2 { font: 400 1.8rem Georgia, serif; margin: .6rem 0; }
+.cardHeading a { color: #657269; font-size: .85rem; overflow-wrap: anywhere; }
+.reference { font-size: .65rem; letter-spacing: .06em; color: #7c857d; overflow-wrap: anywhere; }
+.badge { font-size: .7rem; padding: .45rem .7rem; text-transform: capitalize; border-radius: 2rem; background: #edf0eb; white-space: nowrap; }
+.pending { color: #806222; background: #faf0d6; }.confirmed { background: #e2f0e5; color: #326644; }.cancelled, .expired { background: #f4e7e4; color: #934d40; }.completed { background: #e5edf5; color: #3d5976; }
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin: 1.8rem 0; }
+.facts span { display: block; color: #7c857d; font-size: .7rem; margin-bottom: .6rem; }
+.facts strong { font-size: .85rem; font-weight: 500; }
+.rooms { list-style: none; margin: 0; padding: 0; border-top: 1px solid #e5e7e0; }
+.rooms li { display: flex; justify-content: space-between; gap: 1rem; padding: 1rem 0; font-size: .85rem; border-bottom: 1px solid #e5e7e0; }
+.rooms small { display: block; color: #7c857d; margin-top: .4rem; }
+.notes { font-size: .85rem; line-height: 1.6; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.3rem; }
+.page .secondary { background: transparent; color: #253b33; border-color: #bbc5b9; }
+.page .cancel { background: transparent; color: #934d40; border-color: transparent; }
+.editor { margin-top: 1.5rem; padding: 1.5rem; background: #f5f6f1; }
+.editor h3 { margin-top: 0; font: 400 1.5rem Georgia, serif; }
+.editor > p { font-size: .85rem; line-height: 1.6; }
+.editGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }.wide { grid-column: 1 / -1; }
+.notice, .error { padding: 1rem; font-size: .85rem; line-height: 1.6; }.notice { background: #e2f0e5; }.error { background: #fae9e3; color: #843e31; }.error a { color: inherit; margin-left: .5rem; }
+.empty { background: #fff; padding: 3rem 1rem; text-align: center; color: #657269; }
+@media (max-width: 650px) { .summary { gap: .5rem; }.summary > div { padding: .9rem; }.summary span { font-size: .7rem; }.filters { grid-template-columns: 1fr; }.facts { grid-template-columns: 1fr 1fr; }.cardHeading { flex-wrap: wrap; }.rooms li { flex-direction: column; }.editor { padding: 1rem; }.editGrid { grid-template-columns: 1fr; } }

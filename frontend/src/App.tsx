@@ -3,6 +3,7 @@ import HomePage from './components/hotel/HomePage'
 import AccommodationPage from './components/accommodation/AccommodationPage'
 import MyBookings from './components/profile/MyBookings'
 import MyFavourites from './components/profile/MyFavourites'
+import AdminReservations from './components/admin/AdminReservations'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/accommodations/:id" element={<AccommodationPage />} />
         <Route path="/profile/bookings" element={<MyBookings />} />
         <Route path="/profile/favourites" element={<MyFavourites />} />
+        <Route path="/admin/reservations" element={<AdminReservations />} />
       </Routes>
     </BrowserRouter>
   )
