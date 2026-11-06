@@ -24,6 +24,9 @@ export const loadSession = createAsyncThunk<UserProfile | null, void, { state: {
 const authSlice = createSlice({
   name: 'auth', initialState,
   reducers: {
+    sessionEstablished(state, action: PayloadAction<UserProfile>) {
+      state.user = action.payload; state.status = 'ready'; state.error = ''; state.requestId = undefined
+    },
     profileUpdated(state, action: PayloadAction<Partial<UserProfile>>) {
       if (state.user) Object.assign(state.user, action.payload)
     },
@@ -43,5 +46,5 @@ const authSlice = createSlice({
     })
   },
 })
-export const { profileUpdated, sessionCleared } = authSlice.actions
+export const { profileUpdated, sessionCleared, sessionEstablished } = authSlice.actions
 export default authSlice.reducer

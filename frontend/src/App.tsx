@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import HomePage from './components/hotel/HomePage'
+import AuthReturn from './components/auth/AuthReturn'
 import PaymentReturn from './components/payments/PaymentReturn'
 import AccommodationPage from './components/accommodation/AccommodationPage'
 import AccommodationSearch from './components/accommodation/AccommodationSearch'
@@ -15,6 +16,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/auth/return" element={<AuthReturn />} />
         <Route path="/payments/return" element={<PaymentReturn />} />
         <Route path="/accommodations" element={<AccommodationSearch />} />
         <Route path="/accommodations/:id" element={<AccommodationPage />} />

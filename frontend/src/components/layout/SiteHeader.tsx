@@ -1,41 +1,66 @@
 import { useState } from 'react'
-import styles from './SiteHeader.module.css'
-import SiteMenu from './SiteMenu'
 import { useAppSelector } from '../../store/hooks'
+import SiteMenu from './SiteMenu'
+import AuthModal from '../auth/AuthModal'
+import styles from './SiteHeader.module.css'
 
 function SiteHeader() {
   const { user, status } = useAppSelector(state => state.auth)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [authOpen, setAuthOpen] = useState(false)
+  const checkingAccount = status === 'idle' || status === 'loading'
 
   return (
     <>
       <header className={styles.header}>
-        <button
-          type="button"
-          className={styles.sideLink}
-          onClick={() => setMenuOpen(true)}
-          aria-haspopup="dialog"
-          aria-expanded={menuOpen}
-        >
-          About us
-        </button>
+        <nav className={styles.navbar} aria-label="Main navigation">
+          <button
+            type="button"
+            className={styles.aboutButton}
+            onClick={() => setMenuOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={menuOpen}
+          >
+            <span className={styles.menuIcon} aria-hidden="true">
+              <span />
+              <span />
+            </span>
+            About us
+          </button>
 
-        <a href="/" className={styles.brand} aria-label="Hotel home">
-          <span className={styles.brandMark} aria-hidden="true">✳</span>
-          <span className={styles.brandName}>Hotel Heaven</span>
-        </a>
-
-        <div className={styles.headerActions}>
-          {user && <a href="/profile" className={styles.sideLink}>My profile</a>}
-          {user?.role === 'admin' && <a href="/admin/reservations" className={styles.sideLink}>Admin</a>}
-          {!user && status !== 'loading' && <a href="/api/auth/google" className={styles.sideLink}>Sign in</a>}
-          <a href="#booking" className={styles.sideLink}>
-            Book now 
+          <a href="/" className={styles.brand} aria-label="Hotel Heaven home">
+            <span className={styles.brandMark} aria-hidden="true">✳</span>
+            <span className={styles.brandName}>HOTEL HEAVEN</span>
           </a>
-        </div>
+
+          <div className={styles.actions}>
+            {checkingAccount ? (
+              <span className={styles.accountLink}>Account…</span>
+            ) : (
+              user ? (
+                <a href="/profile" className={styles.accountLink}>My account</a>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.accountLink}
+                  aria-haspopup="dialog"
+                  aria-expanded={authOpen}
+                  onClick={() => setAuthOpen(true)}
+                >
+                  Sign up
+                </button>
+              )
+            )}
+
+            <a href="/accommodations" className={styles.bookButton}>
+              Book now <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </nav>
       </header>
 
       {menuOpen && <SiteMenu onClose={() => setMenuOpen(false)} />}
+      {authOpen && !user && <AuthModal onClose={() => setAuthOpen(false)} />}
     </>
   )
 }
