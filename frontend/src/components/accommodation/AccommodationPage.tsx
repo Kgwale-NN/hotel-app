@@ -9,6 +9,7 @@ import deluxeRoomPhoto from "../../assets/Deluxe Room.jpg";
 import familySuitePhoto from "../../assets/Family Suite.jpg";
 import styles from './AccommodationPage.module.css'
 import BookingForm from '../booking/BookingForm'
+import ShareAccommodation from './ShareAccommodation'
 import AccommodationReviewsSection from '../reviews/AccommodationReviews'
 
 
@@ -108,6 +109,7 @@ function AccommodationPage() {
           {favouriteMessage}
         </p>
       )}
+      <ShareAccommodation key={accommodation.id} id={accommodation.id} name={accommodation.name} hotelName={hotel.name} />
       <p className={styles.description}>{accommodation.description}</p>
 
       <div className={styles.stayFacts} aria-label="Room details">
