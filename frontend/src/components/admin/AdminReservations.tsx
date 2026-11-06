@@ -58,7 +58,7 @@ export default function AdminReservations() {
     <main className={styles.page}>
       <header className={styles.header}>
         <a href="/" className={styles.brand}>HOTEL HAVEN <span>Administration</span></a>
-        <a href="/">Back to hotel &rarr;</a>
+        <div><a href="/admin/accommodations">Manage accommodations</a> · <a href="/">Back to hotel &rarr;</a></div>
       </header>
       <div className={styles.content}>
         <p className={styles.eyebrow}>GUEST MANAGEMENT</p>

@@ -1,3 +1,4 @@
+import { getAdminHotels, getAdminAccommodationDetail } from '../controllers/admin-inventory.controller';
 import { Router } from "express";
 import {
   getAdminAccommodations,
@@ -34,6 +35,8 @@ adminRouter.use((_req, res, next) => {
 adminRouter.use(requireAuth);
 adminRouter.use(requireAdmin);
 
+adminRouter.get("/hotels", getAdminHotels);
+adminRouter.get("/accommodations/:id", getAdminAccommodationDetail);
 adminRouter.get("/accommodations", getAdminAccommodations);
 adminRouter.get("/bookings", getAdminBookings);
 adminRouter.post(

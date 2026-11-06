@@ -1,0 +1,13 @@
+.page { max-width: 1200px; margin: auto; padding: 2rem 1.25rem 5rem; color: #253b33; font-family: Arial, sans-serif; }
+.nav, .actions, .roomRow { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; }
+.nav { padding-bottom: 2rem; }.nav a { color: inherit; }.nav [aria-current] { font-weight: bold; }
+.heading { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.heading > div > p:first-child { font-size: .75rem; letter-spacing: .12em; }
+.page h1 { font: 400 clamp(2rem, 5vw, 3rem) Georgia, serif; margin: .5rem 0; }
+.page h2 { font: 400 1.7rem Georgia, serif; margin: .5rem 0; }
+.page p { line-height: 1.6; }.panel { background: #fff; padding: 1.5rem; border: 1px solid #d9ded4; margin: 1.3rem 0; }
+.page label { display: grid; gap: .5rem; font-size: .85rem; }.page input, .page textarea, .page select { width: 100%; min-width: 0; padding: .75rem; border: 1px solid #bcc8bd; font: inherit; color: inherit; background: #fff; }
+.page textarea { min-height: 110px; resize: vertical; }.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border: 0; padding: 0; margin: 1.2rem 0; }.wide { grid-column: 1 / -1; }
+.page button { background: #253b33; color: #fff; border: 1px solid #253b33; padding: .8rem 1rem; cursor: pointer; font-size: .85rem; }.page button:disabled { opacity: .5; cursor: wait; }
+.page :focus-visible { outline: 3px solid #ad955c; outline-offset: 3px; }.rooms { border-top: 1px solid #d9ded4; margin-top: 2rem; padding-top: 1rem; }.roomRow { padding: 1rem 0; align-items: end; }.roomRow > span { padding: .8rem 0; }.search { max-width: 500px; margin-top: 2rem; }.success { background: #e2f0e5; padding: 1rem; }.error { background: #fae9e3; padding: 1rem; color: #843e31; }.confirm { padding: 1rem; background: #faf0d6; margin-top: 1rem; }
+@media(max-width: 600px) { .grid { grid-template-columns: 1fr; }.panel { padding: 1rem; }.roomRow > label { width: 100%; } }

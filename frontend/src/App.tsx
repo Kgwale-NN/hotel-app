@@ -4,6 +4,7 @@ import AccommodationPage from './components/accommodation/AccommodationPage'
 import MyBookings from './components/profile/MyBookings'
 import MyFavourites from './components/profile/MyFavourites'
 import AdminReservations from './components/admin/AdminReservations'
+import AdminAccommodations from './components/admin/AdminAccommodations'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/profile/bookings" element={<MyBookings />} />
         <Route path="/profile/favourites" element={<MyFavourites />} />
         <Route path="/admin/reservations" element={<AdminReservations />} />
+        <Route path="/admin/accommodations" element={<AdminAccommodations />} />
       </Routes>
     </BrowserRouter>
   )
