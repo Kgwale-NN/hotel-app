@@ -24,6 +24,7 @@ function SiteHeader() {
         </a>
 
         <div className={styles.headerActions}>
+          <a href="/profile" className={styles.sideLink}>My profile</a>
           <a href="/admin/reservations" className={styles.sideLink}>Admin</a>
           <a href="/api/auth/google" className={styles.sideLink}>
             Sign in
