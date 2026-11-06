@@ -2,11 +2,13 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { getAccommodationReviews, writeReview } from '../../api/reviews'
 import type { AccommodationReviews } from '../../types/review'
 import styles from './AccommodationReviews.module.css'
+import { useAppSelector } from '../../store/hooks'
 
 export default function AccommodationReviewsSection({ accommodationId }: { accommodationId: string }) {
   const [reviews, setReviews] = useState<AccommodationReviews | null>(null)
-  const [userId, setUserId] = useState<string | null>(null)
-  const [sessionLoaded, setSessionLoaded] = useState(false)
+  const { user, status: sessionStatus } = useAppSelector(state => state.auth)
+  const userId = user?.id || null
+  const sessionLoaded = sessionStatus === 'ready'
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [rating, setRating] = useState('5')
@@ -23,21 +25,7 @@ export default function AccommodationReviewsSection({ accommodationId }: { accom
     return () => { current = false }
   }, [accommodationId, refresh])
 
-  useEffect(() => {
-    let current = true
-    async function loadSession() {
-      try {
-        const response = await fetch('/api/auth/me')
-        if (response.status === 401) return
-        if (!response.ok) throw new Error('Could not check your sign-in status. Refresh to try again.')
-        const result = await response.json()
-        if (current) setUserId(result.data.id)
-      } catch (e: unknown) { if (current) setError(e instanceof Error ? e.message : 'Could not check your session.') }
-      finally { if (current) setSessionLoaded(true) }
-    }
-    void loadSession()
-    return () => { current = false }
-  }, [])
+
 
   const ownReview = reviews?.reviews.find(review => review.user_id === userId)
 

@@ -1,26 +1,23 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { getProfile, saveProfile, saveMarketingPreference, signOut, type UserProfile } from '../../api/profile'
+import { saveProfile, saveMarketingPreference, signOut } from '../../api/profile'
 import styles from './ProfilePage.module.css'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { loadSession, profileUpdated, sessionCleared } from '../../store/authSlice'
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const dispatch = useAppDispatch()
+  const { user: profile, status, error: sessionError } = useAppSelector(state => state.auth)
+  const loading = status === 'loading' || status === 'idle'
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [marketing, setMarketing] = useState(false)
-  const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    let current = true
-    getProfile().then(user => {
-      if (!current) return
-      setProfile(user); setName(user.full_name); setPhone(user.phone || ''); setMarketing(user.marketing_opt_in)
-    }).catch((e: unknown) => { if (current) setError(e instanceof Error ? e.message : 'Could not load your profile.') })
-      .finally(() => { if (current) setLoading(false) })
-    return () => { current = false }
-  }, [])
+    if (profile) { setName(profile.full_name); setPhone(profile.phone || ''); setMarketing(profile.marketing_opt_in) }
+  }, [profile])
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -28,7 +25,7 @@ export default function ProfilePage() {
     setBusy(true); setError(''); setMessage('')
     try {
       const updated = await saveProfile(name.trim(), phone.trim() || null)
-      setProfile(previous => previous ? { ...previous, ...updated } : previous)
+      dispatch(profileUpdated(updated))
       setName(updated.full_name); setPhone(updated.phone || '')
       setMessage('Your personal details have been saved.')
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not save your details.') }
@@ -41,7 +38,7 @@ export default function ProfilePage() {
     setBusy(true); setError(''); setMessage('')
     try {
       const updated = await saveMarketingPreference(marketing)
-      setProfile(previous => previous ? { ...previous, ...updated } : previous)
+      dispatch(profileUpdated(updated))
       setMessage('Your promotion preference has been saved.')
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not save your preference.') }
     finally { setBusy(false) }
@@ -50,7 +47,7 @@ export default function ProfilePage() {
   async function logout() {
     if (busy) return
     setBusy(true); setError('')
-    try { await signOut(); window.location.assign('/') }
+    try { await signOut(); dispatch(sessionCleared()); window.location.assign('/') }
     catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not sign out.'); setBusy(false) }
   }
 
@@ -58,7 +55,8 @@ export default function ProfilePage() {
     <nav className={styles.nav} aria-label="Account navigation"><a href="/">Hotel home</a><a href="/profile" aria-current="page">My profile</a><a href="/profile/bookings">My bookings</a><a href="/profile/favourites">My favourites</a><a href="/profile/notifications">Notifications</a></nav>
     <h1>My profile</h1><p>Manage your personal details and stay in touch.</p>
     {loading && <p role="status">Loading your profile…</p>}
-    {error && <p role="alert" className={styles.error}>{error}</p>}
+    {(error || sessionError) && <p role="alert" className={styles.error}>{error || sessionError}</p>}
+    {status === 'failed' && <button disabled={busy} onClick={() => void dispatch(loadSession())}>Retry loading profile</button>}
     {message && <p role="status" className={styles.success}>{message}</p>}
     {!loading && !profile && <a href="/api/auth/google">Sign in with Google</a>}
     {profile && <>
