@@ -1,0 +1,8 @@
+.page { max-width: 1250px; margin: auto; padding: 2rem 1.25rem 5rem; font-family: Arial, sans-serif; color: #253b33; }
+.nav, .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }.nav { margin-bottom: 2.5rem; }.page a { color: inherit; }
+.page h1 { font: 400 clamp(2rem, 5vw, 3.5rem) Georgia, serif; }.page p { line-height: 1.6; }
+.filters { background: #fff; padding: 1.5rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; border: 1px solid #d9ded4; margin: 2rem 0; }
+.filters label { display: grid; gap: .5rem; font-size: .85rem; }.filters input, .filters select { width: 100%; min-width: 0; padding: .8rem; border: 1px solid #bcc8bd; font: inherit; color: inherit; background: #fff; }
+.filters .actions { grid-column: 1 / -1; }.page button { padding: .85rem 1rem; border: 1px solid #253b33; background: #253b33; color: #fff; cursor: pointer; font: inherit; font-size: .85rem; }.page button:disabled { opacity: .5; cursor: default; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.3rem; margin-bottom: 2rem; }.error { background: #fae9e3; color: #843e31; padding: 1rem; }.page :focus-visible { outline: 3px solid #ad955c; outline-offset: 3px; }
+@media(max-width: 900px) { .filters, .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }@media(max-width: 550px) { .filters, .grid { grid-template-columns: 1fr; } }

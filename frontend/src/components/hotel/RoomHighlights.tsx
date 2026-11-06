@@ -51,6 +51,7 @@ function RoomHighlights() {
         <section className={styles.section} id="rooms">
             <p className={styles.eyebrow}>FIND YOUR STAY</p>
             <h2 className={styles.title}>Rooms and suites</h2>
+            <Link to="/accommodations">Search all rooms</Link>
 
             {isLoading && <p role="status">Loading rooms...</p>}
             {error && <p role="alert">{error}</p>}

@@ -43,7 +43,7 @@ function SiteMenu({ onClose }: SiteMenuProps) {
       <span>Inside</span>
       <em>Hotel Heaven</em>
     </h2>
-    <a href="#rooms" onClick={onClose}>Rooms</a>
+    <a href="/accommodations" onClick={onClose}>Rooms</a>
     <a href="#dining" onClick={onClose}>Dining</a>
     <a href="#spa" onClick={onClose}>Spa</a>
     <a href="#experiences" onClick={onClose}>Experiences</a>
