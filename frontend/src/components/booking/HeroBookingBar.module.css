@@ -1,0 +1,88 @@
+.bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.7fr 0.7fr auto;
+  align-items: end;
+  gap: 24px;
+  width: 100%;
+  padding: 24px 28px;
+
+  color: white;
+  background: rgb(30 27 22 / 65%);
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 24px;
+
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 18%);
+}
+
+.field {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px;
+  color: white;
+  background: rgb(255 255 255 / 8%);
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 10px;
+  font: inherit;
+  color-scheme: dark;
+}
+
+.field option {
+  background: #302b24;
+  color: white;
+}
+
+.searchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 48px;
+  padding: 12px 22px;
+  color: #262119;
+  background: #e4cfaa;
+  border: 1px solid #e4cfaa;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.searchButton:hover {
+  background: #f0dfbf;
+}
+
+.bar :focus-visible {
+  outline: 2px solid #e4cfaa;
+  outline-offset: 4px;
+}
+
+@media (max-width: 1000px) {
+  .bar {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .searchButton {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 20px;
+    border-radius: 20px;
+  }
+}
