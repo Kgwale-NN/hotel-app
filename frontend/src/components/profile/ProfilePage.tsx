@@ -55,7 +55,7 @@ export default function ProfilePage() {
   }
 
   return <main className={styles.page}>
-    <nav className={styles.nav} aria-label="Account navigation"><a href="/">Hotel home</a><a href="/profile" aria-current="page">My profile</a><a href="/profile/bookings">My bookings</a><a href="/profile/favourites">My favourites</a></nav>
+    <nav className={styles.nav} aria-label="Account navigation"><a href="/">Hotel home</a><a href="/profile" aria-current="page">My profile</a><a href="/profile/bookings">My bookings</a><a href="/profile/favourites">My favourites</a><a href="/profile/notifications">Notifications</a></nav>
     <h1>My profile</h1><p>Manage your personal details and stay in touch.</p>
     {loading && <p role="status">Loading your profile…</p>}
     {error && <p role="alert" className={styles.error}>{error}</p>}

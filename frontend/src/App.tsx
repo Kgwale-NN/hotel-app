@@ -4,6 +4,7 @@ import AccommodationPage from './components/accommodation/AccommodationPage'
 import AccommodationSearch from './components/accommodation/AccommodationSearch'
 import MyBookings from './components/profile/MyBookings'
 import ProfilePage from './components/profile/ProfilePage'
+import NotificationsPage from './components/profile/NotificationsPage'
 import MyFavourites from './components/profile/MyFavourites'
 import AdminReservations from './components/admin/AdminReservations'
 import AdminAccommodations from './components/admin/AdminAccommodations'
@@ -16,6 +17,7 @@ function App() {
         <Route path="/accommodations" element={<AccommodationSearch />} />
         <Route path="/accommodations/:id" element={<AccommodationPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/notifications" element={<NotificationsPage />} />
         <Route path="/profile/bookings" element={<MyBookings />} />
         <Route path="/profile/favourites" element={<MyFavourites />} />
         <Route path="/admin/reservations" element={<AdminReservations />} />
