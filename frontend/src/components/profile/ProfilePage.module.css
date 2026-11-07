@@ -7,3 +7,9 @@
 .page button { width: fit-content; background: #253b33; color: white; padding: .85rem 1.2rem; border: 1px solid #253b33; cursor: pointer; font: inherit; font-size: .85rem; }.page button:disabled { opacity: .5; cursor: wait; }
 .page .checkbox { display: flex; align-items: center; gap: .8rem; margin: 1.25rem 0; line-height: 1.6; }.checkbox input { width: 1.1rem; height: 1.1rem; flex-shrink: 0; }
 .error { background: #fae9e3; color: #843e31; padding: 1rem; }.success { background: #e2f0e5; padding: 1rem; }.page :focus-visible { outline: 3px solid #ad955c; outline-offset: 3px; }
+
+.page { color: #362b23; }
+.panel { border-color: #e3d9cd; border-radius: 16px; }
+.page button { background: #755334; border-color: #755334; border-radius: 10px; }
+.page input:not([type=checkbox]) { box-sizing: border-box; border-color: #dfcdb6; border-radius: 10px; }
+.checkbox input { accent-color: #755334; }

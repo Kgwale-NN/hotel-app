@@ -5,6 +5,8 @@ import PaymentReturn from './components/payments/PaymentReturn'
 import AccommodationPage from './components/accommodation/AccommodationPage'
 import AccommodationSearch from './components/accommodation/AccommodationSearch'
 import MyBookings from './components/profile/MyBookings'
+import AccountPageLayout from './components/profile/AccountPageLayout'
+import SettingsPage from './components/profile/SettingsPage'
 import ProfilePage from './components/profile/ProfilePage'
 import NotificationsPage from './components/profile/NotificationsPage'
 import MyFavourites from './components/profile/MyFavourites'
@@ -24,10 +26,13 @@ function App() {
         <Route path="/payments/return" element={<PaymentReturn />} />
         <Route path="/accommodations" element={<AccommodationSearch />} />
         <Route path="/accommodations/:id" element={<AccommodationPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/profile/notifications" element={<NotificationsPage />} />
-        <Route path="/profile/bookings" element={<MyBookings />} />
-        <Route path="/profile/favourites" element={<MyFavourites />} />
+        <Route path="/profile" element={<AccountPageLayout />}>
+          <Route index element={<ProfilePage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="bookings" element={<MyBookings />} />
+          <Route path="favourites" element={<MyFavourites />} />
+        </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="reservations" element={<AdminReservations />} />

@@ -42,7 +42,6 @@ export default function NotificationsPage() {
   const visible = notifications.filter(item => filter === 'all' || (filter === 'unread' ? !item.read_at : Boolean(item.read_at)))
 
   return <main className={styles.page}>
-    <nav className={styles.nav} aria-label="Account navigation"><a href="/">Hotel home</a><a href="/profile">My profile</a><a href="/profile/bookings">My bookings</a><a href="/profile/favourites">My favourites</a><a href="/profile/notifications" aria-current="page">Notifications</a></nav>
     <h1>Notifications</h1><p>Your booking updates and hotel offers. Showing your latest 100 messages.</p>
     <div className={styles.toolbar}>
       <label>Show<select value={filter} onChange={e => setFilter(e.target.value)}><option value="all">All messages</option><option value="unread">Unread</option><option value="read">Read</option></select></label>
@@ -61,6 +60,6 @@ export default function NotificationsPage() {
         <div className={styles.actions}>{item.booking_id && <a href="/profile/bookings">View my bookings</a>}{!item.read_at && <button disabled={Boolean(busyId)} onClick={() => void markRead(item.id)}>{busyId === item.id ? 'Updating…' : 'Mark as read'}</button>}</div>
       </article>)}</div>
     </>}
-    <p><a href="/profile">Manage promotion preferences</a></p>
+    <p><a href="/profile/settings">Manage promotion preferences</a></p>
   </main>
 }
