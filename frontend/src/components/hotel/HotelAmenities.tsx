@@ -1,5 +1,27 @@
 import AmenityIcon, { type AmenityIconName } from '../common/AmenityIcon'
 import styles from './HotelAmenities.module.css'
+import parkingPhoto from '../../assets/parking.jpg'
+import wellnessPhoto from '../../assets/wellness.jpg'
+import transferPhoto from '../../assets/transfer.jpg'
+import laundryPhoto from '../../assets/laundry.jpg'
+import wifiPhoto from '../../assets/wifi.jpg'
+import refreshmentsPhoto from '../../assets/refreshments.jpg'
+import poolPhoto from '../../assets/Pool.jpg'
+import securityPhoto from '../../assets/security.jpg'
+import guestServicesPhoto from '../../assets/guest-services.jpg'
+
+const amenityPhotos: Record<AmenityIconName, string> = {
+  parking: parkingPhoto,
+  wellness: wellnessPhoto,
+  transfer: transferPhoto,
+  laundry: laundryPhoto,
+  wifi: wifiPhoto,
+  coffee: refreshmentsPhoto,
+  pool: poolPhoto,
+  security: securityPhoto,
+  service: guestServicesPhoto,
+}
+
 
 const amenities: { icon: AmenityIconName; title: string; description: string }[] = [
   { icon: 'parking', title: 'On-site parking', description: 'Arrive, park and settle into your stay with ease.' },
@@ -25,9 +47,12 @@ export default function HotelAmenities() {
         </header>
         <ul className={styles.grid}>
           {amenities.map(amenity => (
-            <li className={styles.card} key={amenity.icon}>
+            <li className={styles.card} key={amenity.icon} tabIndex={0}>
+              <div className={styles.photo} aria-hidden="true">
+                <img src={amenityPhotos[amenity.icon]} alt="" loading="lazy" decoding="async" />
+              </div>
               <span className={styles.icon}><AmenityIcon name={amenity.icon} /></span>
-              <div>
+              <div className={styles.cardText}>
                 <h3>{amenity.title}</h3>
                 <p>{amenity.description}</p>
               </div>

@@ -32,6 +32,9 @@
 .intro { max-width: 330px; margin: 0 0 4px; font: 14px/1.85 Arial, sans-serif; color: #d6d2c8; }
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 0; padding: 0; list-style: none; }
 .card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: flex-start;
   gap: 20px;
@@ -60,3 +63,39 @@
   .card h3 { font-size: 23px; }
 }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+
+/* Reveal each amenity photo inside its glass card, keeping content above it. */
+.photo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 600ms ease;
+}
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.045);
+  transition: transform 900ms cubic-bezier(.2, .7, .3, 1);
+}
+.photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgb(14 19 16 / 86%), rgb(19 22 17 / 76%) 65%, rgb(19 22 17 / 65%));
+}
+.card:is(:hover, :focus-within) .photo { opacity: 1; }
+.card:is(:hover, :focus-within) .photo img { transform: scale(1); }
+.card:focus-visible { outline: 2px solid #e4cfaa; outline-offset: 4px; }
+.cardText { min-width: 0; }
+@media (hover: none) {
+  .photo { opacity: 1; }
+  .photo img { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo, .photo img { transition: none; }
+  .photo img { transform: none; }
+}
