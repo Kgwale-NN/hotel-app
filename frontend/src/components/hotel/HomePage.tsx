@@ -4,12 +4,14 @@ import styles from './HomePage.module.css'
 import RoomHighlights from './RoomHighlights'
 import HotelAmenities from './HotelAmenities'
 import HotelDining from './HotelDining'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { useAppSelector } from '../../store/hooks'
 import HeroBookingBar, { type StaySearch } from '../booking/HeroBookingBar'
 
 function HomePage() {
 
   const navigate = useNavigate()
+  const { user, status } = useAppSelector(state => state.auth)
 
   function handleStaySearch(stay: StaySearch) {
     const params = new URLSearchParams({
@@ -21,6 +23,9 @@ function HomePage() {
 
     navigate(`/accommodations?${params}`)
   }
+
+  if (status === 'idle' || status === 'loading') return <main className={styles.homePage}><section className={styles.hero}><p role="status">Opening your workspace…</p></section></main>
+  if (user?.role === 'admin') return <Navigate to="/admin" replace />
 
   return (
     <>

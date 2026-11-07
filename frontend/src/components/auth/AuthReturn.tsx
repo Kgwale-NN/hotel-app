@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { loadSession } from '../../store/authSlice'
 import styles from './AuthReturn.module.css'
 
-function returnPath() {
+function returnPath(role: string) {
   let path = '/profile'
   try {
     const saved = sessionStorage.getItem('hotelAuthReturnTo')
@@ -16,7 +16,7 @@ function returnPath() {
       }
     }
   } catch { /* Continue to the profile if storage is unavailable. */ }
-  return path
+  return role === 'admin' ? '/admin' : path
 }
 
 export default function AuthReturn() {
@@ -24,7 +24,7 @@ export default function AuthReturn() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   useEffect(() => {
-    if (status === 'ready' && user) navigate(returnPath(), { replace: true })
+    if (status === 'ready' && user) navigate(returnPath(user.role), { replace: true })
   }, [user, status, navigate])
   return <main className={styles.page}>
     <div className={styles.card}><p className={styles.brand}>✳ HOTEL HEAVEN</p><h1>{status === 'failed' || (status === 'ready' && !user) ? 'Let’s try again.' : 'Welcome to your next stay.'}</h1>

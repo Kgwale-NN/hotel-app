@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
+import { useNavigate } from 'react-router-dom'
 import { authenticateWithEmail } from '../../api/auth'
 import { useAppDispatch } from '../../store/hooks'
 import { sessionEstablished } from '../../store/authSlice'
@@ -19,6 +20,7 @@ export default function AuthModal({ onClose }: Props) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const signup = mode === 'signup'
 
   useLayoutEffect(() => {
@@ -70,6 +72,7 @@ export default function AuthModal({ onClose }: Props) {
       })
       dispatch(sessionEstablished(user))
       onClose()
+      if (user.role === 'admin') navigate('/admin', { replace: true })
     } catch (caught: unknown) {
       setError(caught instanceof Error ? caught.message : 'Could not complete your request. Please try again.')
       setBusy(false)
