@@ -23,7 +23,7 @@
 .topBrand { flex-direction: column; gap: 5px; text-align: center; }
 .topBrand > span:first-child { font-size: 30px; line-height: 1; }
 .topBrand small, .brand small { display: block; margin-top: 5px; color: #75695e; font: 8px/1.5 Arial, sans-serif; letter-spacing: .18em; }
-.profileLink { display: flex; justify-self: end; align-items: center; gap: 12px; padding: 9px 14px; border: 1px solid #ded0bf; border-radius: 12px; color: #362b23; background: #fff;  text-decoration: none; font-size: 12px; }
+.profileLink { display: flex; justify-self: end; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; padding: 10px; border: 1px solid #ded0bf; border-radius: 12px; color: #362b23; background: #fff;  text-decoration: none; font-size: 12px; }
 .avatar { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; background: #e4cfaa; color: #24342c; font: 17px Georgia, serif; }
 .main { padding: 36px 0 64px; min-width: 0; }
 .main:focus { outline: none; }
@@ -79,8 +79,11 @@
 .gate button { margin-right: 20px; padding: 12px 20px; border: 0; border-radius: 10px; background: #e4cfaa; color: #24342c; cursor: pointer; }
 .gate a { color: #604428; font-size: 12px; }
 @keyframes slideIn { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
-@media(max-width: 700px) { .shell { padding: 16px 18px 0; background-attachment: scroll; } .topbar { gap: 14px; min-height: 74px; padding-bottom: 16px; } .pageLabel { display: none; } .profileLink { padding: 8px; } .profileLink > span:first-child { display: none; } .topBrand { font-size: 10px; } .topBrand > span:first-child { font-size: 26px; } .main { padding-top: 24px; } }
+@media(max-width: 700px) { .shell { padding: 16px 18px 0; background-attachment: scroll; } .topbar { gap: 14px; min-height: 74px; padding-bottom: 16px; } .pageLabel { display: none; } .profileLink { padding: 8px; }  .topBrand { font-size: 10px; } .topBrand > span:first-child { font-size: 26px; } .main { padding-top: 24px; } }
 @media(prefers-reduced-motion: reduce) { .sidebar[open] { animation: none; } .navLink, .activeLink { transition: none; } }
 
 .topbar { padding: 12px 24px 24px; background: #fff; border: 1px solid #e3d9cd; border-radius: 18px; }
 @media(max-width: 700px) { .topbar { padding: 12px 14px; } }
+
+.profileLink svg { display: block; width: 22px; height: 24px; }
+.profileLink:hover { background: #f3e8d7; border-color: #bda37e; }

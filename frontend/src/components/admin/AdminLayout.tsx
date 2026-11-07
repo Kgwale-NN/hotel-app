@@ -86,7 +86,7 @@ export default function AdminLayout() {
             <span className={styles.pageLabel}>{title}</span>
           </div>
           <Link to="/admin" className={styles.topBrand}><span aria-hidden="true">✳</span><span>HOTEL HEAVEN<small>ADMINISTRATION</small></span></Link>
-          <Link className={styles.profileLink} to="/admin/profile" aria-label="Open your admin profile"><span>My profile</span><span className={styles.avatar}>{user.full_name.charAt(0).toUpperCase()}</span></Link>
+          <Link className={styles.profileLink} to="/admin/profile" aria-label="Open your admin profile" title="My profile"><AdminIcon name="profile" /></Link>
         </header>
         <main id="admin-content" className={styles.main} tabIndex={-1}><Outlet /></main>
       </div>
