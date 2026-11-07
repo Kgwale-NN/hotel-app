@@ -1,0 +1,14 @@
+.menu { position: fixed; inset: 24px 24px 24px auto; margin: 0; width: min(360px, calc(100vw - 32px)); max-width: none; height: fit-content; max-height: calc(100dvh - 48px); box-sizing: border-box; overflow-y: auto; padding: 28px; color: #362b23; background: #fffaf3; border: 1px solid #dfcdb6; border-radius: 20px; box-shadow: 0 20px 70px rgb(30 20 10 / 22%); font-family: Arial, sans-serif; }
+.menu::backdrop { background: rgb(20 16 12 / 40%); }
+.heading { display: flex; align-items: start; justify-content: space-between; gap: 16px; padding-bottom: 22px; }
+.heading p { margin: 0 0 10px; font-size: 10px; letter-spacing: .16em; color: #805c35; }
+.heading h2 { margin: 0; font: 400 28px/1.2 Georgia, serif; overflow-wrap: anywhere; }
+.close { flex-shrink: 0; width: 36px; height: 36px; border: 1px solid #dfcdb6; border-radius: 50%; background: transparent; color: inherit; font-size: 24px; cursor: pointer; }
+.menu nav { display: grid; }
+.menu nav a { display: flex; justify-content: space-between; gap: 12px; padding: 18px 0; border-top: 1px solid #e6dace; text-decoration: none; color: inherit; font-size: 14px; }
+.menu nav a:hover { color: #805c35; }
+.signOut { width: 100%; margin-top: 24px; padding: 14px 18px; border: 1px solid #755334; border-radius: 10px; color: #fff; background: #755334; cursor: pointer; font: inherit; font-size: 14px; }
+.signOut:disabled { opacity: .6; cursor: wait; }
+.menu :focus-visible { outline: 2px solid #a57e4d; outline-offset: 4px; }
+.error { color: #923e30; font-size: 13px; }
+@media (max-width: 700px) { .menu { inset: 16px 16px auto auto; padding: 24px; max-height: calc(100dvh - 32px); } }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAppSelector } from '../../store/hooks'
 import SiteMenu from './SiteMenu'
+import AccountMenu from './AccountMenu'
 import AuthModal from '../auth/AuthModal'
 import styles from './SiteHeader.module.css'
 
@@ -8,6 +9,8 @@ function SiteHeader() {
   const { user, status } = useAppSelector(state => state.auth)
   const [menuOpen, setMenuOpen] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false)
+  const signedInGuest = Boolean(user && user.role !== 'admin')
   const checkingAccount = status === 'idle' || status === 'loading'
 
   return (
@@ -37,7 +40,9 @@ function SiteHeader() {
             {checkingAccount ? (
               <span className={styles.accountLink}>Account…</span>
             ) : (
-              user ? (
+              signedInGuest ? (
+                <a href="/accommodations" className={styles.bookButton}>Book now <span aria-hidden="true">↗</span></a>
+              ) : user ? (
                 <a href={user.role === 'admin' ? '/admin' : '/profile'} className={styles.accountLink}>{user.role === 'admin' ? 'Dashboard' : 'My account'}</a>
               ) : (
                 <button
@@ -52,14 +57,21 @@ function SiteHeader() {
               )
             )}
 
-            <a href="/accommodations" className={styles.bookButton}>
-              Book now <span aria-hidden="true">↗</span>
-            </a>
+            {signedInGuest && !checkingAccount ? (
+              <button type="button" className={styles.accountMenuButton} onClick={() => setAccountMenuOpen(true)} aria-label="Open account menu" aria-haspopup="dialog" aria-expanded={accountMenuOpen} aria-controls={accountMenuOpen ? 'guest-account-menu' : undefined}>
+                <span className={styles.accountMenuIcon} aria-hidden="true"><span /><span /><span /></span>
+              </button>
+            ) : (
+              <a href="/accommodations" className={styles.bookButton}>
+                Book now <span aria-hidden="true">↗</span>
+              </a>
+            )}
           </div>
         </nav>
       </header>
 
       {menuOpen && <SiteMenu onClose={() => setMenuOpen(false)} />}
+      {accountMenuOpen && signedInGuest && user && <AccountMenu name={user.full_name} onClose={() => setAccountMenuOpen(false)} />}
       {authOpen && !user && <AuthModal onClose={() => setAuthOpen(false)} />}
     </>
   )
