@@ -10,6 +10,10 @@ import NotificationsPage from './components/profile/NotificationsPage'
 import MyFavourites from './components/profile/MyFavourites'
 import AdminReservations from './components/admin/AdminReservations'
 import AdminAccommodations from './components/admin/AdminAccommodations'
+import AdminLayout from './components/admin/AdminLayout'
+import AdminDashboard from './components/admin/AdminDashboard'
+import { AdminProfile, AdminSettings } from './components/admin/AdminAccount'
+import AdminUpdates from './components/admin/AdminUpdates'
 
 function App() {
   return (
@@ -24,8 +28,14 @@ function App() {
         <Route path="/profile/notifications" element={<NotificationsPage />} />
         <Route path="/profile/bookings" element={<MyBookings />} />
         <Route path="/profile/favourites" element={<MyFavourites />} />
-        <Route path="/admin/reservations" element={<AdminReservations />} />
-        <Route path="/admin/accommodations" element={<AdminAccommodations />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="reservations" element={<AdminReservations />} />
+          <Route path="accommodations" element={<AdminAccommodations />} />
+          <Route path="updates" element={<AdminUpdates />} />
+          <Route path="profile" element={<AdminProfile />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )

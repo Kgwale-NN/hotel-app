@@ -71,7 +71,7 @@ export default function ProfilePage() {
       <section className={styles.panel}><h2>Promotions</h2><p>Choose whether to receive hotel offers and promotional notifications. Booking updates are separate.</p>
         <form onSubmit={savePreference}><label className={styles.checkbox}><input type="checkbox" checked={marketing} onChange={e => setMarketing(e.target.checked)} disabled={busy} />Send me hotel promotions and special offers.</label><button disabled={busy} type="submit">Save preference</button></form>
       </section>
-      <div className={styles.actions}>{profile.role === 'admin' && <a href="/admin/reservations">Admin reservations</a>}<button type="button" onClick={() => void logout()} disabled={busy}>Sign out</button></div>
+      <div className={styles.actions}>{profile.role === 'admin' && <a href="/admin">Admin dashboard</a>}<button type="button" onClick={() => void logout()} disabled={busy}>Sign out</button></div>
     </>}
   </main>
 }

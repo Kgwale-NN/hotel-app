@@ -38,7 +38,7 @@ function SiteHeader() {
               <span className={styles.accountLink}>Account…</span>
             ) : (
               user ? (
-                <a href="/profile" className={styles.accountLink}>My account</a>
+                <a href={user.role === 'admin' ? '/admin' : '/profile'} className={styles.accountLink}>{user.role === 'admin' ? 'Dashboard' : 'My account'}</a>
               ) : (
                 <button
                   type="button"
