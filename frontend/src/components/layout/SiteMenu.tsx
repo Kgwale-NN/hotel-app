@@ -53,7 +53,7 @@ function SiteMenu({ onClose }: SiteMenuProps) {
 
       <footer className={styles.footer}>
   <p>POLOKWANE · LIMPOPO</p>
-  <a href="#booking" onClick={onClose}>Book now</a>
+  <a href="/accommodations" onClick={onClose}>Book now</a>
 </footer>
     </div>
   )

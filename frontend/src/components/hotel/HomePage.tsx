@@ -1,7 +1,6 @@
 import SiteHeader from '../layout/SiteHeader'
+import SiteFooter from '../layout/SiteFooter'
 import styles from './HomePage.module.css'
-import HotelIntroduction from './HotelIntroduction'
-import HotelStory from './HotelStory'
 import RoomHighlights from './RoomHighlights'
 import HotelAmenities from './HotelAmenities'
 import HotelDining from './HotelDining'
@@ -24,6 +23,7 @@ function HomePage() {
   }
 
   return (
+    <>
     <main className={styles.homePage}>
 <section className={styles.hero} id="home">
   <SiteHeader />
@@ -41,14 +41,9 @@ function HomePage() {
       <RoomHighlights />
       <HotelAmenities />
       <HotelDining />
-      <HotelIntroduction />
-      <HotelStory />
-
-      <section className={styles.booking} id="booking">
-        <h2>Ready to plan your stay?</h2>
-        <p>Explore our rooms and find the right dates for your visit.</p>
-      </section>
     </main>
+    <SiteFooter />
+    </>
   )
 }
 
