@@ -3,17 +3,9 @@
   isolation: isolate;
   overflow: hidden;
   padding: clamp(64px, 7vw, 112px) max(24px, 8vw);
-  background: #211f1b;
-  color: #fffaf1;
-  border-top: 1px solid rgb(228 207 170 / 10%);
-}
-.section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 55% 35%, rgb(140 107 62 / 14%), transparent 62%), linear-gradient(140deg, rgb(23 31 25 / 50%), transparent);
+  background: #fff;
+  color: #24342c;
+  border-top: 1px solid rgb(36 52 44 / 8%);
 }
 .layout {
   display: grid;
@@ -30,7 +22,7 @@
   overflow: hidden;
   border: 1px solid rgb(228 207 170 / 22%);
   border-radius: 22px;
-  box-shadow: 0 18px 50px rgb(0 0 0 / 18%);
+  box-shadow: 0 18px 50px rgb(36 52 44 / 10%);
 }
 .mainPhoto { grid-area: main; height: 100%; min-height: 580px; }
 .coffeePhoto { grid-area: coffee; width: 100%; aspect-ratio: 3 / 4; }
@@ -42,26 +34,26 @@
 .content {
   grid-area: content;
   padding: clamp(24px, 2.5vw, 36px);
-  border: 1px solid rgb(255 255 255 / 16%);
+  border: 1px solid rgb(138 112 75 / 18%);
   border-radius: 24px;
-  background: linear-gradient(130deg, rgb(255 255 255 / 7%), rgb(255 255 255 / 2%));
+  background: linear-gradient(130deg, rgb(247 245 240 / 82%), rgb(255 255 255 / 65%));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 90%), 0 12px 36px rgb(36 52 44 / 5%);
 }
-.eyebrow { margin: 0 0 20px; font: 10px/1.6 Arial, sans-serif; color: #e4cfaa; letter-spacing: .18em; }
+.eyebrow { margin: 0 0 20px; font: 10px/1.6 Arial, sans-serif; color: #826238; letter-spacing: .18em; }
 .content h2 { margin: 0 0 24px; font: 400 clamp(32px, 2.8vw, 46px)/1.16 Georgia, serif; letter-spacing: -.025em; }
-.content h2 em { font-weight: 400; color: #e4cfaa; }
-.description { margin: 0 0 26px; color: #d6d2c8; font: 13px/1.9 Arial, sans-serif; }
-.details summary { display: inline-flex; justify-content: space-between; align-items: center; gap: 24px; min-height: 46px; padding: 12px 20px; box-sizing: border-box; border: 1px solid rgb(228 207 170 / 45%); border-radius: 12px; color: #fffaf1; background: rgb(228 207 170 / 12%); font: 13px/1.4 Arial, sans-serif; cursor: pointer; list-style: none; transition: background 200ms ease; }
+.content h2 em { font-weight: 400; color: #826238; }
+.description { margin: 0 0 26px; color: #59645d; font: 13px/1.9 Arial, sans-serif; }
+.details summary { display: inline-flex; justify-content: space-between; align-items: center; gap: 24px; min-height: 46px; padding: 12px 20px; box-sizing: border-box; border: 1px solid rgb(228 207 170 / 45%); border-radius: 12px; color: #24342c; background: rgb(228 207 170 / 12%); font: 13px/1.4 Arial, sans-serif; cursor: pointer; list-style: none; transition: background 200ms ease; }
 .details summary::-webkit-details-marker { display: none; }
 .details summary:hover { background: rgb(228 207 170 / 22%); }
-.details summary:focus-visible { outline: 2px solid #e4cfaa; outline-offset: 4px; }
+.details summary:focus-visible { outline: 2px solid #826238; outline-offset: 4px; }
 .plus { font-size: 20px; line-height: 1; transition: transform 200ms ease; }
 .details[open] .plus { transform: rotate(45deg); }
 .detailsContent { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgb(228 207 170 / 20%); }
 .detailsContent h3 { margin: 0 0 12px; font: 400 21px/1.35 Georgia, serif; }
-.detailsContent p { margin: 12px 0 0; color: #d6d2c8; font: 12px/1.85 Arial, sans-serif; }
+.detailsContent p { margin: 12px 0 0; color: #59645d; font: 12px/1.85 Arial, sans-serif; }
 @media (max-width: 1000px) {
   .layout { grid-template-columns: 1fr 1fr; grid-template-areas: 'main content' 'coffee meal'; gap: 24px; }
   .mainPhoto { min-height: 0; height: 100%; }
