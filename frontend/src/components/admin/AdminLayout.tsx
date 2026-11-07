@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { loadSession, sessionCleared } from '../../store/authSlice'
@@ -25,6 +25,23 @@ export default function AdminLayout() {
   const [authOpen, setAuthOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
   const [signOutError, setSignOutError] = useState('')
+  const sidebarRef = useRef<HTMLDialogElement>(null)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const isAdmin = user?.role === 'admin'
+
+  useEffect(() => {
+    const sidebar = sidebarRef.current
+    if (!menuOpen || !isAdmin || !sidebar) return
+    const previousOverflow = document.body.style.overflow
+    const menuButton = menuButtonRef.current
+    sidebar.showModal()
+    document.body.style.overflow = 'hidden'
+    return () => {
+      sidebar.close()
+      document.body.style.overflow = previousOverflow
+      menuButton?.focus()
+    }
+  }, [menuOpen, isAdmin])
 
   async function logout() {
     if (signingOut) return
@@ -41,24 +58,36 @@ export default function AdminLayout() {
   return (
     <div className={styles.shell}>
       <a className={styles.skipLink} href="#admin-content">Skip to content</a>
-      <aside className={styles.sidebar}>
-        <Link to="/admin" className={styles.brand}><span aria-hidden="true">✳</span><span>HOTEL HEAVEN<small>ADMINISTRATION</small></span></Link>
-        <button className={styles.menuToggle} type="button" aria-expanded={menuOpen} aria-controls="admin-navigation" onClick={() => setMenuOpen(value => !value)}>{menuOpen ? 'Close menu −' : 'Menu +'}</button>
-        <div id="admin-navigation" className={menuOpen ? styles.navigationOpen : styles.navigation}>
+      <dialog ref={sidebarRef} className={styles.sidebar} id="admin-sidebar" aria-labelledby="admin-menu-title" onCancel={event => { event.preventDefault(); setMenuOpen(false) }} onClick={event => {
+        if (event.target !== event.currentTarget) return
+        const rect = event.currentTarget.getBoundingClientRect()
+        if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) setMenuOpen(false)
+      }}>
+        <div className={styles.sidebarHeading}>
+          <Link to="/admin" onClick={() => setMenuOpen(false)} className={styles.brand}><span aria-hidden="true">✳</span><span id="admin-menu-title">HOTEL HEAVEN<small>ADMINISTRATION</small></span></Link>
+          <button className={styles.closeMenu} type="button" aria-label="Close admin sidebar" onClick={() => setMenuOpen(false)}>×</button>
+        </div>
+        <div className={styles.navigation}>
           <p className={styles.navLabel}>YOUR WORKSPACE</p>
           <nav aria-label="Admin navigation">
             {links.map(link => <NavLink key={link.to} to={link.to} end={link.to === '/admin'} onClick={() => setMenuOpen(false)} className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}><AdminIcon name={link.icon} />{link.title}</NavLink>)}
           </nav>
           <div className={styles.sidebarBottom}>
-            <Link to="/" className={styles.hotelLink}>View hotel website <span aria-hidden="true">↗</span></Link>
             <div className={styles.identity}><span className={styles.avatar}>{user.full_name.charAt(0).toUpperCase()}</span><div><strong>{user.full_name}</strong><small>Administrator</small></div></div>
             <button className={styles.signOut} onClick={() => void logout()} disabled={signingOut}><AdminIcon name="exit" />{signingOut ? 'Signing out…' : 'Sign out'}</button>
             {signOutError && <p className={styles.error} role="alert">{signOutError}</p>}
           </div>
         </div>
-      </aside>
+      </dialog>
       <div className={styles.workspace}>
-        <header className={styles.topbar}><span>Administration <span aria-hidden="true">/</span> <strong>{title}</strong></span><Link to="/admin/profile" aria-label="Open your admin profile"><span className={styles.statusDot} />Admin account <span className={styles.avatar}>{user.full_name.charAt(0).toUpperCase()}</span></Link></header>
+        <header className={styles.topbar}>
+          <div className={styles.menuArea}>
+            <button ref={menuButtonRef} className={styles.menuToggle} type="button" aria-label="Open admin sidebar" aria-haspopup="dialog" aria-expanded={menuOpen} aria-controls="admin-sidebar" onClick={() => setMenuOpen(true)}><span /><span /><span /></button>
+            <span className={styles.pageLabel}>{title}</span>
+          </div>
+          <Link to="/admin" className={styles.topBrand}><span aria-hidden="true">✳</span><span>HOTEL HEAVEN<small>ADMINISTRATION</small></span></Link>
+          <Link className={styles.profileLink} to="/admin/profile" aria-label="Open your admin profile"><span>My profile</span><span className={styles.avatar}>{user.full_name.charAt(0).toUpperCase()}</span></Link>
+        </header>
         <main id="admin-content" className={styles.main} tabIndex={-1}><Outlet /></main>
       </div>
     </div>
