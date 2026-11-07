@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { changeAdminBooking, completeAdminBooking, getAdminBookings, type AdminBooking, type BookingStatus } from '../../api/adminBookings'
 import styles from './AdminReservations.module.css'
+import { useSearchParams } from 'react-router-dom'
 
 const statuses: BookingStatus[] = ['pending', 'confirmed', 'cancelled', 'completed', 'expired']
 const dateLabel = (value: string) => new Date(value).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -12,12 +13,13 @@ function inputDate(value: string) {
 }
 
 export default function AdminReservations() {
+  const [searchParams] = useSearchParams()
   const [bookings, setBookings] = useState<AdminBooking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [filter, setFilter] = useState('all')
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(() => searchParams.get('search') || '')
   const [busy, setBusy] = useState(false)
   const [panel, setPanel] = useState<{ id: string; mode: 'edit' | 'cancel' | 'approve' | 'complete' } | null>(null)
 
@@ -59,11 +61,7 @@ export default function AdminReservations() {
     `${b.id} ${b.guest_name} ${b.guest_email} ${b.hotel_name} ${b.rooms.map(r => `${r.room_number} ${r.accommodation_name}`).join(' ')}`.toLowerCase().includes(search.toLowerCase()))
 
   return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <a href="/" className={styles.brand}>HOTEL HAVEN <span>Administration</span></a>
-        <div><a href="/admin/accommodations">Manage accommodations</a> · <a href="/">Back to hotel &rarr;</a></div>
-      </header>
+    <section className={styles.page}>
       <div className={styles.content}>
         <p className={styles.eyebrow}>GUEST MANAGEMENT</p>
         <h1>Reservations</h1>
@@ -98,6 +96,6 @@ export default function AdminReservations() {
           </article>)}
         </div>
       </div>
-    </main>
+    </section>
   )
 }

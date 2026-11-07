@@ -1,12 +1,14 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { inventoryRequest, type InventoryItem, type HotelChoice } from '../../api/adminInventory'
 import styles from './AdminAccommodations.module.css'
+import { useSearchParams } from 'react-router-dom'
 
 export default function AdminAccommodations() {
+  const [searchParams] = useSearchParams()
   const [items, setItems] = useState<InventoryItem[]>([])
   const [hotels, setHotels] = useState<HotelChoice[]>([])
   const [selected, setSelected] = useState<InventoryItem | null>(null)
-  const [creating, setCreating] = useState(false)
+  const [creating, setCreating] = useState(() => searchParams.get('new') === '1')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -56,8 +58,7 @@ export default function AdminAccommodations() {
   }
 
   const visible = items.filter(item => `${item.name} ${item.hotel_name}`.toLowerCase().includes(search.toLowerCase()))
-  return <main className={styles.page}>
-    <nav className={styles.nav} aria-label="Admin navigation"><a href="/">Hotel home</a><a href="/admin/reservations">Reservations</a><a href="/admin/accommodations" aria-current="page">Accommodations</a></nav>
+  return <section className={styles.page}>
     <div className={styles.heading}><div><p>HOTEL ADMINISTRATION</p><h1>Accommodations</h1></div><button disabled={busy} onClick={() => { setSelected(null); setCreating(true); setError(''); setMessage('') }}>Add accommodation</button></div>
     <p>Manage listings, nightly prices and physical room availability.</p>
     {error && <p role="alert" className={styles.error}>{error}</p>}
@@ -93,5 +94,5 @@ export default function AdminAccommodations() {
       {deleteId === item.id && <div className={styles.confirm}><p>Delete {item.name}? This cannot be undone. Listings with booking or review history must be hidden instead.</p><div className={styles.actions}><button disabled={busy} onClick={() => void mutate(`/accommodations/${item.id}`, 'DELETE', undefined, true)}>Confirm deletion</button><button disabled={busy} onClick={() => setDeleteId(null)}>Keep listing</button></div></div>}
     </article>)}</div>
     {!loading && !visible.length && <p>No accommodations found.</p>}
-  </main>
+  </section>
 }

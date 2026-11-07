@@ -1,0 +1,44 @@
+.page { color: #24342c; font-family: Arial, sans-serif; }
+.heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; margin-bottom: 28px; }
+.eyebrow { margin: 0 0 12px; color: #826238; font-size: 9px; letter-spacing: .18em; }
+.page h1 { margin: 0 0 12px; font: 400 clamp(30px, 3.5vw, 44px)/1.15 Georgia, serif; letter-spacing: -.025em; }
+.description { margin: 0; color: #657269; font-size: 13px; line-height: 1.8; }
+.button, .secondary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 42px; box-sizing: border-box; padding: 11px 16px; border: 1px solid #24342c; border-radius: 10px; background: #24342c; color: #fffaf1; text-decoration: none; font: 12px/1.5 Arial, sans-serif; cursor: pointer; }
+.secondary { border-color: rgb(36 52 44 / 22%); color: #24342c; background: rgb(255 255 255 / 35%); }
+.button:disabled, .secondary:disabled { opacity: .5; cursor: wait; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat, .panel { min-width: 0; padding: 24px; border: 1px solid rgb(255 255 255 / 90%); border-radius: 18px; background: linear-gradient(130deg, rgb(255 255 255 / 83%), rgb(255 255 255 / 55%)); box-shadow: 0 8px 26px rgb(36 52 44 / 3%); backdrop-filter: blur(18px); }
+.stat > span { display: block; color: #657269; font-size: 11px; }
+.stat strong { display: block; margin-top: 14px; font: 400 36px/1.2 Georgia, serif; }
+.stat small { display: block; margin-top: 10px; color: #826238; font-size: 10px; }
+.panel h2 { margin: 0 0 18px; font: 400 24px/1.3 Georgia, serif; }
+.panel > p { font-size: 12px; line-height: 1.8; color: #657269; }
+.panelHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.panelHeading h2 { margin: 0; }
+.panelHeading a { color: #826238; font-size: 11px; text-underline-offset: 4px; }
+.tableWrap { overflow-x: auto; }
+.table { border-collapse: collapse; width: 100%; font-size: 12px; text-align: left; }
+.table th { padding: 12px 14px; background: rgb(228 207 170 / 15%); color: #657269; font-size: 10px; font-weight: 500; white-space: nowrap; }
+.table td { padding: 16px 14px; border-bottom: 1px solid rgb(36 52 44 / 8%); }
+.table td small { display: block; margin-top: 5px; color: #657269; font-size: 10px; }
+.table a { color: #826238; text-underline-offset: 4px; }
+.badge { display: inline-block; padding: 5px 9px; border-radius: 20px; font-size: 10px; text-transform: capitalize; background: #e9ede4; color: #3f5948; }
+.pending { background: #f3e6c7; color: #71541d; }.cancelled, .expired { background: #f4e3dd; color: #844d3d; }
+.quickLinks { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.error, .notice { padding: 14px 18px; border-radius: 12px; font-size: 12px; line-height: 1.7; }
+.error { color: #843e31; background: #fae9e3; }.notice { color: #326644; background: #e2f0e5; }
+.form { display: grid; gap: 20px; max-width: 650px; }
+.form label { display: grid; gap: 8px; font-size: 12px; }
+.form input, .form textarea { width: 100%; box-sizing: border-box; padding: 13px 14px; border: 1px solid #c9d0c5; border-radius: 10px; background: rgb(255 255 255 / 80%); color: #24342c; font: 13px Arial, sans-serif; }
+.form input:read-only { background: #f1eee7; color: #657269; }
+.form textarea { min-height: 150px; resize: vertical; }
+.form small { color: #657269; font-size: 11px; line-height: 1.6; }
+.form .checkbox { display: flex; align-items: flex-start; gap: 10px; line-height: 1.8; }
+.checkbox input { flex-shrink: 0; width: 17px; height: 17px; padding: 0; margin: 2px 0 0; accent-color: #24342c; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.accountIntro { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+.avatar { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: #e4cfaa; font: 28px Georgia, serif; }
+.accountIntro strong { display: block; font: 23px Georgia, serif; }
+.accountIntro small { display: block; margin-top: 7px; font-size: 11px; color: #657269; }
+@media(max-width: 1100px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width: 480px) { .stats { gap: 10px; } .stat, .panel { padding: 18px; } .stat strong { font-size: 30px; } .stat span { line-height: 1.6; } .panelHeading { align-items: flex-start; } .table td, .table th { padding-inline: 10px; } }
