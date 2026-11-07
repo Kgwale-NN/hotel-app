@@ -1,0 +1,62 @@
+.section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(64px, 7vw, 112px) max(24px, 8vw);
+  background: #211f1b;
+  color: #fffaf1;
+}
+.section::before {
+  content: '';
+  position: absolute;
+  inset: -24px;
+  z-index: -2;
+  background: url('../../assets/hero-section-background-picture.jpg') center 70% / cover no-repeat;
+  filter: blur(12px);
+  opacity: .2;
+  pointer-events: none;
+}
+.section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(130deg, rgb(21 27 23 / 85%), rgb(30 27 22 / 76%) 60%, rgb(50 39 24 / 70%));
+  pointer-events: none;
+}
+.inner { max-width: 1440px; margin: 0 auto; }
+.heading { display: flex; justify-content: space-between; align-items: end; gap: 40px; margin-bottom: 46px; }
+.eyebrow { margin: 0 0 18px; color: #e4cfaa; font: 11px/1.5 Arial, sans-serif; letter-spacing: .2em; }
+.heading h2 { margin: 0; font: 400 clamp(34px, 3.5vw, 56px)/1.14 Georgia, serif; letter-spacing: -.025em; }
+.heading h2 em { color: #e4cfaa; font-weight: 400; }
+.intro { max-width: 330px; margin: 0 0 4px; font: 14px/1.85 Arial, sans-serif; color: #d6d2c8; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 0; padding: 0; list-style: none; }
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  min-width: 0;
+  padding: clamp(22px, 2.2vw, 34px) 26px;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 20px;
+  background: linear-gradient(125deg, rgb(255 255 255 / 8%), rgb(255 255 255 / 3%));
+  backdrop-filter: blur(18px) saturate(115%);
+  -webkit-backdrop-filter: blur(18px) saturate(115%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 12px 30px rgb(0 0 0 / 8%);
+  transition: border-color 250ms ease, background 250ms ease;
+}
+.card:hover { border-color: rgb(228 207 170 / 45%); background: rgb(255 255 255 / 9%); }
+.icon { display: block; flex: 0 0 44px; color: #e4cfaa; }
+.icon svg { display: block; width: 44px; height: 46px; }
+.card h3 { margin: 1px 0 12px; font: 400 clamp(19px, 1.55vw, 24px)/1.25 Georgia, serif; }
+.card p { margin: 0; color: #d6d2c8; font: 13px/1.85 Arial, sans-serif; }
+.note { margin: 28px 0 0; text-align: center; color: #bbb6ab; font: 11px/1.8 Arial, sans-serif; }
+@media (max-width: 1050px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 650px) {
+  .heading { display: block; margin-bottom: 30px; }
+  .intro { margin-top: 24px; max-width: 100%; }
+  .grid { grid-template-columns: 1fr; gap: 12px; }
+  .card { padding: 24px; }
+  .card h3 { font-size: 23px; }
+}
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }

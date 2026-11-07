@@ -3,6 +3,7 @@ import styles from './HomePage.module.css'
 import HotelIntroduction from './HotelIntroduction'
 import HotelStory from './HotelStory'
 import RoomHighlights from './RoomHighlights'
+import HotelAmenities from './HotelAmenities'
 import { useNavigate } from 'react-router-dom'
 import HeroBookingBar, { type StaySearch } from '../booking/HeroBookingBar'
 
@@ -37,6 +38,7 @@ function HomePage() {
 </section>
 
       <RoomHighlights />
+      <HotelAmenities />
       <HotelIntroduction />
       <HotelStory />
 
