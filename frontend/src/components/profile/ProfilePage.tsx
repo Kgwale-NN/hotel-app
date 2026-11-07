@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom'
 import { useEffect, useState, type FormEvent } from 'react'
 import { saveProfile, saveMarketingPreference, signOut } from '../../api/profile'
 import styles from './ProfilePage.module.css'
@@ -5,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { loadSession, profileUpdated, sessionCleared } from '../../store/authSlice'
 
 export default function ProfilePage() {
+  const { hash } = useLocation()
   const dispatch = useAppDispatch()
   const { user: profile, status, error: sessionError } = useAppSelector(state => state.auth)
   const loading = status === 'loading' || status === 'idle'
@@ -18,6 +20,10 @@ export default function ProfilePage() {
   useEffect(() => {
     if (profile) { setName(profile.full_name); setPhone(profile.phone || ''); setMarketing(profile.marketing_opt_in) }
   }, [profile])
+
+  useEffect(() => {
+    if (profile && hash === '#preferences') document.getElementById('preferences')?.scrollIntoView({ block: 'start' })
+  }, [profile, hash])
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -68,7 +74,7 @@ export default function ProfilePage() {
           <button type="submit">{busy ? 'Please wait…' : 'Save personal details'}</button>
         </fieldset></form>
       </section>
-      <section className={styles.panel}><h2>Promotions</h2><p>Choose whether to receive hotel offers and promotional notifications. Booking updates are separate.</p>
+      <section id="preferences" className={styles.panel}><h2>Settings</h2><p>Choose whether to receive hotel offers and promotional notifications. Booking updates are separate.</p>
         <form onSubmit={savePreference}><label className={styles.checkbox}><input type="checkbox" checked={marketing} onChange={e => setMarketing(e.target.checked)} disabled={busy} />Send me hotel promotions and special offers.</label><button disabled={busy} type="submit">Save preference</button></form>
       </section>
       <div className={styles.actions}>{profile.role === 'admin' && <a href="/admin">Admin dashboard</a>}<button type="button" onClick={() => void logout()} disabled={busy}>Sign out</button></div>
