@@ -35,10 +35,11 @@ export default function AccountMenu({ name, onClose }: Props) {
       <Link to="/profile/settings" onClick={onClose}><AccountMenuIcon name="settings" /><span>Settings</span></Link>
       <Link to="/profile" onClick={onClose}><AccountMenuIcon name="profile" /><span>Profile</span></Link>
       <Link to="/profile/bookings" onClick={onClose}><AccountMenuIcon name="bookings" /><span>My bookings</span></Link>
-      <Link to="/profile/favourites" onClick={onClose}><AccountMenuIcon name="saved" /><span>Saved rooms</span></Link>
+      <Link to="/profile/favourites" onClick={onClose}><AccountMenuIcon name="saved" /><span>My favourites</span></Link>
       <Link to="/profile/notifications" onClick={onClose}><AccountMenuIcon name="notifications" /><span>Notifications</span></Link>
     </nav>
     {error && <p role="alert" className={styles.error}>{error}</p>}
     <button type="button" className={styles.signOut} disabled={busy} onClick={() => void logout()}><AccountMenuIcon name="logout" /><span>{busy ? 'Logging out...' : 'Log out'}</span></button>
   </dialog>
 }
+
