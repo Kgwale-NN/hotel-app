@@ -105,3 +105,19 @@ Both POST routes require the session cookie and `X-CSRF-Token`. New accounts alw
 Google authentication returns to `/auth/return` on `FRONTEND_URL` (default `http://localhost:5173` for development). Set the deployed HTTPS frontend origin in production.
 
 Authentication tests: `npm run build`, then `node --test tests/password-auth.test.cjs`. Database calls in these tests are mocked.
+
+## Uploaded room photos
+
+Admins can manage photos in **Accommodations → Edit listing & rooms → Room photos**. Saving a newly created accommodation leaves the editor open so photos and physical rooms can be added immediately.
+
+| Method | Route (under `/api`) | Purpose |
+| --- | --- | --- |
+| POST | `/admin/accommodations/:id/images/upload` | Upload or replace a room photo |
+| PATCH | `/admin/images/:imageId` | Update `alt_text` and/or set `make_cover: true` |
+| GET | `/media/:filename` | Serve an uploaded room photo publicly |
+
+Upload requires an administrator session, `X-CSRF-Token`, and multipart form data: `photo` (one file), `alt_text` (1–250 characters), optional `make_cover` (`"true"` or `"false"`), and optional `replace_image_id` belonging to this accommodation. Do not set a JSON Content-Type on multipart requests. JPG, PNG and WebP files must be at most 5 MB and 25 megapixels. The server checks decoded image content, rejects animated/unsupported images, applies orientation and converts to WebP within 1920×1440 pixels. Replacement retains the image ID and display order unless selected as the main photo. The first image by sort order becomes the listing cover. Deleting the last uploaded photo restores any frontend default image.
+
+Files are stored in `backend/uploads/rooms` by default and excluded from Git. Set `ROOM_PHOTO_DIRECTORY` to an absolute directory on a **persistent volume** when deploying. Back up this folder together with PostgreSQL; database records contain the public `/api/media/...` paths, not file contents. No schema migration is required.
+
+Isolated checks: `npm run build` then `node --test tests/room-photos.test.cjs` from `backend`. These tests mock database calls and use a temporary directory; they do not change real rooms or accounts.

@@ -1,3 +1,4 @@
+import mediaRouter from './routes/media.routes';
 import express from "express";
 import healthRouter from "./routes/health.routes";
 import accommodationsRouter from "./routes/accommodations.routes";
@@ -21,6 +22,7 @@ app.use(
 );
 
 app.use(sessionMiddleware);
+app.use("/api/media", mediaRouter);
 
 app.use("/api/health", healthRouter);
 app.use("/api/accommodations", accommodationsRouter);

@@ -1,3 +1,5 @@
+import { receiveRoomPhoto } from '../middleware/room-photo.middleware';
+import { uploadRoomPhoto, updateRoomPhoto, deleteRoomPhoto } from '../controllers/room-photos.controller';
 import { completeAdminBooking } from '../controllers/booking-completion.controller';
 import { getAdminHotels, getAdminAccommodationDetail } from '../controllers/admin-inventory.controller';
 import { Router } from "express";
@@ -11,7 +13,6 @@ import {
   updateRoom,
   getAccommodationImages,
   addAccommodationImage,
-  deleteAccommodationImage,
   getAmenities,
   replaceAccommodationAmenities,
   updateAdminBookingStatus,
@@ -68,7 +69,9 @@ adminRouter.post(
 adminRouter.patch("/rooms/:roomId", requireCsrf, updateRoom);
 adminRouter.get("/accommodations/:id/images", getAccommodationImages);
 adminRouter.post("/accommodations/:id/images", requireCsrf, addAccommodationImage);
-adminRouter.delete("/images/:imageId", requireCsrf, deleteAccommodationImage);
+adminRouter.delete("/images/:imageId", requireCsrf, deleteRoomPhoto);
+adminRouter.patch("/images/:imageId", requireCsrf, updateRoomPhoto);
+adminRouter.post("/accommodations/:id/images/upload", requireCsrf, receiveRoomPhoto, uploadRoomPhoto);
 adminRouter.put(
   "/accommodations/:id/amenities",
   requireCsrf,
