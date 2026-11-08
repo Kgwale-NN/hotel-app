@@ -1,6 +1,6 @@
-import restaurantPhoto from '../../assets/dining-restaurant.jpg'
-import mealPhoto from '../../assets/Fine dining food.jpg'
-import coffeePhoto from '../../assets/dining-breakfast.jpg'
+import restaurantPhoto from '../../assets/dining-restaurant.webp'
+import mealPhoto from '../../assets/Fine dining food.webp'
+import coffeePhoto from '../../assets/dining-breakfast.webp'
 import styles from './HotelDining.module.css'
 
 export default function HotelDining() {

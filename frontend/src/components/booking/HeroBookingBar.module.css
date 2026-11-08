@@ -86,3 +86,4 @@
     border-radius: 20px;
   }
 }
+@media(max-width:360px) { .bar { grid-template-columns:minmax(0,1fr); gap:12px; padding:16px; }.field { gap:6px; }.searchButton { width:100%; } }

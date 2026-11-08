@@ -1,3 +1,4 @@
+import { ArrowUpRight, X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './SiteMenu.module.css'
@@ -24,7 +25,7 @@ export default function SiteMenu({ onClose }: SiteMenuProps) {
 
   return <dialog ref={dialogRef} className={styles.menu} aria-labelledby="about-title" onCancel={event => { event.preventDefault(); onClose() }}>
     <header className={styles.header}>
-      <button ref={closeRef} className={styles.closeButton} type="button" onClick={onClose}><span aria-hidden="true">×</span> Close</button>
+      <button ref={closeRef} className={styles.closeButton} type="button" onClick={onClose}><span aria-hidden="true"><X size={18} aria-hidden="true" /></span> Close</button>
       <Link className={styles.brand} to="/" onClick={onClose}>HOTEL HEAVEN</Link>
       <span className={styles.location}>POLOKWANE · LIMPOPO</span>
     </header>
@@ -51,7 +52,7 @@ export default function SiteMenu({ onClose }: SiteMenuProps) {
 
       <footer className={styles.footer}>
         <p>Your time. Your space. Your stay.</p>
-        <Link className={styles.bookButton} to="/accommodations" onClick={onClose}>Find your stay <span aria-hidden="true">↗</span></Link>
+        <Link className={styles.bookButton} to="/accommodations" onClick={onClose}>Find your stay <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link>
       </footer>
     </div>
   </dialog>

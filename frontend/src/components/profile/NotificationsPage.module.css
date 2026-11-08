@@ -125,3 +125,4 @@
     outline: 3px solid #ad955c;
     outline-offset: 3px;
 }
+.page { min-width:0; }.card { overflow-wrap:anywhere; }.toolbar { flex-wrap:wrap; }.toolbar>* { max-width:100%; }

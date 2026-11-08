@@ -11,7 +11,7 @@
   position: absolute;
   inset: -24px;
   z-index: -2;
-  background: url('../../assets/hero-section-background-picture.jpg') center 70% / cover no-repeat;
+  background: url('../../assets/hero-section-background-picture.webp') center 70% / cover no-repeat;
   filter: blur(12px);
   opacity: .2;
   pointer-events: none;

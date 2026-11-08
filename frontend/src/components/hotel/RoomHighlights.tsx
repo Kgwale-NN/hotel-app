@@ -1,3 +1,6 @@
+import { ArrowUpRight, ArrowLeft, ArrowRight } from 'lucide-react'
+import LoadingSkeleton from '../common/LoadingSkeleton'
+import EmptyState from '../common/EmptyState'
 import { roomPhotoByName } from '../../data/roomPhotos'
 import { useEffect, useRef, useState } from 'react'
 import { getFeaturedAccommodations } from '../../api/accommodations'
@@ -73,18 +76,18 @@ function RoomHighlights() {
             <p className={styles.eyebrow}>FIND YOUR STAY</p>
             <h2 id="room-highlights-title" className={styles.title}>Rooms and suites</h2>
             <div className={styles.toolbar}>
-                <Link className={styles.allRooms} to="/accommodations">Search all rooms <span aria-hidden="true">↗</span></Link>
+                <Link className={styles.allRooms} to="/accommodations">Search all rooms <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link>
                 <div className={styles.controls} aria-label="Room carousel controls">
-                    <button type="button" onClick={() => moveRooms(-1)} disabled={!canGoBack} aria-label="Previous rooms" aria-controls="room-carousel">←</button>
-                    <button type="button" onClick={() => moveRooms(1)} disabled={!canGoForward} aria-label="Next rooms" aria-controls="room-carousel">→</button>
+                    <button type="button" onClick={() => moveRooms(-1)} disabled={!canGoBack} aria-label="Previous rooms" aria-controls="room-carousel"><ArrowLeft size={18} aria-hidden="true" /></button>
+                    <button type="button" onClick={() => moveRooms(1)} disabled={!canGoForward} aria-label="Next rooms" aria-controls="room-carousel"><ArrowRight size={18} aria-hidden="true" /></button>
                 </div>
             </div>
 
-            {isLoading && <p role="status">Loading rooms...</p>}
+            {isLoading && <LoadingSkeleton cards label="Loading rooms" />}
             {error && <p role="alert">{error}</p>}
 
             {!isLoading && !error && accommodations.length === 0 && (
-                <p>No accommodations are available right now.</p>
+                <EmptyState title="Our rooms are taking a little break.">Please check back soon for available stays.</EmptyState>
             )}
 
             {!isLoading && accommodations.length > 0 && (
@@ -92,7 +95,7 @@ function RoomHighlights() {
                     {accommodations.map((accommodation) => (
                         <article className={styles.card} key={accommodation.id}>
                             {accommodation.cover_image || roomPhotoByName[accommodation.name] ? (
-                                <img
+                                <img decoding="async"
                                     className={styles.image}
                                     src={accommodation.cover_image || roomPhotoByName[accommodation.name]}
                                     alt={accommodation.name}

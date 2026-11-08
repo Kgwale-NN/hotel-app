@@ -1,10 +1,10 @@
-import storyImage from '../../assets/hotel-story.jpg'
+import storyImage from '../../assets/hotel-story.webp'
 import styles from './HotelStory.module.css'
 
 function HotelStory() {
     return (
         <section className={styles.story} aria-labelledby="story-title">
-            <img
+            <img decoding="async"
                 className={styles.image}
                 src={storyImage}
                 alt="The hotel and its surroundings"

@@ -93,3 +93,5 @@
   .accountOptions { margin: 5px 0 14px; }
   .accountOptions .remember { margin: 0; }
 }
+
+@media(max-height:660px) { .panel { padding:16px 20px 12px; }.panel .brand,.panel .eyebrow,.panel .description { display:none; }.panel h2 { font-size:24px; margin:14px 24px 16px; }.field { margin-bottom:8px; }.form label { margin-bottom:4px; }.form input { min-height:40px; padding-block:8px; }.or { margin:10px 0; }.switch { margin:10px 0 0; }.primaryButton,.googleButton { min-height:42px; padding:10px; }.accountOptions { margin:8px 0 12px; } }

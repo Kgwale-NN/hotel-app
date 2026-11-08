@@ -1,3 +1,5 @@
+import { Sparkles } from 'lucide-react'
+import LoadingSkeleton from '../common/LoadingSkeleton'
 import BackButton from '../layout/BackButton'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -28,8 +30,8 @@ export default function AuthReturn() {
     if (status === 'ready' && user) navigate(returnPath(user.role), { replace: true })
   }, [user, status, navigate])
   return <main className={styles.page}>
-    <div className={styles.card}><p className={styles.brand}>✳ HOTEL HEAVEN</p><h1>{status === 'failed' || (status === 'ready' && !user) ? 'Let’s try again.' : 'Welcome to your next stay.'}</h1>
-      {status === 'failed' || (status === 'ready' && !user) ? <><p role="alert">{error || 'Your session could not be confirmed. Please sign in again.'}</p><button onClick={() => void dispatch(loadSession())}>Check my account</button><a href="/api/auth/google">Continue with Google</a></> : <p role="status">Finishing your sign-in…</p>}
+    <div className={styles.card}><p className={styles.brand}><Sparkles size={20} aria-hidden="true" /> HOTEL HEAVEN</p><h1>{status === 'failed' || (status === 'ready' && !user) ? 'Let’s try again.' : 'Welcome to your next stay.'}</h1>
+      {status === 'failed' || (status === 'ready' && !user) ? <><p role="alert">{error || 'Your session could not be confirmed. Please sign in again.'}</p><button onClick={() => void dispatch(loadSession())}>Check my account</button><a href="/api/auth/google">Continue with Google</a></> : <LoadingSkeleton count={1} label="Finishing your sign-in" />}
       <BackButton>Go back</BackButton>
     </div>
   </main>

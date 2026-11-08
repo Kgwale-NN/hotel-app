@@ -1,3 +1,4 @@
+import LoadingSkeleton from '../common/LoadingSkeleton'
 import SiteHeader from '../layout/SiteHeader'
 import SiteFooter from '../layout/SiteFooter'
 import styles from './HomePage.module.css'
@@ -24,7 +25,7 @@ function HomePage() {
     navigate(`/accommodations?${params}`)
   }
 
-  if (status === 'idle' || status === 'loading') return <main className={styles.homePage}><section className={styles.hero}><p role="status">Opening your workspace…</p></section></main>
+  if (status === 'idle' || status === 'loading') return <main className={styles.homePage}><section style={{ maxWidth: 1000, margin: "0 auto", padding: 24 }}><LoadingSkeleton label="Opening the hotel" /></section></main>
   if (user?.role === 'admin') return <Navigate to="/admin" replace />
 
   return (

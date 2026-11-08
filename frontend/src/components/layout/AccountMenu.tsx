@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { signOut } from '../../api/profile'
@@ -33,7 +34,7 @@ export default function AccountMenu({ name, onClose }: Props) {
 
   return <>
   <dialog ref={dialog} id="guest-account-menu" className={styles.menu} aria-labelledby="account-menu-title" onCancel={onClose} onClick={event => { if (event.target === event.currentTarget) { const bounds = event.currentTarget.getBoundingClientRect(); if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) onClose() } }}>
-    <div className={styles.heading}><div><h2 id="account-menu-title">My account</h2><p>{name}</p></div><button type="button" className={styles.close} aria-label="Close account menu" onClick={onClose}>×</button></div>
+    <div className={styles.heading}><div><h2 id="account-menu-title">My account</h2><p>{name}</p></div><button type="button" className={styles.close} aria-label="Close account menu" onClick={onClose}><X size={18} aria-hidden="true" /></button></div>
     <nav aria-label="Your account">
       <Link to="/profile/settings" onClick={onClose}><AccountMenuIcon name="settings" /><span>Settings</span></Link>
       <Link to="/profile" onClick={onClose}><AccountMenuIcon name="profile" /><span>Profile</span></Link>

@@ -1,14 +1,14 @@
 import AmenityIcon, { type AmenityIconName } from '../common/AmenityIcon'
 import styles from './HotelAmenities.module.css'
-import parkingPhoto from '../../assets/parking.jpg'
-import wellnessPhoto from '../../assets/wellness.jpg'
-import transferPhoto from '../../assets/transfer.jpg'
-import laundryPhoto from '../../assets/laundry.jpg'
-import wifiPhoto from '../../assets/wifi.jpg'
-import refreshmentsPhoto from '../../assets/refreshments.jpg'
-import poolPhoto from '../../assets/Pool.jpg'
-import securityPhoto from '../../assets/security.jpg'
-import guestServicesPhoto from '../../assets/guest-services.jpg'
+import parkingPhoto from '../../assets/parking.webp'
+import wellnessPhoto from '../../assets/wellness.webp'
+import transferPhoto from '../../assets/transfer.webp'
+import laundryPhoto from '../../assets/laundry.webp'
+import wifiPhoto from '../../assets/wifi.webp'
+import refreshmentsPhoto from '../../assets/refreshments.webp'
+import poolPhoto from '../../assets/Pool.webp'
+import securityPhoto from '../../assets/security.webp'
+import guestServicesPhoto from '../../assets/guest-services.webp'
 
 const amenityPhotos: Record<AmenityIconName, string> = {
   parking: parkingPhoto,

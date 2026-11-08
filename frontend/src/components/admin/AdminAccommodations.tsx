@@ -1,3 +1,5 @@
+import LoadingSkeleton from '../common/LoadingSkeleton'
+import EmptyState from '../common/EmptyState'
 import { useEffect, useState, type FormEvent } from 'react'
 import { inventoryRequest, type InventoryItem, type HotelChoice } from '../../api/adminInventory'
 import AdminPhotoManager from './AdminPhotoManager'
@@ -101,13 +103,13 @@ export default function AdminAccommodations() {
       </section>}
     </section>}
     <label className={styles.search}>Search listings<input type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Accommodation or hotel name" /></label>
-    {loading ? <p role="status">Loading accommodations…</p> : <p>{visible.length} listing(s)</p>}
+    {loading ? <LoadingSkeleton label="Loading accommodations…" /> : <p>{visible.length} listing(s)</p>}
     <div className={styles.list}>{visible.map(item => <article key={item.id} className={styles.panel}>
       <div className={styles.heading}><div><h2>{item.name}</h2><p>{item.hotel_name} · {item.room_type}</p></div><strong>{item.is_active ? 'Visible' : 'Hidden'}</strong></div>
       <p>Up to {item.capacity} guests · {item.total_rooms} physical rooms · {item.currency} {Number(item.price_per_night).toLocaleString('en-ZA')} / night</p>
       <div className={styles.actions}><button disabled={working} onClick={() => void openItem(item.id)}>Edit listing & rooms</button><button disabled={working} onClick={() => void mutate(`/accommodations/${item.id}`, 'PATCH', { is_active: !item.is_active })}>{item.is_active ? 'Hide listing' : 'Restore listing'}</button><button disabled={working} onClick={() => setDeleteId(item.id)}>Delete</button></div>
       {deleteId === item.id && <div className={styles.confirm}><p>Delete {item.name}? This cannot be undone. Listings with booking or review history must be hidden instead.</p><div className={styles.actions}><button disabled={working} onClick={() => void mutate(`/accommodations/${item.id}`, 'DELETE', undefined, true)}>Confirm deletion</button><button disabled={working} onClick={() => setDeleteId(null)}>Keep listing</button></div></div>}
     </article>)}</div>
-    {!loading && !visible.length && <p>No accommodations found.</p>}
+    {!loading && !visible.length && <EmptyState kind="rooms" title="No rooms found.">New records will appear here. If you have applied filters, try clearing them.</EmptyState>}
   </section>
 }

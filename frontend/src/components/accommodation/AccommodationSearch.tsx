@@ -1,3 +1,5 @@
+import LoadingSkeleton from '../common/LoadingSkeleton'
+import EmptyState from '../common/EmptyState'
 import { useEffect, useState, type FormEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { searchAccommodations, type SearchResult } from '../../api/search'
@@ -61,10 +63,10 @@ export default function AccommodationSearch() {
       <div className={styles.actions}><button type="submit" disabled={loading}>{loading ? 'Searching…' : 'Search rooms'}</button><button type="button" disabled={loading} onClick={() => { setValidationError(''); setParams({}, { replace: true }) }}>Clear filters</button></div>
     </form>
     {error && <p className={styles.error} role="alert">{error}</p>}
-    {loading && <p role="status">Loading rooms…</p>}
+    {loading && <LoadingSkeleton cards label="Loading rooms" count={6} />}
     {result && <>
       <p role="status">{result.pagination.total} accommodation{result.pagination.total === 1 ? '' : 's'} found.</p>
-      {result.data.length ? <div className={styles.grid}>{result.data.map(item => <AccommodationCard key={item.id} accommodation={item} />)}</div> : <p>No rooms match these filters. Try another price range or location.</p>}
+      {result.data.length ? <div className={styles.grid}>{result.data.map(item => <AccommodationCard key={item.id} accommodation={item} />)}</div> : <EmptyState kind="search" title="A different stay awaits." action={<button type="button" onClick={() => setParams({}, { replace: true })}>Clear filters</button>}>No rooms match these filters. Try another price range or location.</EmptyState>}
       {result.pagination.total_pages > 1 && <nav className={styles.actions} aria-label="Search result pages"><button disabled={result.pagination.page <= 1} onClick={() => changePage(result.pagination.page - 1)}>Previous</button><span>Page {result.pagination.page} of {result.pagination.total_pages}</span><button disabled={result.pagination.page >= result.pagination.total_pages} onClick={() => changePage(result.pagination.page + 1)}>Next</button></nav>}
     </>}
   </main>

@@ -12,3 +12,16 @@ body {
 button {
   font: inherit;
 }
+/* Shared constraints for narrow phones, touch screens, zoom and large displays. */
+html { -webkit-text-size-adjust:100%; }
+body { min-width:0; overflow-wrap:break-word; }
+#root { min-width:0; }
+img,video { max-width:100%; }
+input,select,textarea { max-width:100%; font:inherit; }
+fieldset { min-width:0; }
+button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
+button,a { touch-action:manipulation; }
+button { white-space:normal; }
+:focus-visible { outline:2px solid #987446; outline-offset:3px; }
+@media (pointer:coarse) { input,select,textarea { font-size:16px !important; } }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }

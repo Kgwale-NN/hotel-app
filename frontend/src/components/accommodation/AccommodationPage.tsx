@@ -1,3 +1,6 @@
+import { ArrowUpRight, ArrowLeft, Check } from 'lucide-react'
+import LoadingSkeleton from '../common/LoadingSkeleton'
+import EmptyState from '../common/EmptyState'
 import BackButton from '../layout/BackButton'
 import { roomPhotoByName } from '../../data/roomPhotos'
 import { useEffect, useState } from 'react'
@@ -50,9 +53,9 @@ function RoomDetails({ id }: { id: string | undefined }) {
   }, [id, retry])
 
   if (loading || error || !accommodation) return <main className={styles.page}>
-    <BackButton className={styles.backLink}><span aria-hidden="true">←</span> Go back</BackButton>
+    <BackButton className={styles.backLink}><span aria-hidden="true"><ArrowLeft size={18} aria-hidden="true" /></span> Go back</BackButton>
     <section className={styles.state}><h1>{error ? 'This room is unavailable' : 'Your stay awaits'}</h1>
-      <p role={error ? 'alert' : 'status'}>{error || (loading ? 'Loading room details...' : 'Room not found.')}</p>
+      {loading ? <LoadingSkeleton cards count={1} label="Loading room details" /> : <EmptyState title="This room is unavailable.">{error || 'Please explore our other rooms.'}</EmptyState>}
       {error && <button onClick={() => { setLoading(true); setError(''); setRetry(value => value + 1) }}>Try again</button>}
     </section>
   </main>
@@ -66,9 +69,9 @@ function RoomDetails({ id }: { id: string | undefined }) {
 
   return <div className={styles.background}><main className={styles.page}>
     <nav className={styles.topbar} aria-label="Room navigation">
-      <BackButton className={styles.backLink}><span aria-hidden="true">←</span> Go back</BackButton>
+      <BackButton className={styles.backLink}><span aria-hidden="true"><ArrowLeft size={18} aria-hidden="true" /></span> Go back</BackButton>
       <Link to="/" className={styles.brand}>HOTEL HEAVEN</Link>
-      <a className={styles.reserveLink} href="#reserve-room" onClick={event => { event.preventDefault(); window.history.replaceState(window.history.state, "", "#reserve-room"); document.getElementById("reserve-room")?.scrollIntoView({ behavior: "smooth" }) }}>Reserve this room <span aria-hidden="true">↗</span></a>
+      <a className={styles.reserveLink} href="#reserve-room" onClick={event => { event.preventDefault(); window.history.replaceState(window.history.state, "", "#reserve-room"); document.getElementById("reserve-room")?.scrollIntoView({ behavior: "smooth" }) }}>Reserve this room <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></a>
     </nav>
     <header className={styles.intro}>
       <div><p className={styles.eyebrow}>{accommodation.room_type.replaceAll('_', ' ')} · {hotel.city}</p><h1>{accommodation.name}</h1><p className={styles.location}>{hotel.name} <span aria-hidden="true">·</span> {hotel.city}, {hotel.country}</p></div>
@@ -92,14 +95,14 @@ function RoomDetails({ id }: { id: string | undefined }) {
           </ul>
         </section>
         <section className={styles.section} aria-labelledby="room-amenities"><h2 id="room-amenities">Thoughtful comforts</h2><p>Everything included with your room.</p>
-          {accommodation.amenities.length ? <ul className={styles.amenities}>{accommodation.amenities.map(amenity => <li key={amenity.id}><span aria-hidden="true">✓</span>{amenity.name}</li>)}</ul> : <p>Ask the hotel about the amenities available for this room.</p>}
+          {accommodation.amenities.length ? <ul className={styles.amenities}>{accommodation.amenities.map(amenity => <li key={amenity.id}><Check size={16} aria-hidden="true" />{amenity.name}</li>)}</ul> : <p>Ask the hotel about the amenities available for this room.</p>}
         </section>
         <section className={styles.section} aria-labelledby="hotel-information"><h2 id="hotel-information">Your stay at {hotel.name}</h2><p>{hotel.address}, {hotel.city}, {hotel.country}</p>
           {hotel.star_rating !== null && hotel.star_rating > 0 && <p className={styles.starRating}><span aria-hidden="true">{'★'.repeat(hotel.star_rating)}</span> {hotel.star_rating}-star hotel</p>}
           <div className={styles.checkTimes}><div><AccountMenuIcon name="bookings" /><span><small>Check-in from</small><strong>{hotel.check_in_time?.slice(0, 5)}</strong></span></div><div><AccountMenuIcon name="bookings" /><span><small>Check-out by</small><strong>{hotel.check_out_time?.slice(0, 5)}</strong></span></div></div>
         </section>
         <section className={styles.section} aria-labelledby="hotel-policies"><h2 id="hotel-policies">Things to know</h2><p className={styles.policy}>{policies}</p></section>
-        {hotel.latitude !== null && hotel.longitude !== null && <section className={styles.section} aria-labelledby="hotel-location"><h2 id="hotel-location">Find us in {hotel.city}</h2><p>{hotel.address}</p><iframe className={styles.map} title={`${hotel.name} location`} src={`https://www.google.com/maps?q=${hotel.latitude},${hotel.longitude}&output=embed`} width="100%" height="300" loading="lazy" /><a className={styles.mapLink} href={`https://www.google.com/maps/search/?api=1&query=${hotel.latitude},${hotel.longitude}`} target="_blank" rel="noreferrer">Open in Google Maps <span aria-hidden="true">↗</span></a></section>}
+        {hotel.latitude !== null && hotel.longitude !== null && <section className={styles.section} aria-labelledby="hotel-location"><h2 id="hotel-location">Find us in {hotel.city}</h2><p>{hotel.address}</p><iframe className={styles.map} title={`${hotel.name} location`} src={`https://www.google.com/maps?q=${hotel.latitude},${hotel.longitude}&output=embed`} width="100%" height="300" loading="lazy" /><a className={styles.mapLink} href={`https://www.google.com/maps/search/?api=1&query=${hotel.latitude},${hotel.longitude}`} target="_blank" rel="noreferrer">Open in Google Maps <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></a></section>}
         <div className={styles.reviews}><AccommodationReviewsSection key={accommodation.id} accommodationId={accommodation.id} /></div>
       </div>
       <aside className={styles.bookingPanel} id="reserve-room" aria-label="Room reservation">
@@ -107,6 +110,6 @@ function RoomDetails({ id }: { id: string | undefined }) {
         <BookingForm accommodationId={accommodation.id} />
       </aside>
     </div>
-    <footer className={styles.footer}><Link to="/">HOTEL HEAVEN</Link><p>Your time. Your space. Your stay.</p><Link to="/accommodations">Explore more rooms <span aria-hidden="true">↗</span></Link></footer>
+    <footer className={styles.footer}><Link to="/">HOTEL HEAVEN</Link><p>Your time. Your space. Your stay.</p><Link to="/accommodations">Explore more rooms <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link></footer>
   </main>{authOpen && !user && <AuthModal onClose={() => setAuthOpen(false)} />}</div>
 }

@@ -1,3 +1,5 @@
+import LoadingSkeleton from '../common/LoadingSkeleton'
+import EmptyState from '../common/EmptyState'
 import { useState, type FormEvent } from 'react'
 import { saveMarketingPreference } from '../../api/profile'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
@@ -27,11 +29,11 @@ export default function SettingsPage() {
 
   return <main className={styles.page}>
     <h1>Settings</h1><p>Choose how you hear from Hotel Heaven.</p>
-    {loading && <p role="status">Loading settings...</p>}
+    {loading && <LoadingSkeleton label="Loading settings..." count={3} />}
     {(error || sessionError) && <p role="alert" className={styles.error}>{error || sessionError}</p>}
     {status === 'failed' && <button onClick={() => void dispatch(loadSession())}>Retry loading settings</button>}
     {message && <p role="status" className={styles.success}>{message}</p>}
-    {!loading && !user && <a href="/">Return home to sign in</a>}
+    {!loading && !user && <EmptyState title="Make yourself at home." action={<a href="/">Go home to sign in</a>}>Sign in to manage your personal account.</EmptyState>}
     {user && <section className={styles.panel}><h2>Promotions</h2><p>Receive hotel offers and promotional notifications. Booking updates are sent separately.</p>
       <form onSubmit={save}><fieldset disabled={busy}>
         <label className={styles.checkbox}><input type="checkbox" checked={preference ?? user.marketing_opt_in} onChange={e => setPreference(e.target.checked)} />Send me hotel promotions and special offers.</label>

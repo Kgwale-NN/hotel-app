@@ -1,3 +1,6 @@
+import LoadingSkeleton from '../common/LoadingSkeleton'
+import EmptyState from '../common/EmptyState'
+import { ArrowUpRight } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { createBooking, createBookingPayment, getAvailableRooms, type AvailableRoom } from '../../api/bookings'
@@ -78,10 +81,11 @@ export default function BookingForm({ accommodationId }: BookingFormProps) {
         <label>Adults<input type="number" name="adults" min="1" max="100" step="1" value={adults} onChange={event => { setAdults(Number(event.target.value)); resetSearch() }} required /></label>
         <label>Children<input type="number" name="children" min="0" max="100" step="1" value={children} onChange={event => { setChildren(Number(event.target.value)); resetSearch() }} required /></label>
       </fieldset>
-      <button className={styles.searchButton} type="submit" disabled={locked}>{loading ? 'Checking rooms...' : 'Check availability'}<span aria-hidden="true">↗</span></button>
+      <button className={styles.searchButton} type="submit" disabled={locked}>{loading ? 'Checking rooms...' : 'Check availability'}<span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></button>
     </form>
     {error && <p className={styles.error} role="alert">{error}</p>}
-    {message && <p className={styles.notice} role="status">{message}</p>}
+    {loading && <LoadingSkeleton count={2} label="Checking room availability" />}
+    {message && !availableRooms.length && !loading ? <EmptyState kind="search" title="Let’s try another date.">{message}</EmptyState> : message && <p className={styles.notice} role="status">{message}</p>}
     {availableRooms.length > 0 && <>
       <fieldset className={styles.roomChoices} disabled={bookingLoading || Boolean(reservationId)}>
         <legend>Select your room</legend>
@@ -91,11 +95,11 @@ export default function BookingForm({ accommodationId }: BookingFormProps) {
           <span className={styles.roomPrice}>{room.currency} {Number(room.price_per_night).toLocaleString('en-ZA')}<small>/ night</small></span>
         </label>)}
       </fieldset>
-      <button className={styles.reserveButton} type="button" onClick={() => void handleCreateBooking()} disabled={!selectedRoomId || bookingLoading || checkingAccount}>{bookingLoading ? 'Preparing checkout...' : reservationId ? 'Retry payment' : !user ? 'Sign in to reserve' : 'Reserve & continue to payment'}<span aria-hidden="true">↗</span></button>
-      <p className={styles.helper}>{reservationId ? 'You can also continue payment from your booking history.' : 'Payment is completed securely with Paystack after reservation.'}</p>
+      <button className={styles.reserveButton} type="button" onClick={() => void handleCreateBooking()} disabled={!selectedRoomId || bookingLoading || checkingAccount}>{bookingLoading ? 'Preparing checkout...' : reservationId ? 'Retry payment' : !user ? 'Sign in to reserve' : 'Reserve & continue to payment'}<span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></button>
+      <p className={styles.helper}>{reservationId ? 'You can also continue payment from your booking history.' : 'Pay securely with Paystack, then await confirmation from the hotel.'}</p>
     </>}
     {bookingMessage && <p className={styles.error} role="alert">{bookingMessage}</p>}
-    {reservationId && !bookingLoading && <Link className={styles.bookingsLink} to="/profile/bookings">Go to My bookings ↗</Link>}
+    {reservationId && !bookingLoading && <Link className={styles.bookingsLink} to="/profile/bookings">Go to My bookings <ArrowUpRight size={16} aria-hidden="true" /></Link>}
     {authOpen && !user && <AuthModal onClose={() => setAuthOpen(false)} />}
   </section>
 }

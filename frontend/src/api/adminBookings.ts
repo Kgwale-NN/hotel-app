@@ -9,6 +9,7 @@ export type AdminBooking = {
   check_out: string
   adults: number
   children: number
+  payment_received?: boolean
   status: BookingStatus
   currency: string
   special_requests: string | null

@@ -1,3 +1,5 @@
+import LoadingSkeleton from '../common/LoadingSkeleton'
+import EmptyState from '../common/EmptyState'
 import { useState, type FormEvent } from 'react'
 import { saveProfile } from '../../api/profile'
 import styles from './ProfilePage.module.css'
@@ -29,11 +31,11 @@ export default function ProfilePage() {
 
   return <main className={styles.page}>
     <h1>My profile</h1><p>View and update your personal details.</p>
-    {loading && <p role="status">Loading your profile...</p>}
+    {loading && <LoadingSkeleton label="Loading your profile..." count={3} />}
     {(error || sessionError) && <p role="alert" className={styles.error}>{error || sessionError}</p>}
     {status === 'failed' && <button disabled={busy} onClick={() => void dispatch(loadSession())}>Retry loading profile</button>}
     {message && <p role="status" className={styles.success}>{message}</p>}
-    {!loading && !profile && <a href="/">Return home to sign in</a>}
+    {!loading && !profile && <EmptyState title="Make yourself at home." action={<a href="/">Go home to sign in</a>}>Sign in to manage your personal account.</EmptyState>}
     {profile && <section className={styles.panel}><h2>Personal details</h2>
       <label>Email address<p>{profile.email}</p></label>
       <form onSubmit={save}><fieldset disabled={busy}>

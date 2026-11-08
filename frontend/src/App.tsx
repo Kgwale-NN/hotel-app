@@ -1,28 +1,32 @@
+import { lazy, Suspense } from 'react'
+import EmptyState from './components/common/EmptyState'
+import LoadingSkeleton from './components/common/LoadingSkeleton'
 import { PageHistory } from './components/layout/NavigationHistory'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import HomePage from './components/hotel/HomePage'
-import AuthReturn from './components/auth/AuthReturn'
-import PaymentReturn from './components/payments/PaymentReturn'
-import AccommodationPage from './components/accommodation/AccommodationPage'
-import AccommodationSearch from './components/accommodation/AccommodationSearch'
-import MyBookings from './components/profile/MyBookings'
-import AccountPageLayout from './components/profile/AccountPageLayout'
-import SettingsPage from './components/profile/SettingsPage'
-import ProfilePage from './components/profile/ProfilePage'
-import NotificationsPage from './components/profile/NotificationsPage'
-import MyFavourites from './components/profile/MyFavourites'
-import AdminReservations from './components/admin/AdminReservations'
-import AdminAccommodations from './components/admin/AdminAccommodations'
-import AdminLayout from './components/admin/AdminLayout'
-import AdminDashboard from './components/admin/AdminDashboard'
-import { AdminProfile, AdminSettings } from './components/admin/AdminAccount'
-import AdminUpdates from './components/admin/AdminUpdates'
+const AuthReturn = lazy(() => import('./components/auth/AuthReturn'))
+const PaymentReturn = lazy(() => import('./components/payments/PaymentReturn'))
+const AccommodationPage = lazy(() => import('./components/accommodation/AccommodationPage'))
+const AccommodationSearch = lazy(() => import('./components/accommodation/AccommodationSearch'))
+const MyBookings = lazy(() => import('./components/profile/MyBookings'))
+const AccountPageLayout = lazy(() => import('./components/profile/AccountPageLayout'))
+const SettingsPage = lazy(() => import('./components/profile/SettingsPage'))
+const ProfilePage = lazy(() => import('./components/profile/ProfilePage'))
+const NotificationsPage = lazy(() => import('./components/profile/NotificationsPage'))
+const MyFavourites = lazy(() => import('./components/profile/MyFavourites'))
+const AdminReservations = lazy(() => import('./components/admin/AdminReservations'))
+const AdminAccommodations = lazy(() => import('./components/admin/AdminAccommodations'))
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout'))
+const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard'))
+const AdminProfile = lazy(() => import('./components/admin/AdminAccount').then(module => ({ default: module.AdminProfile })))
+const AdminSettings = lazy(() => import('./components/admin/AdminAccount').then(module => ({ default: module.AdminSettings })))
+const AdminUpdates = lazy(() => import('./components/admin/AdminUpdates'))
 
 function App() {
   return (
     <BrowserRouter>
       <PageHistory />
-      <Routes>
+      <Suspense fallback={<main style={{ maxWidth: 1100, margin: "0 auto", padding: 24 }}><LoadingSkeleton label="Opening page" /></main>}><Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/auth/return" element={<AuthReturn />} />
         <Route path="/payments/return" element={<PaymentReturn />} />
@@ -39,11 +43,13 @@ function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="reservations" element={<AdminReservations />} />
           <Route path="accommodations" element={<AdminAccommodations />} />
+          <Route path="notifications" element={<NotificationsPage admin />} />
           <Route path="updates" element={<AdminUpdates />} />
           <Route path="profile" element={<AdminProfile />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
-      </Routes>
+        <Route path="*" element={<main style={{ maxWidth: 850, margin: "80px auto", padding: 20 }}><EmptyState title="This page could not be found." action={<Link to="/">Back to home</Link>}>Follow a link from the hotel homepage to continue exploring.</EmptyState></main>} />
+      </Routes></Suspense>
     </BrowserRouter>
   )
 }

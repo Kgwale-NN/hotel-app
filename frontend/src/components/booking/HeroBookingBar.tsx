@@ -1,3 +1,4 @@
+import { ArrowUpRight } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import styles from './HeroBookingBar.module.css'
 
@@ -116,7 +117,7 @@ function HeroBookingBar({ onSearch }: Props) {
       </label>
 
       <button className={styles.searchButton} type="submit">
-        Check availability <span aria-hidden="true">↗</span>
+        Check availability <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span>
       </button>
     </form>
   )

@@ -1,3 +1,5 @@
+import LoadingSkeleton from '../common/LoadingSkeleton'
+import EmptyState from '../common/EmptyState'
 import { useEffect, useState, type FormEvent } from 'react'
 import { getAccommodationReviews, writeReview } from '../../api/reviews'
 import type { AccommodationReviews } from '../../types/review'
@@ -55,9 +57,9 @@ export default function AccommodationReviewsSection({ accommodationId }: { accom
     <h2 id="reviews-title">Guest reviews</h2>
     {error && <p role="alert" className={styles.error}>{error}</p>}
     {message && <p role="status">{message}</p>}
-    {!reviews ? <><p role="status">{error ? 'Reviews are unavailable.' : 'Loading reviews…'}</p>{error && <button onClick={() => setRefresh(value => value + 1)}>Retry</button>}</> : <>
+    {!reviews ? <>{!error && <LoadingSkeleton label="Loading reviews" count={2} />}{error && <button onClick={() => setRefresh(value => value + 1)}>Retry</button>}</> : <>
       <p>{reviews.count ? `${Number(reviews.average_rating).toFixed(1)} / 5` : 'No rating yet'} · {reviews.count} review{reviews.count === 1 ? '' : 's'}</p>
-      {reviews.reviews.length === 0 && <p>No guest reviews yet.</p>}
+      {reviews.reviews.length === 0 && <EmptyState kind="reviews" title="Every stay has a story.">No guest reviews yet. Guests can share their experience after a completed stay.</EmptyState>}
       {reviews.reviews.map(review => <article className={styles.review} key={review.id}>
         <h3>{review.guest_name}{review.user_id === userId ? ' (you)' : ''}</h3><p>{review.rating} / 5</p><p className={styles.comment}>{review.comment}</p>
         <time dateTime={review.created_at}>{new Date(review.created_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })}</time>

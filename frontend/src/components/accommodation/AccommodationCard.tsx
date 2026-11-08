@@ -6,7 +6,7 @@ import styles from '../hotel/RoomHighlights.module.css'
 export default function AccommodationCard({ accommodation }: { accommodation: AccommodationSummary }) {
   const photo = accommodation.cover_image || roomPhotoByName[accommodation.name]
   return <article className={styles.card}>
-    {photo ? <img className={styles.image} src={photo} alt={accommodation.name} loading="lazy" /> : <div className={styles.imageFallback}>Photo coming soon</div>}
+    {photo ? <img decoding="async" className={styles.image} src={photo} alt={accommodation.name} loading="lazy" /> : <div className={styles.imageFallback}>Photo coming soon</div>}
     <div className={styles.cardContent}>
       <p className={styles.roomType}>{accommodation.room_type}</p><h3>{accommodation.name}</h3>
       <p>{accommodation.hotel_name} · {accommodation.city}, {accommodation.country}</p>

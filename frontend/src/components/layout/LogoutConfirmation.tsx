@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import AccountMenuIcon from './AccountMenuIcon'
 import styles from './LogoutConfirmation.module.css'
@@ -23,7 +24,7 @@ export default function LogoutConfirmation({ busy, error, onCancel, onConfirm }:
     const bounds = event.currentTarget.getBoundingClientRect()
     if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) onCancel()
   }}>
-    <button type="button" className={styles.close} aria-label="Cancel logout" disabled={busy} onClick={onCancel}>×</button>
+    <button type="button" className={styles.close} aria-label="Cancel logout" disabled={busy} onClick={onCancel}><X size={18} aria-hidden="true" /></button>
     <div className={styles.icon}><AccountMenuIcon name="logout" /></div>
     <p className={styles.eyebrow}>HOTEL HEAVEN</p>
     <h2 id="logout-title">Ready to log out?</h2>

@@ -1,3 +1,4 @@
+import { Sparkles, ArrowUpRight, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './SiteFooter.module.css'
@@ -53,7 +54,7 @@ export default function SiteFooter() {
       <div className={styles.shell}>
         <div className={styles.columns}>
           <section className={styles.about} id="about" aria-label="About Hotel Heaven">
-            <a className={styles.brand} href="#home"><span aria-hidden="true">✳</span>HOTEL HEAVEN</a>
+            <a className={styles.brand} href="#home"><span aria-hidden="true"><Sparkles size={18} aria-hidden="true" /></span>HOTEL HEAVEN</a>
             <p>A welcoming place to pause in Polokwane. Find comfortable rooms, thoughtful details and a little more time for yourself.</p>
             <span className={styles.location}>POLOKWANE · LIMPOPO</span>
           </section>
@@ -64,7 +65,7 @@ export default function SiteFooter() {
               <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
               <div>112 Magazyn St<br />Polokwane Ext 4<br />Polokwane, 0700<br />South Africa</div>
             </address>
-            <a className={styles.textLink} href="https://www.google.com/maps?q=-23.897154,29.464561" target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true">↗</span></a>
+            <a className={styles.textLink} href="https://www.google.com/maps?q=-23.897154,29.464561" target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></a>
           </section>
 
           <nav aria-labelledby="footer-info-title">
@@ -92,7 +93,7 @@ export default function SiteFooter() {
           <section className={styles.updates} aria-labelledby="footer-updates-title">
             <h2 id="footer-updates-title">Stay in the know</h2>
             <p>Choose whether to receive hotel offers in your account. Manage your preferences whenever you like.</p>
-            <Link className={styles.updatesButton} to="/profile">Manage updates <span aria-hidden="true">↗</span></Link>
+            <Link className={styles.updatesButton} to="/profile">Manage updates <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link>
             <h3>Share Hotel Heaven</h3>
             <div className={styles.social}>
               <a href={'https://www.facebook.com/sharer/sharer.php?u=' + shareUrl} target="_blank" rel="noopener noreferrer" aria-label="Share Hotel Heaven on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 21v-8h3l.5-4H14V7c0-1 .5-1.5 1.5-1.5H18V2h-3c-3.5 0-5 2-5 5v2H7v4h3v8Z"/></svg></a>
@@ -109,10 +110,10 @@ export default function SiteFooter() {
         </div>
       </div>
       {openInfo && <dialog ref={dialogRef} className={styles.dialog} aria-labelledby="footer-dialog-title" onCancel={event => { event.preventDefault(); setOpenInfo(null) }}>
-        <button ref={closeButtonRef} type="button" className={styles.close} aria-label="Close information" onClick={() => setOpenInfo(null)}>×</button>
+        <button ref={closeButtonRef} type="button" className={styles.close} aria-label="Close information" onClick={() => setOpenInfo(null)}><X size={18} aria-hidden="true" /></button>
         <h2 id="footer-dialog-title">{information[openInfo].title}</h2>
         {information[openInfo].paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
-        <Link to="/profile" onClick={() => setOpenInfo(null)}>Go to My account <span aria-hidden="true">↗</span></Link>
+        <Link to="/profile" onClick={() => setOpenInfo(null)}>Go to My account <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link>
       </dialog>}
     </footer>
   )

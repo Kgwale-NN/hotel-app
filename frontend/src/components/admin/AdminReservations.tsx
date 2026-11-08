@@ -1,3 +1,5 @@
+import LoadingSkeleton from '../common/LoadingSkeleton'
+import EmptyState from '../common/EmptyState'
 import { useEffect, useState, type FormEvent } from 'react'
 import { changeAdminBooking, completeAdminBooking, getAdminBookings, type AdminBooking, type BookingStatus } from '../../api/adminBookings'
 import styles from './AdminReservations.module.css'
@@ -67,7 +69,7 @@ export default function AdminReservations() {
         <h1>Reservations</h1>
         <p className={styles.intro}>Manage upcoming stays and keep every guest detail in order.</p>
         <div className={styles.summary}>
-          {[['Total reservations', bookings.length], ['Pending approval', bookings.filter(b => b.status === 'pending').length], ['Confirmed stays', bookings.filter(b => b.status === 'confirmed').length]].map(([label, count]) => <div key={label}><span>{label}</span><strong>{loading ? '—' : count}</strong></div>)}
+          {[['Total reservations', bookings.length], ['Pending approval', bookings.filter(b => b.status === 'pending' && b.payment_received).length], ['Confirmed stays', bookings.filter(b => b.status === 'confirmed').length]].map(([label, count]) => <div key={label}><span>{label}</span><strong>{loading ? '—' : count}</strong></div>)}
         </div>
         <div className={styles.filters}>
           <label>Search reservations<input type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Guest, reference or room…" /></label>
@@ -75,16 +77,16 @@ export default function AdminReservations() {
         </div>
         {notice && <p className={styles.notice} role="status">{notice}</p>}
         {error && <p className={styles.error} role="alert">{error} <a href="/api/auth/google">Sign in</a></p>}
-        {loading ? <p role="status">Loading reservations…</p> : <p className={styles.count}>{visible.length} reservation{visible.length === 1 ? '' : 's'}</p>}
-        {!loading && !error && visible.length === 0 && <div className={styles.empty}>No reservations match your search.</div>}
+        {loading ? <LoadingSkeleton label="Loading reservations…" /> : <p className={styles.count}>{visible.length} reservation{visible.length === 1 ? '' : 's'}</p>}
+        {!loading && !error && visible.length === 0 && <EmptyState kind="bookings" title="No reservations found.">New records will appear here. If you have applied filters, try clearing them.</EmptyState>}
         <div className={styles.list}>
           {visible.map(booking => <article className={styles.card} key={booking.id}>
-            <div className={styles.cardHeading}><div><p className={styles.reference}>REF {booking.id}</p><h2>{booking.guest_name || 'Hotel guest'}</h2><a href={`mailto:${booking.guest_email}`}>{booking.guest_email}</a></div><span className={`${styles.badge} ${styles[booking.status]}`}>{booking.status}</span></div>
+            <div className={styles.cardHeading}><div><p className={styles.reference}>REF {booking.id}</p><h2>{booking.guest_name || 'Hotel guest'}</h2><a href={`mailto:${booking.guest_email}`}>{booking.guest_email}</a></div><span className={`${styles.badge} ${styles[booking.status]}`}>{booking.status === 'pending' ? (booking.payment_received ? 'Paid - awaiting approval' : 'Awaiting payment') : booking.status}</span></div>
             <div className={styles.facts}><div><span>Check-in</span><strong>{dateLabel(booking.check_in)}</strong></div><div><span>Check-out</span><strong>{dateLabel(booking.check_out)}</strong></div><div><span>Guests</span><strong>{booking.adults} adult{booking.adults === 1 ? '' : 's'} · {booking.children} children</strong></div><div><span>Hotel</span><strong>{booking.hotel_name}</strong></div></div>
             <ul className={styles.rooms}>{booking.rooms.map(room => <li key={room.room_id}><span>{room.accommodation_name} <small>Room {room.room_number}</small></span><span>{booking.currency} {Number(room.price_per_night).toLocaleString('en-ZA')} / night</span></li>)}</ul>
             {booking.special_requests && <p className={styles.notes}><strong>Guest requests:</strong> {booking.special_requests}</p>}
             {booking.cancellation_reason && <p className={styles.notes}><strong>Cancellation reason:</strong> {booking.cancellation_reason}</p>}
-            {booking.status === 'pending' && <div className={styles.actions}><button disabled={busy} onClick={() => { setPanel({ id: booking.id, mode: 'approve' }); setError('') }}>Approve reservation</button><button disabled={busy} className={styles.secondary} onClick={() => { setPanel({ id: booking.id, mode: 'edit' }); setError('') }}>Edit details</button><button disabled={busy} className={styles.cancel} onClick={() => { setPanel({ id: booking.id, mode: 'cancel' }); setError('') }}>Cancel reservation</button></div>}
+            {booking.status === 'pending' && <div className={styles.actions}><button disabled={busy || !booking.payment_received} title={booking.payment_received ? "Confirm this paid reservation" : "Payment is required before approval"} onClick={() => { setPanel({ id: booking.id, mode: 'approve' }); setError('') }}>Approve reservation</button><button disabled={busy} className={styles.secondary} onClick={() => { setPanel({ id: booking.id, mode: 'edit' }); setError('') }}>Edit details</button><button disabled={busy} className={styles.cancel} onClick={() => { setPanel({ id: booking.id, mode: 'cancel' }); setError('') }}>Cancel reservation</button></div>}
             {booking.status === 'confirmed' && <div className={styles.actions}><button disabled={busy} onClick={() => { setPanel({ id: booking.id, mode: 'complete' }); setError('') }}>Mark stay completed</button></div>}
             {panel?.id === booking.id && <form key={`${booking.id}-${panel.mode}`} className={styles.editor} onSubmit={event => submit(event, booking)}>
               <h3>{panel.mode === 'edit' ? 'Edit reservation' : panel.mode === 'cancel' ? 'Cancel this reservation?' : panel.mode === 'complete' ? 'Complete this stay?' : 'Approve this reservation?'}</h3>

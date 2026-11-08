@@ -15,6 +15,7 @@ export type MyBooking = {
   adults: number
   children: number
   status: string
+  payment_received?: boolean
   payment_due_at: string | null
   currency: string
   taxes_and_fees: string

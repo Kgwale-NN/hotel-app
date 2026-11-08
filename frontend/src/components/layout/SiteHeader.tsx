@@ -1,3 +1,4 @@
+import { Sparkles, ArrowUpRight } from 'lucide-react'
 import { useState } from 'react'
 import { useAppSelector } from '../../store/hooks'
 import SiteMenu from './SiteMenu'
@@ -32,7 +33,7 @@ function SiteHeader() {
           </button>
 
           <a href="/" className={styles.brand} aria-label="Hotel Heaven home">
-            <span className={styles.brandMark} aria-hidden="true">✳</span>
+            <span className={styles.brandMark} aria-hidden="true"><Sparkles size={18} aria-hidden="true" /></span>
             <span className={styles.brandName}>HOTEL HEAVEN</span>
           </a>
 
@@ -41,7 +42,7 @@ function SiteHeader() {
               <span className={styles.accountLink}>Account…</span>
             ) : (
               signedInGuest ? (
-                <a href="/accommodations" className={styles.bookButton}>Book now <span aria-hidden="true">↗</span></a>
+                <a href="/accommodations" className={styles.bookButton}>Book now <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></a>
               ) : user ? (
                 <a href={user.role === 'admin' ? '/admin' : '/profile'} className={styles.accountLink}>{user.role === 'admin' ? 'Dashboard' : 'My account'}</a>
               ) : (
@@ -63,7 +64,7 @@ function SiteHeader() {
               </button>
             ) : (
               <a href="/accommodations" className={styles.bookButton}>
-                Book now <span aria-hidden="true">↗</span>
+                Book now <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span>
               </a>
             )}
           </div>

@@ -1,3 +1,4 @@
+import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { MyBooking } from '../../api/bookings'
@@ -24,13 +25,13 @@ export default function BookingCard({ booking, busy, payingId, cancellingId, onP
   const [confirmCancel, setConfirmCancel] = useState(false)
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
-    const timer = window.setInterval(() => setNow(Date.now()), 1000)
+    const timer = window.setInterval(() => setNow(Date.now()), 60000)
     return () => window.clearInterval(timer)
   }, [])
   let price: ReturnType<typeof bookingPriceDetails> | null = null
   try { price = bookingPriceDetails(booking) } catch { /* Keep booking information available when historical price data is incomplete. */ }
-  const canPay = booking.status === 'pending' && booking.payment_due_at !== null && new Date(booking.payment_due_at).getTime() > now
-  const isPending = booking.status === 'pending'
+  const canPay = !booking.payment_received && booking.status === 'pending' && booking.payment_due_at !== null && new Date(booking.payment_due_at).getTime() > now
+  const isPending = booking.status === 'pending' && !booking.payment_received
   const statusClass = ['confirmed', 'pending', 'completed', 'cancelled', 'expired'].includes(booking.status) ? booking.status : 'unknown'
 
   return <article className={styles.bookingCard} id={`booking-${booking.id}`} tabIndex={-1} aria-labelledby={`booking-title-${booking.id}`}>
@@ -40,8 +41,8 @@ export default function BookingCard({ booking, busy, payingId, cancellingId, onP
         {price && <span className={styles.nightsBadge}>{price.nights} {price.nights === 1 ? 'night' : 'nights'}</span>}
       </div>
       <div className={styles.cardBody}>
-        <div className={styles.cardHeading}><div><p className={styles.hotelName}>{booking.hotel_name}</p><h2 id={`booking-title-${booking.id}`}>{room?.accommodation_name || 'Your hotel stay'}{booking.rooms.length > 1 && <small> + {booking.rooms.length - 1} more</small>}</h2></div><span className={`${styles.status} ${styles[statusClass]}`}><span aria-hidden="true" />{statusLabels[booking.status] || booking.status}</span></div>
-        <div className={styles.stayDates}><div><span>CHECK-IN</span><strong>{formatStayDate(booking.check_in)}</strong></div><span className={styles.dateArrow} aria-hidden="true">→</span><div><span>CHECK-OUT</span><strong>{formatStayDate(booking.check_out)}</strong></div></div>
+        <div className={styles.cardHeading}><div><p className={styles.hotelName}>{booking.hotel_name}</p><h2 id={`booking-title-${booking.id}`}>{room?.accommodation_name || 'Your hotel stay'}{booking.rooms.length > 1 && <small> + {booking.rooms.length - 1} more</small>}</h2></div><span className={`${styles.status} ${styles[statusClass]}`}><span aria-hidden="true" />{booking.status === 'pending' && booking.payment_received ? 'Awaiting approval' : statusLabels[booking.status] || booking.status}</span></div>
+        <div className={styles.stayDates}><div><span>CHECK-IN</span><strong>{formatStayDate(booking.check_in)}</strong></div><span className={styles.dateArrow} aria-hidden="true"><ArrowRight size={18} aria-hidden="true" /></span><div><span>CHECK-OUT</span><strong>{formatStayDate(booking.check_out)}</strong></div></div>
         <div className={styles.guestDetails}><span><AccountMenuIcon name="profile" />{booking.adults} {booking.adults === 1 ? 'adult' : 'adults'}{booking.children ? ` · ${booking.children} ${booking.children === 1 ? 'child' : 'children'}` : ''}</span><span><AccountMenuIcon name="bookings" />{booking.rooms.length} {booking.rooms.length === 1 ? 'room' : 'rooms'}</span></div>
         <div className={styles.rooms}>{booking.rooms.map(item => <p key={item.room_id}>{booking.rooms.length > 1 ? `${item.accommodation_name} · ` : ''}Room {item.room_number}<span>{formatBookingMoney(item.price_per_night, booking.currency)} / night</span></p>)}</div>
       </div>
@@ -49,11 +50,12 @@ export default function BookingCard({ booking, busy, payingId, cancellingId, onP
     <div className={styles.cardFooter}>
       <div className={styles.price}><small>Booking total</small><strong>{price ? formatBookingMoney(price.total, booking.currency) : 'See booking details'}</strong>{price && price.fees > 0 && <span>Includes taxes and fees</span>}</div>
       <div className={styles.cardActions}>
-        {room && <Link className={styles.secondary} to={`/accommodations/${encodeURIComponent(room.accommodation_id)}`}>View room <span aria-hidden="true">↗</span></Link>}
-        {canPay && <button type="button" className={styles.primary} disabled={busy} onClick={() => onPay(booking.id)}>{payingId === booking.id ? 'Opening checkout...' : 'Continue payment'} <span aria-hidden="true">↗</span></button>}
+        {room && <Link className={styles.secondary} to={`/accommodations/${encodeURIComponent(room.accommodation_id)}`}>View room <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link>}
+        {canPay && <button type="button" className={styles.primary} disabled={busy} onClick={() => onPay(booking.id)}>{payingId === booking.id ? 'Opening checkout...' : 'Continue payment'} <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></button>}
         {isPending && <button type="button" className={styles.cancelButton} disabled={busy} onClick={() => setConfirmCancel(true)}>{cancellingId === booking.id ? 'Cancelling...' : 'Cancel booking'}</button>}
       </div>
     </div>
+    {booking.status === 'pending' && booking.payment_received && <p className={styles.deadline}>Payment received. The hotel is reviewing your reservation. You will be notified when it is confirmed.</p>}
     {isPending && !canPay && <p className={styles.deadline}>The online payment deadline has passed. You can cancel this reservation or contact the hotel.</p>}
     {confirmCancel && isPending && <div className={styles.confirm}><h3>Cancel this booking?</h3><p>Your room reservation will be cancelled.</p><div className={styles.cardActions}><button type="button" className={styles.primary} disabled={busy} onClick={() => onCancel(booking.id)}>{cancellingId === booking.id ? 'Cancelling...' : 'Yes, cancel booking'}</button><button type="button" className={styles.secondary} disabled={busy} onClick={() => setConfirmCancel(false)}>Keep my booking</button></div></div>}
     <div className={styles.cardDetails}>

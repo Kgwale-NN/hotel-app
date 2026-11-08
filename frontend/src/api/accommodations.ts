@@ -17,7 +17,7 @@ export async function getFeaturedAccommodations(): Promise<
 > {
   const rooms: AccommodationSummary[] = []
   let page = 1
-  let totalPages = 1
+  let totalPages: number
   do {
     const response = await fetch(
       '/api/accommodations?page_size=100&sort=name_asc&page=' + page,
