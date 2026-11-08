@@ -18,6 +18,7 @@
   overflow: hidden;
   background-color: #211f1b;
 }
+
 .hero::before {
   content: '';
   position: absolute;
@@ -25,17 +26,15 @@
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(
-      180deg,
+    linear-gradient(180deg,
       rgb(0 0 0 / 45%),
       rgb(0 0 0 / 48%) 45%,
-      rgb(0 0 0 / 62%)
-    ),
+      rgb(0 0 0 / 62%)),
     url('../../assets/hero-section-background-picture.jpg') center 68% / cover no-repeat;
   transform-origin: center 68%;
   animation: heroPhotoArrival 3200ms cubic-bezier(0.45, 0, 0.2, 1) 180ms both;
 }
-  
+
 .heroContent {
   display: grid;
   align-content: center;
@@ -62,6 +61,7 @@
   transform-origin: center;
   animation: heroHeadlineArrival 2800ms cubic-bezier(0.45, 0, 0.2, 1) 180ms both;
 }
+
 .heroBooking {
   width: 100%;
   max-width: 1440px;
@@ -99,8 +99,8 @@
   font-weight: 400;
 }
 
-.introduction > p:last-child,
-.booking > p {
+.introduction>p:last-child,
+.booking>p {
   max-width: 550px;
   margin: 0 auto;
   line-height: 1.7;
@@ -112,29 +112,32 @@
 
 @media (max-width: 600px) {
   .hero {
-  min-height: 100svh;
-  padding: 220px 12px 20px;
-  gap: 32px;
-}
+    min-height: 100svh;
+    padding: 220px 12px 20px;
+    gap: 32px;
+  }
 
-.heroContent {
-  padding: 24px 12px;
-}
+  .heroContent {
+    padding: 24px 12px;
+  }
 
   .introduction,
   .booking {
     padding: 4rem 1.5rem;
   }
 }
+
 @keyframes heroHeadlineArrival {
   0% {
     opacity: 0;
     transform: translateY(8px) scale(0.975);
   }
+
   55% {
     opacity: 1;
     transform: translateY(0) scale(1.018);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -142,13 +145,23 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .heroContent h1,
   .hero::before {
     animation: none;
   }
 }
+
 @keyframes heroPhotoArrival {
-  0% { transform: scale(1.012); }
-  55% { transform: scale(1.035); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1.012);
+  }
+
+  55% {
+    transform: scale(1.035);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }

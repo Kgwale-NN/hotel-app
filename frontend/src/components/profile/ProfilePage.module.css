@@ -1,15 +1,140 @@
-.page { max-width: 850px; margin: auto; padding: 2rem 1.25rem 5rem; color: #253b33; font-family: Arial, sans-serif; }
-.nav, .actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }.nav { margin-bottom: 3rem; }.page a { color: inherit; }.nav [aria-current] { font-weight: bold; }
-.page h1 { font: 400 3rem Georgia, serif; }.page h2 { font: 400 1.8rem Georgia, serif; }.page p { line-height: 1.6; overflow-wrap: anywhere; }
-.panel { background: white; padding: clamp(1rem, 4vw, 2rem); border: 1px solid #d9ded4; margin: 1.5rem 0; }
-.page fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 1.2rem; }.page label { display: grid; gap: .5rem; font-size: .9rem; }
-.page input:not([type=checkbox]) { width: 100%; padding: .85rem; border: 1px solid #b9c5b9; font: inherit; color: inherit; }
-.page button { width: fit-content; background: #253b33; color: white; padding: .85rem 1.2rem; border: 1px solid #253b33; cursor: pointer; font: inherit; font-size: .85rem; }.page button:disabled { opacity: .5; cursor: wait; }
-.page .checkbox { display: flex; align-items: center; gap: .8rem; margin: 1.25rem 0; line-height: 1.6; }.checkbox input { width: 1.1rem; height: 1.1rem; flex-shrink: 0; }
-.error { background: #fae9e3; color: #843e31; padding: 1rem; }.success { background: #e2f0e5; padding: 1rem; }.page :focus-visible { outline: 3px solid #ad955c; outline-offset: 3px; }
+.page {
+    max-width: 850px;
+    margin: auto;
+    padding: 2rem 1.25rem 5rem;
+    color: #253b33;
+    font-family: Arial, sans-serif;
+}
 
-.page { color: #362b23; }
-.panel { border-color: #e3d9cd; border-radius: 16px; }
-.page button { background: #755334; border-color: #755334; border-radius: 10px; }
-.page input:not([type=checkbox]) { box-sizing: border-box; border-color: #dfcdb6; border-radius: 10px; }
-.checkbox input { accent-color: #755334; }
+.nav,
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav {
+    margin-bottom: 3rem;
+}
+
+.page a {
+    color: inherit;
+}
+
+.nav [aria-current] {
+    font-weight: bold;
+}
+
+.page h1 {
+    font: 400 3rem Georgia, serif;
+}
+
+.page h2 {
+    font: 400 1.8rem Georgia, serif;
+}
+
+.page p {
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.panel {
+    background: white;
+    padding: clamp(1rem, 4vw, 2rem);
+    border: 1px solid #d9ded4;
+    margin: 1.5rem 0;
+}
+
+.page fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.2rem;
+}
+
+.page label {
+    display: grid;
+    gap: .5rem;
+    font-size: .9rem;
+}
+
+.page input:not([type=checkbox]) {
+    width: 100%;
+    padding: .85rem;
+    border: 1px solid #b9c5b9;
+    font: inherit;
+    color: inherit;
+}
+
+.page button {
+    width: fit-content;
+    background: #253b33;
+    color: white;
+    padding: .85rem 1.2rem;
+    border: 1px solid #253b33;
+    cursor: pointer;
+    font: inherit;
+    font-size: .85rem;
+}
+
+.page button:disabled {
+    opacity: .5;
+    cursor: wait;
+}
+
+.page .checkbox {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    margin: 1.25rem 0;
+    line-height: 1.6;
+}
+
+.checkbox input {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+}
+
+.error {
+    background: #fae9e3;
+    color: #843e31;
+    padding: 1rem;
+}
+
+.success {
+    background: #e2f0e5;
+    padding: 1rem;
+}
+
+.page :focus-visible {
+    outline: 3px solid #ad955c;
+    outline-offset: 3px;
+}
+
+.page {
+    color: #362b23;
+}
+
+.panel {
+    border-color: #e3d9cd;
+    border-radius: 16px;
+}
+
+.page button {
+    background: #755334;
+    border-color: #755334;
+    border-radius: 10px;
+}
+
+.page input:not([type=checkbox]) {
+    box-sizing: border-box;
+    border-color: #dfcdb6;
+    border-radius: 10px;
+}
+
+.checkbox input {
+    accent-color: #755334;
+}

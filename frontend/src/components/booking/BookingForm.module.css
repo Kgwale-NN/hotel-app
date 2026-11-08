@@ -1,24 +1,220 @@
-.bookingForm { display: grid; gap: 20px; padding: 24px 26px 26px; color: #362b23; font-family: Arial, sans-serif; }
-.bookingForm h2 { margin: 0; font: 400 26px/1.2 Georgia, serif; }
-.intro { margin: 8px 0 0; font-size: 12px; color: #8b7d70; line-height: 1.6; }
-.bookingForm form { display: grid; gap: 16px; }
-.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; border: 0; margin: 0; padding: 0; min-width: 0; }
-.fields label { display: grid; gap: 8px; font-size: 11px; font-weight: 500; }
-.fields input { display: block; box-sizing: border-box; width: 100%; min-width: 0; min-height: 46px; padding: 11px 10px; border: 1px solid #dfd4c6; border-radius: 9px; background: #fff; color: #362b23; font: 12px Arial, sans-serif; color-scheme: light; }
-.fields input:focus { border-color: #987446; }
-.searchButton, .reserveButton { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 48px; padding: 13px 16px; border: 1px solid #755334; border-radius: 10px; background: #755334; color: #fffaf3; font: 500 12px Arial, sans-serif; text-align: left; cursor: pointer; transition: background 160ms ease; }
-.searchButton:hover:not(:disabled), .reserveButton:hover:not(:disabled) { background: #5e422c; }
-.bookingForm button:disabled { opacity: .5; cursor: not-allowed; }
-.bookingForm :focus-visible { outline: 2px solid #a57e4d; outline-offset: 3px; }
-.notice { margin: 0; color: #6d5942; font-size: 12px; line-height: 1.7; }
-.error { margin: 0; padding: 12px; border: 1px solid #eacfc5; border-radius: 10px; background: #fff2eb; color: #8d4235; font-size: 12px; line-height: 1.7; }
-.roomChoices { display: grid; gap: 9px; padding: 0; margin: 0; border: 0; min-width: 0; }.roomChoices legend { padding: 0 0 12px; font-size: 12px; font-weight: 600; }
-.roomChoice { display: flex; align-items: center; gap: 10px; min-height: 72px; padding: 12px; border: 1px solid #e4d9ca; border-radius: 10px; cursor: pointer; background: #fff; }
-.roomChoice input { flex: 0 0 16px; width: 16px; height: 16px; margin: 0; padding: 0; accent-color: #805c35; }.roomChoice > span { min-width: 0; }
-.roomChoice strong { display: block; font-size: 12px; font-weight: 500; }.roomChoice small { display: block; margin-top: 6px; font-size: 10px; color: #8b7d70; }.selected { border-color: #a77b46; background: #f8f1e7; }
-.roomPrice { margin-left: auto; text-align: right; font-size: 11px; }.roomPrice small { margin-top: 6px; }
-.helper { margin: -8px 0 0; font-size: 10px; color: #8b7d70; text-align: center; line-height: 1.7; }
-.bookingsLink { color: #755334; font-size: 12px; text-underline-offset: 4px; }
-@media (max-width: 999px) { .bookingForm { padding: 22px; } }
-@media (max-width: 760px) { .fields input { font-size: 14px; }.fields label { font-size: 12px; }.bookingForm h2 { font-size: 28px; } }
-@media (max-width: 360px) { .fields { grid-template-columns: 1fr; } }
+.bookingForm {
+    display: grid;
+    gap: 20px;
+    padding: 24px 26px 26px;
+    color: #362b23;
+    font-family: Arial, sans-serif;
+}
+
+.bookingForm h2 {
+    margin: 0;
+    font: 400 26px/1.2 Georgia, serif;
+}
+
+.intro {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #8b7d70;
+    line-height: 1.6;
+}
+
+.bookingForm form {
+    display: grid;
+    gap: 16px;
+}
+
+.fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+}
+
+.fields label {
+    display: grid;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.fields input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 11px 10px;
+    border: 1px solid #dfd4c6;
+    border-radius: 9px;
+    background: #fff;
+    color: #362b23;
+    font: 12px Arial, sans-serif;
+    color-scheme: light;
+}
+
+.fields input:focus {
+    border-color: #987446;
+}
+
+.searchButton,
+.reserveButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 48px;
+    padding: 13px 16px;
+    border: 1px solid #755334;
+    border-radius: 10px;
+    background: #755334;
+    color: #fffaf3;
+    font: 500 12px Arial, sans-serif;
+    text-align: left;
+    cursor: pointer;
+    transition: background 160ms ease;
+}
+
+.searchButton:hover:not(:disabled),
+.reserveButton:hover:not(:disabled) {
+    background: #5e422c;
+}
+
+.bookingForm button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.bookingForm :focus-visible {
+    outline: 2px solid #a57e4d;
+    outline-offset: 3px;
+}
+
+.notice {
+    margin: 0;
+    color: #6d5942;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.error {
+    margin: 0;
+    padding: 12px;
+    border: 1px solid #eacfc5;
+    border-radius: 10px;
+    background: #fff2eb;
+    color: #8d4235;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.roomChoices {
+    display: grid;
+    gap: 9px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.roomChoices legend {
+    padding: 0 0 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.roomChoice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 72px;
+    padding: 12px;
+    border: 1px solid #e4d9ca;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #fff;
+}
+
+.roomChoice input {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    padding: 0;
+    accent-color: #805c35;
+}
+
+.roomChoice>span {
+    min-width: 0;
+}
+
+.roomChoice strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.roomChoice small {
+    display: block;
+    margin-top: 6px;
+    font-size: 10px;
+    color: #8b7d70;
+}
+
+.selected {
+    border-color: #a77b46;
+    background: #f8f1e7;
+}
+
+.roomPrice {
+    margin-left: auto;
+    text-align: right;
+    font-size: 11px;
+}
+
+.roomPrice small {
+    margin-top: 6px;
+}
+
+.helper {
+    margin: -8px 0 0;
+    font-size: 10px;
+    color: #8b7d70;
+    text-align: center;
+    line-height: 1.7;
+}
+
+.bookingsLink {
+    color: #755334;
+    font-size: 12px;
+    text-underline-offset: 4px;
+}
+
+@media (max-width: 999px) {
+    .bookingForm {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 760px) {
+    .fields input {
+        font-size: 14px;
+    }
+
+    .fields label {
+        font-size: 12px;
+    }
+
+    .bookingForm h2 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 360px) {
+    .fields {
+        grid-template-columns: 1fr;
+    }
+}
