@@ -75,3 +75,11 @@ button.home { border: 0; border-bottom: 1px solid #e5d5ba; background: transpare
 .roomPhoto { display: block; width: 100%; height: 108px; object-fit: cover; border: 1px solid #e6d9c8; border-radius: 9px; }
 @media (max-width: 480px) { .roomLine { grid-template-columns: minmax(0, 1fr) 104px; gap: 12px; }.roomPhoto { height: 90px; }.roomLine h2 { font-size: 23px; } }
 @media (max-width: 350px) { .roomLine { grid-template-columns: minmax(0, 1fr) 88px; gap: 10px; }.roomPhoto { height: 84px; }.roomLine h2 { font-size: 21px; } }
+
+.summary { --photo-column: 144px; --room-column-gap: 20px; }
+.roomLine, .summary .dates { grid-template-columns: minmax(0, 1fr) var(--photo-column); column-gap: var(--room-column-gap); align-items: start; }
+.roomLine { margin-bottom: 0; }
+.roomSummary .guestCount { margin: 16px 0 0; }
+.summary .dates { border-top: 1px solid #eee4d7; margin-top: 22px; padding-top: 20px; }
+@media (max-width: 480px) { .summary { --photo-column: 104px; --room-column-gap: 12px; } }
+@media (max-width: 350px) { .summary { --photo-column: 88px; --room-column-gap: 10px; } }

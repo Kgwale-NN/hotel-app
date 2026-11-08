@@ -67,8 +67,17 @@ function PaymentReceipt({ reference }: { reference: string }) {
     {!loading && receipt && <>
       {booking && <section className={styles.summary} aria-label="Booking details">
         <p className={styles.label}>{confirmed ? 'CONFIRMATION NUMBER' : 'BOOKING REFERENCE'}</p><p className={styles.reference}>{booking.id}</p>
-        <div className={styles.roomSummary}>{booking.rooms.map(room => <div className={styles.roomLine} key={room.room_id}><div><h2>{room.accommodation_name}</h2><p>Room {room.room_number} · {booking.hotel_name}</p></div><ReceiptRoomPhoto room={room} /></div>)}
-          <p>{booking.rooms.length} {booking.rooms.length === 1 ? 'room' : 'rooms'} · {booking.adults} {booking.adults === 1 ? 'adult' : 'adults'}{booking.children > 0 ? ` · ${booking.children} ${booking.children === 1 ? 'child' : 'children'}` : ''}</p>
+        <div className={styles.roomSummary}>
+          {booking.rooms.map((room, index) => (
+            <div className={styles.roomLine} key={room.room_id}>
+              <div>
+                <h2>{room.accommodation_name}</h2>
+                <p>Room {room.room_number} · {booking.hotel_name}</p>
+                {index === 0 && <p className={styles.guestCount}>{booking.rooms.length} {booking.rooms.length === 1 ? 'room' : 'rooms'} · {booking.adults} {booking.adults === 1 ? 'adult' : 'adults'}{booking.children > 0 ? ` · ${booking.children} ${booking.children === 1 ? 'child' : 'children'}` : ''}</p>}
+              </div>
+              <ReceiptRoomPhoto room={room} />
+            </div>
+          ))}
         </div>
         <div className={styles.dates}><div><p className={styles.label}>CHECK-IN</p><strong>{formatStayDate(booking.check_in)}</strong>{booking.hotel_check_in_time && <small>After {booking.hotel_check_in_time.slice(0, 5)}</small>}</div><div><p className={styles.label}>CHECK-OUT</p><strong>{formatStayDate(booking.check_out)}</strong>{booking.hotel_check_out_time && <small>Before {booking.hotel_check_out_time.slice(0, 5)}</small>}</div></div>
       </section>}
