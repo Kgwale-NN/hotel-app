@@ -1,10 +1,13 @@
 import app from "./app";
 import { expirePendingBookingHolds } from "./services/booking-expiration.service";
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT || 3000);
+if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
+  throw new Error("PORT must be a valid port number.");
+}
 const BOOKING_EXPIRATION_INTERVAL_MS = 60_000;
 
-const server = app.listen(PORT);
+const server = app.listen(PORT, "0.0.0.0");
 
 server.on("listening", () => {
   console.log(`Hotel API is running at http://localhost:${PORT}`);

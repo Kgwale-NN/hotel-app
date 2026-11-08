@@ -13,6 +13,12 @@ import notificationsRouter from "./routes/notifications.routes";
 import paymentsRouter from "./routes/payments.routes";
 
 const app = express();
+// Enable only when deployed behind the configured hosting proxy.
+const proxyHops = Number(process.env.TRUST_PROXY_HOPS || 0);
+if (!Number.isInteger(proxyHops) || proxyHops < 0) {
+  throw new Error("TRUST_PROXY_HOPS must be a non-negative integer.");
+}
+if (proxyHops > 0) app.set("trust proxy", proxyHops);
 app.use(
   express.json({
     verify: (req, _res, buffer) => {
