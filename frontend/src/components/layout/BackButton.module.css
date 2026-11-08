@@ -1,0 +1,4 @@
+.back { position: fixed; top: 22px; left: 28px; z-index: 20; display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; padding: 0; border: 1px solid #dfcdb6; border-radius: 50%; color: #755334; background: #fffaf3; box-shadow: 0 4px 16px rgb(54 43 35 / 7%); cursor: pointer; transition: background 160ms ease, color 160ms ease; }
+.back:hover { background: #755334; color: #fffaf3; }
+.back:focus-visible { outline: 3px solid #a57e4d; outline-offset: 4px; }
+@media (max-width: 600px) { .back { top: 16px; left: 16px; width: 42px; height: 42px; } }

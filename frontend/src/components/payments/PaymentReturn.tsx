@@ -1,3 +1,4 @@
+import BackButton from '../layout/BackButton'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { verifyPayment, type PaymentVerification } from '../../api/payments'
@@ -75,7 +76,7 @@ function PaymentReceipt({ reference }: { reference: string }) {
       {!confirmed && <p className={styles.paymentStatus}>Payment: {result?.payment_status}{result?.booking_status ? ` · Reservation: ${result.booking_status}` : ''}</p>}
     </>}
     {error && <p role="alert" className={styles.notice}>Your payment could not be verified. Sign in with the booking account if needed, then check again.</p>}
-    <div className={styles.actions}>{reference && !loading && (!confirmed || receipt?.detailError) && <button type="button" className={styles.secondary} onClick={checkAgain}>Check payment again</button>}{error && <a className={styles.secondary} href="/api/auth/google" target="_blank" rel="noopener noreferrer">Sign in to check booking</a>}<Link className={styles.primary} to={bookingLink}>{confirmed ? 'View my booking' : 'View my bookings'}</Link><Link className={styles.home} to="/">Back to home</Link></div>
+    <div className={styles.actions}>{reference && !loading && (!confirmed || receipt?.detailError) && <button type="button" className={styles.secondary} onClick={checkAgain}>Check payment again</button>}{error && <a className={styles.secondary} href="/api/auth/google" target="_blank" rel="noopener noreferrer">Sign in to check booking</a>}<Link className={styles.primary} to={bookingLink}>{confirmed ? 'View my booking' : 'View my bookings'}</Link><BackButton className={styles.home}>Go back</BackButton></div>
     {reference && !loading && !confirmed && <p className={styles.paymentReference}>Payment reference: {reference}</p>}
     <footer className={styles.footer}>A place to slow down. A stay to look forward to.</footer>
   </main></div>

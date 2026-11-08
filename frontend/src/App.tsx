@@ -1,3 +1,4 @@
+import { PageHistory } from './components/layout/NavigationHistory'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import HomePage from './components/hotel/HomePage'
 import AuthReturn from './components/auth/AuthReturn'
@@ -20,6 +21,7 @@ import AdminUpdates from './components/admin/AdminUpdates'
 function App() {
   return (
     <BrowserRouter>
+      <PageHistory />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/auth/return" element={<AuthReturn />} />

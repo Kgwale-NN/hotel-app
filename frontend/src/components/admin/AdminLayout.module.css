@@ -87,3 +87,5 @@
 
 .profileLink svg { display: block; width: 22px; height: 24px; }
 .profileLink:hover { background: #f3e8d7; border-color: #bda37e; }
+
+.historyBack { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; padding: 0; border: 1px solid #dfcdb6; border-radius: 50%; color: #755334; background: #fffaf3; cursor: pointer; }.historyBack:hover { background: #efe4d5; }.historyBack:focus-visible { outline: 3px solid #a57e4d; outline-offset: 3px; }

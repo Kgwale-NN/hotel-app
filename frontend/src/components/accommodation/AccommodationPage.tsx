@@ -1,3 +1,4 @@
+import BackButton from '../layout/BackButton'
 import { roomPhotoByName } from '../../data/roomPhotos'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -49,7 +50,7 @@ function RoomDetails({ id }: { id: string | undefined }) {
   }, [id, retry])
 
   if (loading || error || !accommodation) return <main className={styles.page}>
-    <Link className={styles.backLink} to="/"><span aria-hidden="true">←</span> Back to home</Link>
+    <BackButton className={styles.backLink}><span aria-hidden="true">←</span> Go back</BackButton>
     <section className={styles.state}><h1>{error ? 'This room is unavailable' : 'Your stay awaits'}</h1>
       <p role={error ? 'alert' : 'status'}>{error || (loading ? 'Loading room details...' : 'Room not found.')}</p>
       {error && <button onClick={() => { setLoading(true); setError(''); setRetry(value => value + 1) }}>Try again</button>}
@@ -65,9 +66,9 @@ function RoomDetails({ id }: { id: string | undefined }) {
 
   return <div className={styles.background}><main className={styles.page}>
     <nav className={styles.topbar} aria-label="Room navigation">
-      <Link className={styles.backLink} to="/"><span aria-hidden="true">←</span> Back to home</Link>
+      <BackButton className={styles.backLink}><span aria-hidden="true">←</span> Go back</BackButton>
       <Link to="/" className={styles.brand}>HOTEL HEAVEN</Link>
-      <a className={styles.reserveLink} href="#reserve-room">Reserve this room <span aria-hidden="true">↗</span></a>
+      <a className={styles.reserveLink} href="#reserve-room" onClick={event => { event.preventDefault(); window.history.replaceState(window.history.state, "", "#reserve-room"); document.getElementById("reserve-room")?.scrollIntoView({ behavior: "smooth" }) }}>Reserve this room <span aria-hidden="true">↗</span></a>
     </nav>
     <header className={styles.intro}>
       <div><p className={styles.eyebrow}>{accommodation.room_type.replaceAll('_', ' ')} · {hotel.city}</p><h1>{accommodation.name}</h1><p className={styles.location}>{hotel.name} <span aria-hidden="true">·</span> {hotel.city}, {hotel.country}</p></div>
