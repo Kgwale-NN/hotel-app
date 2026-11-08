@@ -24,6 +24,7 @@ export type MyBooking = {
     room_number: string
     accommodation_id: string
     accommodation_name: string
+    cover_image?: string | null
     price_per_night: string
   }[]
 }

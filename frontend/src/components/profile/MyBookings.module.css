@@ -1,80 +1,18 @@
-.page {
-  width: min(100% - 2rem, 900px);
-  margin: 0 auto;
-  padding: 3rem 0;
-  color: #1b2d36;
-}
-
-.title {
-  margin: 0 0 1.5rem;
-  font-family: Georgia, serif;
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 400;
-}
-
-.notice {
-  margin-bottom: 1.5rem;
-  color: #52665b;
-}
-
-.bookingList {
-  display: grid;
-  gap: 1.25rem;
-}
-
-.bookingCard {
-  padding: clamp(1.25rem, 4vw, 2rem);
-  border: 1px solid #e5e0d7;
-  background: #fff;
-}
-
-.hotelName {
-  margin: 0 0 0.75rem;
-  font-family: Georgia, serif;
-  font-size: 1.6rem;
-  font-weight: 400;
-}
-
-.bookingInfo {
-  margin: 0.5rem 0;
-  color: #52605b;
-}
-
-.status {
-  display: inline-block;
-  margin: 0.5rem 0;
-  padding: 0.35rem 0.65rem;
-  background: #f1eee7;
-  color: #40564a;
-  text-transform: capitalize;
-}
-
-.roomList {
-  margin: 0.75rem 0 1.25rem;
-  padding-left: 1.25rem;
-  line-height: 1.7;
-}
-
-.cancelButton {
-  padding: 0.75rem 1.1rem;
-  border: 0;
-  background: #1b2d36;
-  color: #fff;
-  font: inherit;
-  cursor: pointer;
-}
-
-.cancelButton:hover:not(:disabled) {
-  background: #304b57;
-}
-
-.cancelButton:disabled {
-  cursor: wait;
-  opacity: 0.65;
-}
-
-@media (max-width: 600px) {
-  .page {
-    padding: 2rem 0;
-  }
-}.bookingCard:target { border-color: #a77c42; box-shadow: 0 0 0 2px #e5d5ba; scroll-margin-top: 24px; }
+.page { color: #362b23; font-family: Arial, sans-serif; }.heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 20px 0 28px; border-bottom: 1px solid #e5dcd0; }.eyebrow { margin: 0 0 12px; color: #987446; font-size: 10px; font-weight: 600; letter-spacing: .17em; }.heading h1 { margin: 0 0 14px; font: 400 clamp(36px, 5vw, 48px)/1.15 Georgia, serif; letter-spacing: -.025em; }.subtitle { max-width: 470px; margin: 0; color: #8b7d70; font-size: 13px; line-height: 1.8; }
+.explore, .secondary, .primary, .cancelButton { display: inline-flex; align-items: center; justify-content: center; gap: 14px; min-height: 42px; padding: 12px 16px; border: 1px solid #dfcdb6; border-radius: 9px; color: #755334; background: transparent; font: 12px Arial, sans-serif; text-decoration: none; cursor: pointer; }.explore { white-space: nowrap; }.primary { background: #755334; border-color: #755334; color: #fffaf3; }.primary:hover:not(:disabled) { background: #5e422c; }.secondary:hover, .explore:hover { background: #efe4d5; }.cancelButton { color: #945346; border-color: #e2c6bc; }.cancelButton:hover:not(:disabled) { background: #fff2eb; }.page button:disabled { opacity: .5; cursor: wait; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 26px 0 20px; }.filters button { display: inline-flex; align-items: center; gap: 9px; min-height: 40px; padding: 10px 13px; border: 1px solid #e3d9cd; border-radius: 30px; background: transparent; color: #8b7d70; font: 11px Arial, sans-serif; cursor: pointer; }.filters button > span { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 50%; background: #efe8de; font-size: 10px; }.filters .activeFilter { background: #755334; border-color: #755334; color: #fffaf3; }.filters .activeFilter > span { background: rgb(255 255 255 / 18%); }
+.count { margin: 24px 0 18px; color: #8b7d70; font-size: 12px; }.bookingList { display: grid; gap: 24px; }.page .bookingCard { margin: 0; border: 1px solid #e3d9cd; border-radius: 18px; background: #fffdf9; overflow: hidden; box-shadow: 0 8px 28px rgb(65 46 27 / 4%); scroll-margin-top: 24px; }.bookingCard:target { border-color: #a77c42; box-shadow: 0 0 0 2px #e5d5ba; }
+.cardMain { display: grid; grid-template-columns: 215px minmax(0, 1fr); }.photoArea { position: relative; background: #eae2d6; min-height: 250px; }.photoArea > img { position: absolute; display: block; width: 100%; height: 100%; object-fit: cover; }.photoFallback { display: grid; place-content: center; justify-items: center; gap: 12px; height: 100%; padding: 22px; font: 22px Georgia, serif; text-align: center; color: #987446; }.photoFallback svg { width: 32px; height: 32px; }.nightsBadge { position: absolute; bottom: 14px; left: 14px; padding: 7px 11px; border: 1px solid rgb(255 255 255 / 35%); border-radius: 20px; color: #fffaf3; background: rgb(37 28 20 / 55%); backdrop-filter: blur(8px); font-size: 10px; }
+.cardBody { padding: 24px; min-width: 0; }.cardHeading { display: flex; align-items: start; justify-content: space-between; gap: 15px; }.hotelName { margin: 0 0 8px; color: #987446; font-size: 10px; letter-spacing: .08em; }.cardHeading h2 { margin: 0; font: 400 26px/1.2 Georgia, serif; }.cardHeading h2 small { font: 12px Arial, sans-serif; color: #8b7d70; }
+.status { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; padding: 7px 10px; border: 1px solid transparent; border-radius: 20px; font-size: 10px; white-space: nowrap; }.status > span { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }.confirmed, .completed { color: #587047; background: #edf2e6; border-color: #dfe8d5; }.pending { color: #96702c; background: #fbf0d8; border-color: #efdfb7; }.cancelled, .expired { color: #966256; background: #f8eae4; border-color: #ebd8cf; }.unknown { color: #75695e; background: #efe8de; }
+.stayDates { display: flex; align-items: center; gap: 26px; margin-top: 24px; }.stayDates > div > span { display: block; margin-bottom: 7px; font-size: 9px; letter-spacing: .06em; color: #8b7d70; }.stayDates strong { display: block; font-size: 14px; font-weight: 500; }.dateArrow { color: #bd9d73; font-size: 20px; }.guestDetails { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; color: #8b7d70; font-size: 11px; }.guestDetails > span { display: inline-flex; align-items: center; gap: 7px; }.guestDetails svg { width: 15px; height: 15px; color: #987446; }
+.rooms { margin-top: 16px; padding-top: 14px; border-top: 1px solid #eee4d7; }.rooms p { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 5px 14px; margin: 0 0 6px; font-size: 11px; color: #75695e; line-height: 1.6; }.rooms p:last-child { margin-bottom: 0; }.rooms p span { color: #8b7d70; }
+.cardFooter { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 20px 24px; border-top: 1px solid #eee4d7; }.price small { display: block; margin-bottom: 6px; color: #8b7d70; font-size: 10px; }.price strong { display: block; color: #362b23; font: 400 24px Georgia, serif; white-space: nowrap; }.price > span { display: block; margin-top: 5px; color: #8b7d70; font-size: 9px; }.cardActions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: end; }
+.cardDetails { padding: 0 24px 18px; }.reference { margin: 0; color: #8b7d70; font-size: 9px; line-height: 1.7; }.reference span { margin-left: 7px; overflow-wrap: anywhere; }.priceDetails { margin-top: 12px; color: #75695e; font-size: 11px; }.priceDetails summary { width: fit-content; cursor: pointer; text-underline-offset: 3px; }.priceDetails > div { margin-top: 12px; padding: 12px; border: 1px solid #eee4d7; border-radius: 8px; background: #faf7f2; }.priceDetails p { display: flex; justify-content: space-between; gap: 16px; margin: 0 0 8px; }.priceDetails p:last-child { margin-bottom: 0; }
+.confirm { margin: 0 24px 18px; padding: 18px; border: 1px solid #dfcdb6; border-radius: 12px; background: #f5ecdf; }.confirm h3 { margin: 0 0 8px; font: 400 22px Georgia, serif; }.confirm p { margin: 0 0 16px; color: #8b7d70; font-size: 12px; }.confirm .cardActions { justify-content: start; }.deadline { margin: 0; padding: 0 24px 18px; color: #96702c; font-size: 11px; line-height: 1.6; }
+.notice, .error { margin: 22px 0; padding: 13px 16px; border-radius: 10px; font-size: 12px; line-height: 1.7; }.notice { border: 1px solid #d4dfcf; background: #f0f4eb; color: #465b38; }.error { border: 1px solid #eacfc5; background: #fff2eb; color: #8d4235; }
+.empty { display: grid; justify-items: center; padding: 54px 24px; margin-top: 28px; border: 1px solid #e3d9cd; border-radius: 18px; background: #fffdf9; text-align: center; }.emptyIcon { display: grid; place-items: center; width: 64px; height: 64px; margin-bottom: 22px; border: 1px solid #dfcdb6; border-radius: 50%; background: #f3eadc; color: #987446; }.emptyIcon svg { width: 28px; height: 28px; }.empty h2 { margin: 0 0 12px; font: 400 30px Georgia, serif; }.empty p { max-width: 380px; margin: 0 0 24px; color: #8b7d70; font-size: 13px; line-height: 1.8; }
+.skeleton { display: grid; grid-template-columns: 215px 1fr; min-height: 260px; overflow: hidden; border: 1px solid #e3d9cd; border-radius: 18px; background: #fffdf9; }.skeleton > span { background: #eae2d6; }.skeleton > div { padding: 28px; }.skeleton > div > span { display: block; width: 60%; height: 18px; margin-bottom: 20px; border-radius: 6px; background: #efe8de; }.skeleton > div > span:nth-child(2) { width: 80%; }.page :focus-visible { outline: 3px solid #b68a51; outline-offset: 4px; }
+@media (max-width: 900px) { .cardMain { grid-template-columns: 180px minmax(0, 1fr); }.cardBody { padding: 20px; }.cardHeading { flex-wrap: wrap; gap: 12px; }.cardFooter { flex-wrap: wrap; }.cardActions { justify-content: start; }.stayDates { gap: 18px; } }
+@media (max-width: 600px) { .heading { align-items: start; flex-direction: column; gap: 20px; padding-top: 12px; }.cardMain { grid-template-columns: 1fr; }.photoArea { min-height: 200px; height: 200px; }.cardBody { padding: 22px; }.cardHeading { flex-wrap: nowrap; gap: 10px; }.cardHeading h2 { font-size: 23px; }.status { font-size: 9px; padding: 6px 8px; }.stayDates { justify-content: space-between; gap: 12px; }.stayDates strong { font-size: 13px; }.cardFooter { padding: 20px 22px; }.cardActions { width: 100%; }.cardActions > a, .cardActions > button { flex: 1 1 auto; }.cardDetails { padding: 0 22px 20px; }.confirm { margin: 0 22px 18px; }.filters { gap: 6px; }.filters button { padding: 8px 10px; font-size: 10px; }.skeleton { grid-template-columns: 1fr; }.skeleton > span { min-height: 160px; } }
+@media (max-width: 360px) { .cardHeading { flex-wrap: wrap; }.stayDates strong { font-size: 12px; }.cardBody { padding: 18px; } }
