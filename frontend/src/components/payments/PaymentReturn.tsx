@@ -60,6 +60,8 @@ function PaymentReceipt({ reference }: { reference: string }) {
       <p>{loading ? 'Please wait while we verify your payment securely.' : !reference ? 'No payment reference was supplied. Open My bookings to continue your reservation.' : error || explanation}</p>
       {confirmed && <small>Your confirmation is available in My bookings.</small>}
     </section>
+    <div className={`${styles.detailsGrid} ${!booking ? styles.statusOnly : ""}`}>
+    <div className={styles.bookingColumn}>
     {!loading && receipt && <>
       {booking && <section className={styles.summary} aria-label="Booking details">
         <p className={styles.label}>{confirmed ? 'CONFIRMATION NUMBER' : 'BOOKING REFERENCE'}</p><p className={styles.reference}>{booking.id}</p>
@@ -69,6 +71,10 @@ function PaymentReceipt({ reference }: { reference: string }) {
         <div className={styles.dates}><div><p className={styles.label}>CHECK-IN</p><strong>{formatStayDate(booking.check_in)}</strong>{booking.hotel_check_in_time && <small>After {booking.hotel_check_in_time.slice(0, 5)}</small>}</div><div><p className={styles.label}>CHECK-OUT</p><strong>{formatStayDate(booking.check_out)}</strong>{booking.hotel_check_out_time && <small>Before {booking.hotel_check_out_time.slice(0, 5)}</small>}</div></div>
       </section>}
       {receipt.detailError && <p role="alert" className={styles.notice}>{receipt.detailError} You can still view your reservation in My bookings.</p>}
+    </>}
+    </div>
+    <div className={styles.paymentColumn}>
+    {!loading && receipt && <>
       {(prices || (paid && result?.amount && result.currency)) && <section className={styles.priceCard} aria-label="Price details"><h2>Price details</h2>
         {prices && booking && <><div className={styles.priceRow}><span>{prices.nights} {prices.nights === 1 ? 'night' : 'nights'} · {booking.rooms.length} {booking.rooms.length === 1 ? 'room' : 'rooms'}</span><span>{formatBookingMoney(prices.roomTotal, booking.currency)}</span></div><div className={styles.priceRow}><span>Taxes and fees</span><span>{formatBookingMoney(prices.fees, booking.currency)}</span></div></>}
         <div className={styles.total}><strong>{paid ? 'Total paid' : 'Booking total'}</strong><strong>{formatBookingMoney(paid && result?.amount ? result.amount : prices!.total, (paid && result?.currency) || booking!.currency)}</strong></div>
@@ -78,6 +84,8 @@ function PaymentReceipt({ reference }: { reference: string }) {
     {error && <p role="alert" className={styles.notice}>Your payment could not be verified. Sign in with the booking account if needed, then check again.</p>}
     <div className={styles.actions}>{reference && !loading && (!confirmed || receipt?.detailError) && <button type="button" className={styles.secondary} onClick={checkAgain}>Check payment again</button>}{error && <a className={styles.secondary} href="/api/auth/google" target="_blank" rel="noopener noreferrer">Sign in to check booking</a>}<Link className={styles.primary} to={bookingLink}>{confirmed ? 'View my booking' : 'View my bookings'}</Link><BackButton className={styles.home}>Go back</BackButton></div>
     {reference && !loading && !confirmed && <p className={styles.paymentReference}>Payment reference: {reference}</p>}
+    </div>
+    </div>
     <footer className={styles.footer}>A place to slow down. A stay to look forward to.</footer>
   </main></div>
 }
