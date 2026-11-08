@@ -26,6 +26,7 @@ export async function startGoogleLogin(
       nonce,
       codeVerifier,
       createdAt: Date.now(),
+      rememberMe: req.query.remember_me === "true",
     };
 
     const url = new URL(
@@ -147,6 +148,8 @@ export async function googleCallback(
     });
 
     req.session.userId = userId;
+    if (attempt.rememberMe) req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+    else req.session.cookie.expires = undefined;
 
     await new Promise<void>((resolve, reject) => {
       req.session.save((error) => {

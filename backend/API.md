@@ -129,3 +129,11 @@ Isolated checks: `npm run build` then `node --test tests/room-photos.test.cjs` f
 `GET /api/bookings/:id` includes `hotel_check_in_time` and `hotel_check_out_time`. The payment return page fetches this exact booking after verification, displays saved room rates, stay dates, taxes/fees and total paid, and links to the matching booking in history. It does not claim email delivery. No migration is required.
 
 Receipt checks: `node --test tests/booking-receipt.test.cjs` from `backend` after building; `node --test tests/bookingReceipt.test.cjs` from `frontend`. Provider and database calls in backend tests are mocked.
+
+## Payment approval and remembered sessions
+
+Successful Paystack verification/webhooks record payment and leave an eligible reservation pending. Guest booking responses include `payment_received`; a paid pending reservation awaits hotel approval and cannot start another checkout. Its rooms remain reserved and the unpaid-expiry job excludes it. The guest and all administrators receive inbox notifications in the same transaction. Repeated successful events do not duplicate those notifications.
+
+Administrators review paid reservations through `/admin/reservations` or the Notifications inbox, then approve with the existing booking-status endpoint. Only approval changes the booking to confirmed and notifies the guest. Late payments and cancelled/expired reservations require hotel review; payment does not reopen them.
+
+Email sign-in and Google sign-in both honour Remember me: selected sessions persist for 30 days; unselected sessions use a browser-session cookie. Google sign-in accepts `remember_me=true`. Signup checks password confirmation before sending registration.

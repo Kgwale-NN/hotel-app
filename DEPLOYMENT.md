@@ -69,7 +69,9 @@ plus /api/payments/webhook. It must stay reachable independently of a local tunn
 2. Frontend room, profile and booking URLs load directly and after refresh.
 3. Email/password and Google login retain the session after a refresh; logout works.
 4. Accommodations, favourites, reviews and admin access use the hosted database.
-5. Test payment verifies successfully and confirms the correct owned booking.
+5. Test payment records success but leaves the owned booking pending with payment_received=true. Check the admin Notifications inbox, approve the paid reservation, and verify the guest sees confirmed. Replaying verification must not send duplicate notifications or charge again.
 6. Admin photo uploads survive a redeploy and display through /api/media.
 
 The hosting service and database are not provisioned by these configuration changes.
+
+The frontend uses optimized WebP assets, a preloaded hero image, lazy images below the fold, and separate route bundles. No new migration is required for the manual-payment-approval changes.

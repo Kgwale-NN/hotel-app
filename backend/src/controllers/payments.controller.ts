@@ -5,6 +5,7 @@ import pool from "../config/db";
 import { initializePaystackCheckout } from "../services/paystack.service";
 import { verifyPaystackTransaction } from "../services/paystack.service";
 import { PoolClient } from "pg";
+import { queuePaidBookingReview } from "../services/payment-review.service";
 
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -64,6 +65,11 @@ export async function initializeBookingPayment(
       return;
     }
 
+    const paid = await pool.query("SELECT 1 FROM payments WHERE booking_id = $1 AND status IN ('succeeded', 'partially_refunded', 'refunded') LIMIT 1", [bookingId]);
+    if (paid.rows.length) {
+      res.status(409).json({ message: "Payment already received. Your reservation is awaiting hotel approval." });
+      return;
+    }
     if (booking.status !== "pending") {
       res.status(409).json({ message: "This booking cannot be paid." });
       return;
@@ -315,45 +321,7 @@ export async function handlePaystackWebhook(
       payment.payment_due_at !== null &&
       new Date(payment.payment_due_at).getTime() > Date.now();
 
-    if (payment.booking_status === "pending" && deadlineIsFuture) {
-      await client.query(
-        `
-        UPDATE bookings
-        SET status = 'confirmed', updated_at = NOW()
-        WHERE id = $1
-        `,
-        [payment.booking_id]
-      );
-
-      await client.query(
-        `
-        INSERT INTO notifications (user_id, booking_id, type, title, message)
-        VALUES ($1, $2, 'booking_update', 'Booking confirmed',
-                'Your online payment was received and your booking is confirmed.')
-        `,
-        [payment.user_id, payment.booking_id]
-      );
-    } else {
-      if (payment.booking_status === "pending") {
-        await client.query(
-          `
-          UPDATE bookings
-          SET status = 'expired', updated_at = NOW()
-          WHERE id = $1
-          `,
-          [payment.booking_id]
-        );
-      }
-
-      await client.query(
-        `
-        INSERT INTO notifications (user_id, booking_id, type, title, message)
-        VALUES ($1, $2, 'booking_update', 'Payment needs review',
-                'Payment was received after the booking could be confirmed. Please contact the hotel.')
-        `,
-        [payment.user_id, payment.booking_id]
-      );
-    }
+    await queuePaidBookingReview(client, payment, deadlineIsFuture);
 
     await client.query("COMMIT");
     transactionStarted = false;
@@ -483,44 +451,8 @@ let client: PoolClient | undefined;
       payment.payment_due_at !== null &&
       new Date(payment.payment_due_at).getTime() > Date.now();
 
-    if (payment.booking_status === "pending" && deadlineIsFuture) {
-      await client.query(
-        `UPDATE bookings SET status = 'confirmed', updated_at = NOW() WHERE id = $1`,
-        [payment.booking_id]
-      );
-
-      if (!paymentWasAlreadySuccessful) {
-        await client.query(
-          `
-          INSERT INTO notifications (user_id, booking_id, type, title, message)
-          VALUES ($1, $2, 'booking_confirmation', 'Booking confirmed', $3)
-          `,
-          [
-            payment.user_id,
-            payment.booking_id,
-            "Your online payment was received and your booking is confirmed.",
-          ]
-        );
-      }
-    } else if (payment.booking_status === "pending") {
-      await client.query(
-        `UPDATE bookings SET status = 'expired', updated_at = NOW() WHERE id = $1`,
-        [payment.booking_id]
-      );
-
-      if (!paymentWasAlreadySuccessful) {
-        await client.query(
-          `
-          INSERT INTO notifications (user_id, booking_id, type, title, message)
-          VALUES ($1, $2, 'booking_update', 'Payment needs review', $3)
-          `,
-          [
-            payment.user_id,
-            payment.booking_id,
-            "Payment was received after the booking could be confirmed. Please contact the hotel.",
-          ]
-        );
-      }
+    if (!paymentWasAlreadySuccessful) {
+      await queuePaidBookingReview(client, payment, deadlineIsFuture);
     }
 
     await client.query("COMMIT");
@@ -533,7 +465,7 @@ let client: PoolClient | undefined;
         currency: payment.currency,
         booking_status:
           payment.booking_status === "pending"
-            ? (deadlineIsFuture ? "confirmed" : "expired")
+            ? (!paymentWasAlreadySuccessful && !deadlineIsFuture ? "expired" : "pending")
             : payment.booking_status,
       },
     });

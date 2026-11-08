@@ -31,14 +31,20 @@ test('booking receipt exposes only verified, owned booking information', async t
       assert.match(select.sql,/b\.user_id = \$2/);assert.equal(select.values[1],'owner-test');
       assert.ok(!queries.some(q=>q.sql.includes('INSERT INTO notifications')));
     });
-    await t.test('successful pending payment confirms the reservation', async () => {
+    await t.test('successful payment stays pending and notifies guest and administrators', async () => {
       reset();payment.payment_status='pending';payment.booking_status='pending';const res=response();await verifyBookingPayment(req(),res);
-      assert.equal(res.body.data.booking_status,'confirmed');assert.equal(res.body.data.booking_id,bookingId);
-      assert.ok(queries.some(q=>q.sql.includes("SET status = 'confirmed'")));
+      assert.equal(res.body.data.booking_status,'pending');assert.equal(res.body.data.booking_id,bookingId);
+      assert.ok(!queries.some(q=>q.sql.includes("SET status = 'confirmed'")));
+      assert.equal(queries.filter(q=>q.sql.includes("INSERT INTO notifications")).length,2);
+      assert.ok(queries.some(q=>q.sql.includes("WHERE role = 'admin'")));
     });
     await t.test('late payment is received but does not falsely confirm the stay', async () => {
-      reset();payment.booking_status='pending';payment.payment_due_at=new Date(0);const res=response();await verifyBookingPayment(req(),res);
+      reset();payment.payment_status='pending';payment.booking_status='pending';payment.payment_due_at=new Date(0);const res=response();await verifyBookingPayment(req(),res);
       assert.equal(res.body.data.payment_status,'succeeded');assert.equal(res.body.data.booking_status,'expired');
+    });
+    await t.test('reverification after the deadline does not expire a paid reservation or duplicate notifications', async () => {
+      reset();payment.booking_status='pending';payment.payment_due_at=new Date(0);const res=response();await verifyBookingPayment(req(),res);
+      assert.equal(res.body.data.booking_status,'pending');assert.ok(!queries.some(q=>q.sql.includes('INSERT INTO notifications')));assert.ok(!queries.some(q=>q.sql.includes("SET status = 'expired'")));
     });
     await t.test('failed payment never returns success', async () => {
       reset();verified.status='failed';payment.booking_status='pending';payment.payment_status='pending';const res=response();await verifyBookingPayment(req(),res);

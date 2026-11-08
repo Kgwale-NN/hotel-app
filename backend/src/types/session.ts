@@ -10,6 +10,7 @@ declare module "express-session" {
       nonce: string;
       codeVerifier: string;
       createdAt: number;
+      rememberMe?: boolean;
     };
   }
 }

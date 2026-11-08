@@ -552,6 +552,7 @@ export async function getAdminBookings(
         b.adults,
         b.children,
         b.status,
+        EXISTS (SELECT 1 FROM payments AS paid WHERE paid.booking_id = b.id AND paid.status = 'succeeded') AS payment_received,
         b.currency,
         b.taxes_and_fees,
         b.special_requests,
