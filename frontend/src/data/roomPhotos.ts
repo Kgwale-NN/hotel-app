@@ -1,8 +1,8 @@
-import deluxe from '../assets/Deluxe Room.jpg'
-import family from '../assets/Family Suite.jpg'
-import garden from '../assets/Garden Room.jpg'
-import haven from '../assets/Haven Suite.jpg'
-import executive from '../assets/Executive Suite.jpg'
+import deluxe from '../assets/Deluxe Room.webp'
+import family from '../assets/Family Suite.webp'
+import garden from '../assets/Garden Room.webp'
+import haven from '../assets/Haven Suite.webp'
+import executive from '../assets/Executive Suite.webp'
 
 // Shared by the home carousel, search cards and accommodation details.
 export const roomPhotoByName: Record<string, string> = {
