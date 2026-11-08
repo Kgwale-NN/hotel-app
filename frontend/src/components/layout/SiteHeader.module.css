@@ -117,46 +117,44 @@
   outline-offset: 5px;
 }
 
-@media (max-width: 700px) {
-  .header {
-    top: 12px;
-    padding: 0 12px;
-  }
-
-  .navbar {
-    gap: 12px;
-    padding: 14px 16px;
-    border-radius: 20px;
-  }
-
-  .brand {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .brandName {
-    font-size: 11px;
-  }
-
-  .aboutButton {
-    grid-column: 1;
-    grid-row: 1;
-    font-size: 12px;
-    gap: 8px;
-  }
-
-  .actions {
-    grid-column: 1 / -1;
-    justify-content: space-between;
-    padding-top: 12px;
-    border-top: 1px solid rgb(255 255 255 / 18%);
-  }
-
-  .bookButton {
-    padding: 11px 16px;
-  }
-}
 .accountMenuButton { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; padding: 12px; background: transparent; border: 0; border-radius: 10px; color: inherit; cursor: pointer; }
 .accountMenuButton:hover { background: rgb(255 255 255 / 10%); }
 .accountMenuIcon { display: grid; width: 23px; gap: 6px; }
 .accountMenuIcon span { display: block; width: 100%; height: 2px; border-radius: 2px; background: currentColor; }
+
+/* Keep every navigation control on the same row on phones. */
+@media (max-width: 700px) {
+  .header { top:12px; padding:0 16px; box-sizing:border-box; }
+  .navbar { grid-template-columns:auto minmax(0,1fr) auto; gap:12px; min-height:64px; padding:8px 0; }
+  .aboutButton { grid-column:1; grid-row:1; gap:6px; font-size:11px; white-space:nowrap; min-height:40px; }
+  .brand { grid-column:2; grid-row:1; min-width:0; gap:4px; }
+  .brandName { font-size:10px; letter-spacing:.09em; }
+  .brandMark svg { width:17px; height:17px; }
+  .menuIcon { width:16px; gap:4px; }
+  .menuIcon span:last-child { width:11px; }
+  .actions { grid-column:3; grid-row:1; flex-wrap:nowrap; gap:10px; min-width:0; padding:0; border:0; justify-content:flex-end; }
+  .accountLink { font-size:11px; min-height:40px; display:inline-flex; align-items:center; }
+  .bookButton { font-size:11px; gap:6px; min-height:40px; padding:8px 10px; border-radius:10px; }
+  .bookButton svg { width:14px; height:14px; display:block; }
+  .accountMenuButton { flex:0 0 36px; width:36px; height:40px; padding:8px; }
+  .accountMenuIcon { width:20px; gap:5px; }
+}
+@media (max-width: 400px) {
+  .header { padding:0 12px; }
+  .navbar { gap:8px; }
+  .aboutButton,.accountLink,.bookButton { font-size:10px; }
+  .brandName { font-size:9px; letter-spacing:.06em; }
+  .actions { gap:6px; }
+  .bookButton { padding:8px; gap:4px; }
+  .accountMenuButton { flex-basis:32px; width:32px; padding:7px; }
+  .accountMenuIcon { width:18px; }
+}
+@media (max-width: 320px) {
+  .header { padding:0 8px; }
+  .navbar { gap:5px; }
+  .aboutButton { gap:4px; }
+  .brandName { font-size:8px; letter-spacing:.04em; }
+  .brandMark svg { width:15px; height:15px; }
+  .actions { gap:4px; }
+  .bookButton { padding:7px; }
+}
