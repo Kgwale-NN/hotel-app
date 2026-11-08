@@ -1,5 +1,5 @@
 import restaurantPhoto from '../../assets/dining-restaurant.jpg'
-import mealPhoto from '../../assets/dining-dish.jpg'
+import mealPhoto from '../../assets/Fine dining food.jpg'
 import coffeePhoto from '../../assets/dining-breakfast.jpg'
 import styles from './HotelDining.module.css'
 
