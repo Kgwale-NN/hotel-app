@@ -69,3 +69,5 @@
 }
 @media (prefers-reduced-motion: reduce) { .mainPhoto img, .coffeePhoto img, .mealPhoto img, .details summary, .plus { transition: none; } }
 .mainPhoto img { position: absolute; inset: 0; }
+
+.coffeePhoto img { object-position: 42% center; }
