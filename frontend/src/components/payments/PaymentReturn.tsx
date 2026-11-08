@@ -53,7 +53,7 @@ function PaymentReceipt({ reference }: { reference: string }) {
   const bookingLink = result?.booking_id ? `/profile/bookings#booking-${result.booking_id}` : '/profile/bookings'
 
   return <div className={styles.background}><main className={styles.receipt}>
-    <header className={styles.header}><Link to="/" className={styles.brand}>HOTEL HEAVEN</Link><nav aria-label="Booking navigation"><Link to="/profile/bookings">My bookings</Link><Link to="/accommodations">Explore rooms <span aria-hidden="true">↗</span></Link></nav></header>
+    <header className={styles.header}><Link to="/" className={styles.brand}>HOTEL HEAVEN</Link></header>
     <section className={styles.status} aria-live="polite" aria-atomic="true">
       <span className={`${styles.statusIcon} ${!confirmed ? styles.neutral : ''}`} aria-hidden="true">{confirmed ? <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="m5 12 4 4L19 6" /></svg> : <span>{loading ? '…' : '!'}</span>}</span>
       <h1>{title}</h1>
