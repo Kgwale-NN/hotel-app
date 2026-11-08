@@ -49,7 +49,7 @@ function RoomDetails({ id }: { id: string | undefined }) {
   }, [id, retry])
 
   if (loading || error || !accommodation) return <main className={styles.page}>
-    <Link className={styles.backLink} to="/accommodations"><span aria-hidden="true">←</span> Back to rooms</Link>
+    <Link className={styles.backLink} to="/"><span aria-hidden="true">←</span> Back to home</Link>
     <section className={styles.state}><h1>{error ? 'This room is unavailable' : 'Your stay awaits'}</h1>
       <p role={error ? 'alert' : 'status'}>{error || (loading ? 'Loading room details...' : 'Room not found.')}</p>
       {error && <button onClick={() => { setLoading(true); setError(''); setRetry(value => value + 1) }}>Try again</button>}
@@ -65,7 +65,7 @@ function RoomDetails({ id }: { id: string | undefined }) {
 
   return <div className={styles.background}><main className={styles.page}>
     <nav className={styles.topbar} aria-label="Room navigation">
-      <Link className={styles.backLink} to="/accommodations"><span aria-hidden="true">←</span> Back to rooms</Link>
+      <Link className={styles.backLink} to="/"><span aria-hidden="true">←</span> Back to home</Link>
       <Link to="/" className={styles.brand}>HOTEL HEAVEN</Link>
       <a className={styles.reserveLink} href="#reserve-room">Reserve this room <span aria-hidden="true">↗</span></a>
     </nav>
