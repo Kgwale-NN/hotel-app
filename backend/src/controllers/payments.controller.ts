@@ -462,7 +462,7 @@ let client: PoolClient | undefined;
 
       await client.query("COMMIT");
       transactionStarted = false;
-      res.status(200).json({ data: { payment_status: verified.status } });
+      res.status(200).json({ data: { payment_status: verified.status, booking_status: payment.booking_status, booking_id: payment.booking_id } });
       return;
     }
 
@@ -528,6 +528,9 @@ let client: PoolClient | undefined;
     res.status(200).json({
       data: {
         payment_status: "succeeded",
+        booking_id: payment.booking_id,
+        amount: payment.amount,
+        currency: payment.currency,
         booking_status:
           payment.booking_status === "pending"
             ? (deadlineIsFuture ? "confirmed" : "expired")

@@ -121,3 +121,11 @@ Upload requires an administrator session, `X-CSRF-Token`, and multipart form dat
 Files are stored in `backend/uploads/rooms` by default and excluded from Git. Set `ROOM_PHOTO_DIRECTORY` to an absolute directory on a **persistent volume** when deploying. Back up this folder together with PostgreSQL; database records contain the public `/api/media/...` paths, not file contents. No schema migration is required.
 
 Isolated checks: `npm run build` then `node --test tests/room-photos.test.cjs` from `backend`. These tests mock database calls and use a temporary directory; they do not change real rooms or accounts.
+
+## Booking confirmation receipt
+
+`POST /api/payments/verify` returns `booking_id` for the authenticated owner's matched payment. Successful verification also returns the recorded `amount` (major currency units as a string), `currency`, `payment_status`, and `booking_status`. A successful payment received after the reservation deadline remains `booking_status: expired`; the frontend must not label it confirmed.
+
+`GET /api/bookings/:id` includes `hotel_check_in_time` and `hotel_check_out_time`. The payment return page fetches this exact booking after verification, displays saved room rates, stay dates, taxes/fees and total paid, and links to the matching booking in history. It does not claim email delivery. No migration is required.
+
+Receipt checks: `node --test tests/booking-receipt.test.cjs` from `backend` after building; `node --test tests/bookingReceipt.test.cjs` from `frontend`. Provider and database calls in backend tests are mocked.

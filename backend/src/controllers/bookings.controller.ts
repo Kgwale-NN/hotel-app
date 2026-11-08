@@ -420,6 +420,8 @@ export async function getMyBookingById(
         b.id,
         b.hotel_id,
         h.name AS hotel_name,
+        h.check_in_time AS hotel_check_in_time,
+        h.check_out_time AS hotel_check_out_time,
         b.check_in,
         b.check_out,
         b.adults,
@@ -453,7 +455,7 @@ export async function getMyBookingById(
       LEFT JOIN rooms AS r ON r.id = br.room_id
       LEFT JOIN accommodations AS a ON a.id = r.accommodation_id
       WHERE b.id = $1 AND b.user_id = $2
-      GROUP BY b.id, h.name
+      GROUP BY b.id, h.name, h.check_in_time, h.check_out_time
       `,
       [id, userId]
     );
