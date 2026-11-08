@@ -70,3 +70,8 @@ button.home { border: 0; border-bottom: 1px solid #e5d5ba; background: transpare
   .priceRow { font-size: 12px; }
   .total { font-size: 14px; }
 }
+
+.roomLine { display: grid; grid-template-columns: minmax(0, 1fr) 144px; align-items: center; gap: 20px; margin-bottom: 14px; }
+.roomPhoto { display: block; width: 100%; height: 108px; object-fit: cover; border: 1px solid #e6d9c8; border-radius: 9px; }
+@media (max-width: 480px) { .roomLine { grid-template-columns: minmax(0, 1fr) 104px; gap: 12px; }.roomPhoto { height: 90px; }.roomLine h2 { font-size: 23px; } }
+@media (max-width: 350px) { .roomLine { grid-template-columns: minmax(0, 1fr) 88px; gap: 10px; }.roomPhoto { height: 84px; }.roomLine h2 { font-size: 21px; } }

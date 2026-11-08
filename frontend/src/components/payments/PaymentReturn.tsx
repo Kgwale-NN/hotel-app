@@ -1,3 +1,5 @@
+import { roomPhotoByName } from '../../data/roomPhotos'
+import hotelPhoto from '../../assets/hero-section-background-picture.jpg'
 import BackButton from '../layout/BackButton'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -65,7 +67,7 @@ function PaymentReceipt({ reference }: { reference: string }) {
     {!loading && receipt && <>
       {booking && <section className={styles.summary} aria-label="Booking details">
         <p className={styles.label}>{confirmed ? 'CONFIRMATION NUMBER' : 'BOOKING REFERENCE'}</p><p className={styles.reference}>{booking.id}</p>
-        <div className={styles.roomSummary}>{booking.rooms.map(room => <div key={room.room_id}><h2>{room.accommodation_name}</h2><p>Room {room.room_number} · {booking.hotel_name}</p></div>)}
+        <div className={styles.roomSummary}>{booking.rooms.map(room => <div className={styles.roomLine} key={room.room_id}><div><h2>{room.accommodation_name}</h2><p>Room {room.room_number} · {booking.hotel_name}</p></div><ReceiptRoomPhoto room={room} /></div>)}
           <p>{booking.rooms.length} {booking.rooms.length === 1 ? 'room' : 'rooms'} · {booking.adults} {booking.adults === 1 ? 'adult' : 'adults'}{booking.children > 0 ? ` · ${booking.children} ${booking.children === 1 ? 'child' : 'children'}` : ''}</p>
         </div>
         <div className={styles.dates}><div><p className={styles.label}>CHECK-IN</p><strong>{formatStayDate(booking.check_in)}</strong>{booking.hotel_check_in_time && <small>After {booking.hotel_check_in_time.slice(0, 5)}</small>}</div><div><p className={styles.label}>CHECK-OUT</p><strong>{formatStayDate(booking.check_out)}</strong>{booking.hotel_check_out_time && <small>Before {booking.hotel_check_out_time.slice(0, 5)}</small>}</div></div>
@@ -88,4 +90,11 @@ function PaymentReceipt({ reference }: { reference: string }) {
     </div>
     <footer className={styles.footer}>A place to slow down. A stay to look forward to.</footer>
   </main></div>
+}
+
+function ReceiptRoomPhoto({ room }: { room: BookingDetail['rooms'][number] }) {
+  const fallback = roomPhotoByName[room.accommodation_name] || hotelPhoto
+  const [source, setSource] = useState(room.cover_image || fallback)
+  if (!source) return null
+  return <img className={styles.roomPhoto} src={source} alt={`${room.accommodation_name} at Hotel Heaven`} width="160" height="110" onError={() => setSource(source === fallback ? '' : fallback)} />
 }
