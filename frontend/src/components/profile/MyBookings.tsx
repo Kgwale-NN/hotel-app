@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import styles from './MyBookings.module.css'
 import { createBookingPayment, cancelMyBooking, getMyBookings, type MyBooking, } from '../../api/bookings'
@@ -11,6 +12,7 @@ function formatDate(date: string) {
 }
 
 function MyBookings() {
+    const { hash } = useLocation()
     
     const [bookings, setBookings] = useState<MyBooking[]>([])
     const [loading, setLoading] = useState(true)
@@ -41,6 +43,14 @@ function MyBookings() {
             isCurrent = false
         }
     }, [])
+
+    useEffect(() => {
+        if (!loading && hash.startsWith('#booking-')) {
+            const card = document.getElementById(hash.slice(1))
+            card?.scrollIntoView({ block: 'start' })
+            card?.focus({ preventScroll: true })
+        }
+    }, [loading, hash, bookings])
 
     async function handlePayment(bookingId: string) {
         if (payingId || cancellingId) return
@@ -109,7 +119,7 @@ function MyBookings() {
             ) : (
                 <div className={styles.bookingList}>
                     {bookings.map((booking) => (
-                        <article className={styles.bookingCard} key={booking.id}>
+                        <article className={styles.bookingCard} key={booking.id} id={`booking-${booking.id}`} tabIndex={-1}>
                             <h2 className={styles.hotelName}>{booking.hotel_name}</h2>
                             <p className={styles.bookingInfo}>
                                 {formatDate(booking.check_in)} – {formatDate(booking.check_out)}

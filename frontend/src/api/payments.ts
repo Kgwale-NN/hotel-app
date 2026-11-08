@@ -1,4 +1,4 @@
-export type PaymentVerification = { payment_status: string; booking_status?: string }
+export type PaymentVerification = { payment_status: string; booking_status?: string; booking_id?: string; amount?: string; currency?: string }
 export async function verifyPayment(reference: string, signal?: AbortSignal): Promise<PaymentVerification> {
   const csrfResponse = await fetch('/api/auth/csrf', { signal })
   if (!csrfResponse.ok) throw new Error('Please sign in with the account used to make this booking, then check again.')

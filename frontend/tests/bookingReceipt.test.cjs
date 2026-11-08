@@ -1,0 +1,15 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const Module=require('node:module');
+const ts=require('typescript');
+const filename=path.resolve(__dirname,'../src/utils/bookingReceipt.ts');
+const compiled=ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+const receipt=new Module(filename,module);receipt.filename=filename;receipt._compile(compiled,filename);
+const {bookingPriceDetails,hotelCalendarDate,formatStayDate}=receipt.exports;
+const booking={check_in:'2026-12-10',check_out:'2026-12-12',taxes_and_fees:'150.00',rooms:[{price_per_night:'2200.00'}]};
+test('receipt calculates nights, saved room rates and actual fees',()=>assert.deepEqual(bookingPriceDetails(booking),{nights:2,roomTotal:4400,fees:150,total:4550}));
+test('receipt handles multiple rooms and decimal rates in cents',()=>assert.deepEqual(bookingPriceDetails({...booking,check_out:'2026-12-13',taxes_and_fees:'100.15',rooms:[{price_per_night:'1500.25'},{price_per_night:'1000.50'}]}),{nights:3,roomTotal:7502.25,fees:100.15,total:7602.4}));
+test('local-midnight date timestamps display the correct South African stay day',()=>{assert.equal(hotelCalendarDate('2026-12-09T22:00:00.000Z'),'2026-12-10');assert.match(formatStayDate('2026-12-09T22:00:00.000Z'),/10.*2026/);assert.equal(bookingPriceDetails({...booking,check_in:'2026-12-09T22:00:00.000Z',check_out:'2026-12-11T22:00:00.000Z'}).nights,2)});
+test('invalid stay dates and unsafe prices do not produce misleading totals',()=>{assert.throws(()=>bookingPriceDetails({...booking,check_out:booking.check_in}));assert.throws(()=>bookingPriceDetails({...booking,rooms:[{price_per_night:'not-a-price'}]}));assert.throws(()=>bookingPriceDetails({...booking,rooms:[{price_per_night:'99999999999999999'}]}))});

@@ -77,4 +77,4 @@
   .page {
     padding: 2rem 0;
   }
-}
+}.bookingCard:target { border-color: #a77c42; box-shadow: 0 0 0 2px #e5d5ba; scroll-margin-top: 24px; }

@@ -165,3 +165,14 @@ export async function cancelMyBooking(bookingId: string) {
 
   return result.data
 }
+export type BookingDetail = MyBooking & {
+  hotel_check_in_time: string
+  hotel_check_out_time: string
+}
+
+export async function getMyBookingById(id: string, signal?: AbortSignal): Promise<BookingDetail> {
+  const response = await fetch(`/api/bookings/${encodeURIComponent(id)}`, { signal })
+  const result = await response.json()
+  if (!response.ok) throw new Error(response.status === 401 ? 'Sign in to view your booking details.' : result.message || 'Could not load your booking details.')
+  return result.data
+}
