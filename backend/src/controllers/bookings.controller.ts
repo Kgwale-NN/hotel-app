@@ -371,6 +371,7 @@ export async function getMyBookings(
               'room_number', r.room_number,
               'accommodation_id', a.id,
               'accommodation_name', a.name,
+              'cover_image', (SELECT ai.image_url FROM accommodation_images AS ai WHERE ai.accommodation_id = a.id ORDER BY ai.sort_order, ai.id LIMIT 1),
               'price_per_night', br.price_per_night
             )
             ORDER BY r.room_number, r.id
@@ -443,6 +444,7 @@ export async function getMyBookingById(
               'room_number', r.room_number,
               'accommodation_id', a.id,
               'accommodation_name', a.name,
+              'cover_image', (SELECT ai.image_url FROM accommodation_images AS ai WHERE ai.accommodation_id = a.id ORDER BY ai.sort_order, ai.id LIMIT 1),
               'price_per_night', br.price_per_night
             )
             ORDER BY r.room_number, r.id
