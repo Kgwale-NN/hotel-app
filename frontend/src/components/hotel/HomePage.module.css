@@ -36,6 +36,8 @@
 }
 
 .heroContent {
+  -webkit-user-select: none;
+  user-select: none;
   display: grid;
   align-content: center;
   justify-items: center;
