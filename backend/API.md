@@ -43,7 +43,7 @@ Availability uses `accommodation_id`, `check_in`, and `check_out`. A room is una
 | GET | `/bookings/:id` | Owner | Get one of the current user's bookings |
 | POST | `/bookings/:id/cancel` | Owner + CSRF | Cancel a pending unpaid booking |
 
-Booking creation accepts `room_ids`, `check_in`, `check_out`, `adults`, optional `children`, and optional `special_requests`. Holds expire after 15 minutes. The backend locks rooms during booking creation to prevent overlapping bookings. Paid or confirmed bookings cannot be cancelled through the guest endpoint until payment/refund handling is integrated.
+Booking creation accepts `room_ids`, `check_in`, `check_out`, `adults`, optional `children`, and optional `special_requests`. New reservations use a payment deadline seven days before check-in (or the current time for closer arrivals); legacy timed holds can also expire. The backend locks rooms during booking creation to prevent overlapping bookings. Paid or confirmed bookings cannot be cancelled through the guest endpoint until payment/refund handling is integrated.
 
 Pending holds are changed to `expired` by a periodic server task, and booking create/update/cancel/expiry events add inbox notifications.
 
@@ -83,12 +83,12 @@ All `/admin` routes require a signed-in admin. Mutations also require CSRF.
 | PATCH | `/admin/bookings/:bookingId` | Confirm after successful payment or cancel a pending unpaid booking |
 | PATCH | `/admin/bookings/:bookingId/details` | Modify a pending booking after availability and capacity checks |
 
-## Work still needed
+## Remaining operational work
 
-- Select and integrate a payment provider, including verified webhooks, payment failure handling, and refunds.
-- Add configurable notification preferences and the actual email/SMS delivery provider if required.
-- Add automated API and database integration tests, rate limiting, production origin/security configuration, and deployment instructions.
-- Manually verify the newer admin inventory, search, review, notification, and cancellation endpoints against the running app.
+- Add email password reset and optional email/SMS delivery. Notifications currently use the in-app inbox.
+- Implement refund handling and operational payment reconciliation.
+- Use persistent upload storage and maintain database/photo backups.
+- Extend isolated tests with real database integration and end-to-end coverage.
 
 ## Email and password accounts
 
