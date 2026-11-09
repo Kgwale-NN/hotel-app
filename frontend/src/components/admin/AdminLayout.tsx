@@ -87,7 +87,7 @@ export default function AdminLayout() {
         <header className={styles.topbar}>
           <div className={styles.menuArea}>
             <button ref={menuButtonRef} className={styles.menuToggle} type="button" aria-label="Open admin sidebar" aria-haspopup="dialog" aria-expanded={menuOpen} aria-controls="admin-sidebar" onClick={() => setMenuOpen(true)}><span /><span /><span /></button>
-            <BackButton className={styles.historyBack} /><span className={styles.pageLabel}>{title}</span>
+            <span className={styles.pageLabel}>{title}</span>
           </div>
           <Link to="/admin" className={styles.topBrand}><span aria-hidden="true"><Sparkles size={18} aria-hidden="true" /></span><span>HOTEL HEAVEN<small>ADMINISTRATION</small></span></Link>
           <Link className={styles.profileLink} to="/admin/profile" aria-label="Open your admin profile" title="My profile"><AdminIcon name="profile" /></Link>
