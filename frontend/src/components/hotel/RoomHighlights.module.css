@@ -137,8 +137,9 @@
 .allRooms { color: #24342c; text-decoration: none; border-bottom: 1px solid #8a704b; padding-bottom: .4rem; font-size: .9rem; }
 .allRooms span { margin-left: .6rem; }
 .controls { display: flex; gap: .65rem; }
-.controls button { display: grid; place-items: center; width: 46px; height: 46px; padding: 0; border: 1px solid #b8bdb5; border-radius: 50%; background: transparent; color: #24342c; font-size: 1.4rem; cursor: pointer; transition: background 200ms, color 200ms; }
-.controls button:hover:enabled { background: #24342c; color: #fff; }
+.controls button { display: grid; place-items: center; width: 46px; height: 46px; padding: 0; border: 1px solid #d7c2aa; border-radius: 50%; background: transparent; color: #755334; font-size: 1.4rem; cursor: pointer; transition: background 200ms, color 200ms; }
+.controls button:hover:enabled { background: #5e422c; border-color: #5e422c; color: #fffaf3; }
 .controls button:disabled { opacity: .3; cursor: default; }
 .controls button:focus-visible, .grid:focus-visible, .allRooms:focus-visible { outline: 2px solid #8a704b; outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) { .card, .image { transition: none; } }
+
