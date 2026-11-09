@@ -69,7 +69,7 @@ export default function AdminReservations() {
         <h1>Reservations</h1>
         <p className={styles.intro}>Manage upcoming stays and keep every guest detail in order.</p>
         <div className={styles.summary}>
-          {[['Total reservations', bookings.length], ['Pending approval', bookings.filter(b => b.status === 'pending' && b.payment_received).length], ['Confirmed stays', bookings.filter(b => b.status === 'confirmed').length]].map(([label, count]) => <div key={label}><span>{label}</span><strong>{loading ? '—' : count}</strong></div>)}
+          {[['Total reservations', bookings.length], ['Paid bookings needing review', bookings.filter(b => b.status === 'pending' && b.payment_received).length], ['Confirmed stays', bookings.filter(b => b.status === 'confirmed').length]].map(([label, count]) => <div key={label}><span>{label}</span><strong>{loading ? '—' : count}</strong></div>)}
         </div>
         <div className={styles.filters}>
           <label>Search reservations<input type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Guest, reference or room…" /></label>
@@ -81,7 +81,7 @@ export default function AdminReservations() {
         {!loading && !error && visible.length === 0 && <EmptyState kind="bookings" title="No reservations found.">New records will appear here. If you have applied filters, try clearing them.</EmptyState>}
         <div className={styles.list}>
           {visible.map(booking => <article className={styles.card} key={booking.id}>
-            <div className={styles.cardHeading}><div><p className={styles.reference}>REF {booking.id}</p><h2>{booking.guest_name || 'Hotel guest'}</h2><a href={`mailto:${booking.guest_email}`}>{booking.guest_email}</a></div><span className={`${styles.badge} ${styles[booking.status]}`}>{booking.status === 'pending' ? (booking.payment_received ? 'Paid - awaiting approval' : 'Awaiting payment') : booking.status}</span></div>
+            <div className={styles.cardHeading}><div><p className={styles.reference}>REF {booking.id}</p><h2>{booking.guest_name || 'Hotel guest'}</h2><a href={`mailto:${booking.guest_email}`}>{booking.guest_email}</a></div><span className={`${styles.badge} ${styles[booking.status]}`}>{booking.status === 'pending' ? (booking.payment_received ? 'Paid - needs review' : 'Awaiting payment') : booking.status}</span></div>
             <div className={styles.facts}><div><span>Check-in</span><strong>{dateLabel(booking.check_in)}</strong></div><div><span>Check-out</span><strong>{dateLabel(booking.check_out)}</strong></div><div><span>Guests</span><strong>{booking.adults} adult{booking.adults === 1 ? '' : 's'} · {booking.children} children</strong></div><div><span>Hotel</span><strong>{booking.hotel_name}</strong></div></div>
             <ul className={styles.rooms}>{booking.rooms.map(room => <li key={room.room_id}><span>{room.accommodation_name} <small>Room {room.room_number}</small></span><span>{booking.currency} {Number(room.price_per_night).toLocaleString('en-ZA')} / night</span></li>)}</ul>
             {booking.special_requests && <p className={styles.notes}><strong>Guest requests:</strong> {booking.special_requests}</p>}

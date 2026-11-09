@@ -48,12 +48,11 @@ function PaymentReceipt({ reference }: { reference: string }) {
   const booking = receipt?.booking
   const paid = result?.payment_status === 'succeeded'
   const confirmed = paid && ['confirmed', 'completed'].includes(result?.booking_status || '') && (!booking || ['confirmed', 'completed'].includes(booking.status))
-  const awaitingApproval = paid && result?.booking_status === 'pending'
   const failed = result && ['failed', 'abandoned', 'reversed', 'cancelled'].includes(result.payment_status)
   let prices: ReturnType<typeof bookingPriceDetails> | null = null
   if (booking) { try { prices = bookingPriceDetails(booking) } catch { /* The booking remains accessible when price data is incomplete. */ } }
-  const title = loading ? 'Checking your payment' : error ? 'Let’s check your payment' : confirmed ? 'Booking confirmed' : awaitingApproval ? 'Awaiting hotel approval' : paid ? 'Payment received' : failed ? 'Payment not completed' : 'Payment status'
-  const explanation = confirmed ? 'We look forward to welcoming you.' : awaitingApproval ? 'Your payment was received. The hotel has been notified and will review your reservation. We will notify you when your booking is confirmed. Please do not pay again.' : paid ? 'Your payment was received, but this reservation needs review. Please contact the hotel before making another payment.' : failed ? 'Your payment was not completed. You can continue payment for your existing reservation in My bookings.' : 'Please wait for payment confirmation before making another payment.'
+  const title = loading ? 'Checking your payment' : error ? 'Let’s check your payment' : confirmed ? 'Booking confirmed' : paid ? 'Payment received' : failed ? 'Payment not completed' : 'Payment status'
+  const explanation = confirmed ? 'We look forward to welcoming you.' : paid ? 'Your payment was received, but this reservation needs review. Please contact the hotel before making another payment.' : failed ? 'Your payment was not completed. You can continue payment for your existing reservation in My bookings.' : 'Please wait for payment confirmation before making another payment.'
   const bookingLink = result?.booking_id ? `/profile/bookings#booking-${result.booking_id}` : '/profile/bookings'
 
   return <div className={styles.background}><main className={styles.receipt}>
