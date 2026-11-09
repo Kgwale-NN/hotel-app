@@ -1,3 +1,4 @@
+import DateInput from '../common/DateInput'
 import { ArrowUpRight } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import styles from './HeroBookingBar.module.css'
@@ -56,8 +57,7 @@ function HeroBookingBar({ onSearch }: Props) {
     >
       <label className={styles.field}>
         Check-in
-        <input
-          type="date"
+        <DateInput
           value={checkIn}
           min={minimumDate}
           onChange={event => {
@@ -74,8 +74,7 @@ function HeroBookingBar({ onSearch }: Props) {
 
       <label className={styles.field}>
         Check-out
-        <input
-          type="date"
+        <DateInput
           name="checkOut"
           value={checkOut}
           min={checkIn || minimumDate}

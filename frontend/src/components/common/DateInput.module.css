@@ -1,0 +1,5 @@
+.field { position: relative; display: block; min-width: 0; width: 100%; }
+.field input { position: relative; box-sizing: border-box; width: 100%; min-width: 0; padding-right: 50px !important; }
+.calendar { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; pointer-events: none; }
+.field input::-webkit-calendar-picker-indicator { position: absolute; top: 0; right: 0; width: 46px; height: 100%; margin: 0; padding: 0; opacity: 0; cursor: pointer; }
+@media (forced-colors: active) { .calendar { display: none; } .field input::-webkit-calendar-picker-indicator { opacity: 1; } }

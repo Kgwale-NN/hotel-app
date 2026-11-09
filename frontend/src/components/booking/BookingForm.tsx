@@ -1,3 +1,4 @@
+import DateInput from '../common/DateInput'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import EmptyState from '../common/EmptyState'
 import { ArrowUpRight } from 'lucide-react'
@@ -76,8 +77,8 @@ export default function BookingForm({ accommodationId }: BookingFormProps) {
     <div><h2 id="plan-stay-title">Plan your stay</h2><p className={styles.intro}>A few details, and you are one step closer.</p></div>
     <form onSubmit={handleSearch}>
       <fieldset className={styles.fields} disabled={locked}>
-        <label>Check-in<input type="date" name="checkIn" min={localToday()} value={checkIn} onChange={event => { setCheckIn(event.target.value); resetSearch() }} required /></label>
-        <label>Check-out<input type="date" name="checkOut" min={checkIn || localToday()} value={checkOut} onChange={event => { setCheckOut(event.target.value); resetSearch() }} required /></label>
+        <label>Check-in<DateInput name="checkIn" min={localToday()} value={checkIn} onChange={event => { setCheckIn(event.target.value); resetSearch() }} required /></label>
+        <label>Check-out<DateInput name="checkOut" min={checkIn || localToday()} value={checkOut} onChange={event => { setCheckOut(event.target.value); resetSearch() }} required /></label>
         <label>Adults<input type="number" name="adults" min="1" max="100" step="1" value={adults} onChange={event => { setAdults(Number(event.target.value)); resetSearch() }} required /></label>
         <label>Children<input type="number" name="children" min="0" max="100" step="1" value={children} onChange={event => { setChildren(Number(event.target.value)); resetSearch() }} required /></label>
       </fieldset>
