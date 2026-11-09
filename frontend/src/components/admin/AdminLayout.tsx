@@ -1,6 +1,7 @@
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import { Sparkles, X } from 'lucide-react'
 import BackButton from '../layout/BackButton'
+import LogoutConfirmation from '../layout/LogoutConfirmation'
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
@@ -28,6 +29,7 @@ export default function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
+  const [confirmLogout, setConfirmLogout] = useState(false)
   const [signOutError, setSignOutError] = useState('')
   const sidebarRef = useRef<HTMLDialogElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
@@ -48,7 +50,7 @@ export default function AdminLayout() {
   }, [menuOpen, isAdmin])
 
   async function logout() {
-    if (signingOut) return
+    if (signingOut || !confirmLogout) return
     setSigningOut(true); setSignOutError('')
     try { await signOut(); dispatch(sessionCleared()); navigate('/') }
     catch (caught: unknown) { setSignOutError(caught instanceof Error ? caught.message : 'Could not sign out.'); setSigningOut(false) }
@@ -78,11 +80,11 @@ export default function AdminLayout() {
           </nav>
           <div className={styles.sidebarBottom}>
             <div className={styles.identity}><span className={styles.avatar}>{user.full_name.charAt(0).toUpperCase()}</span><div><strong>{user.full_name}</strong><small>Administrator</small></div></div>
-            <button className={styles.signOut} onClick={() => void logout()} disabled={signingOut}><AdminIcon name="exit" />{signingOut ? 'Signing out…' : 'Sign out'}</button>
-            {signOutError && <p className={styles.error} role="alert">{signOutError}</p>}
+            <button type="button" className={styles.signOut} aria-haspopup="dialog" aria-expanded={confirmLogout} onClick={() => { setSignOutError(''); setConfirmLogout(true) }} disabled={signingOut}><AdminIcon name="exit" />{signingOut ? 'Signing out…' : 'Sign out'}</button>
           </div>
         </div>
       </dialog>
+      {confirmLogout && <LogoutConfirmation busy={signingOut} error={signOutError} onCancel={() => { if (!signingOut) { setConfirmLogout(false); setSignOutError('') } }} onConfirm={() => void logout()} />}
       <div className={styles.workspace}>
         <header className={styles.topbar}>
           <div className={styles.menuArea}>
