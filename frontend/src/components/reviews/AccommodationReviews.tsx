@@ -13,6 +13,7 @@ export default function AccommodationReviewsSection({ accommodationId }: { accom
   const userId = user?.id || null
   const sessionLoaded = sessionStatus === 'ready'
   const [error, setError] = useState('')
+  const [actionError, setActionError] = useState('')
   const notify = useToast()
   const [rating, setRating] = useState('5')
   const [comment, setComment] = useState('')
@@ -30,33 +31,40 @@ export default function AccommodationReviewsSection({ accommodationId }: { accom
 
 
 
+  useEffect(() => {
+    if (!actionError) return
+    const timeout = window.setTimeout(() => setActionError(''), 4000)
+    return () => window.clearTimeout(timeout)
+  }, [actionError])
+
   const ownReview = reviews?.reviews.find(review => review.user_id === userId)
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (busy || !comment.trim()) return
-    setBusy(true); setError('')
+    setBusy(true); setActionError('')
     try {
       await writeReview(ownReview ? ownReview.id : accommodationId, ownReview ? 'PATCH' : 'POST', { rating: Number(rating), comment: comment.trim() })
       setEditing(false); setComment(''); notify('Your review has been saved.'); setRefresh(value => value + 1)
-    } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not save review.') }
+    } catch (e: unknown) { setActionError(e instanceof Error ? e.message : 'Could not save review.') }
     finally { setBusy(false) }
   }
 
   async function remove() {
     if (!ownReview || busy) return
-    setBusy(true); setError('')
+    setBusy(true); setActionError('')
     try {
       await writeReview(ownReview.id, 'DELETE')
       setDeleting(false); setEditing(false); setComment(''); setRating('5')
       notify('Your review has been deleted.'); setRefresh(value => value + 1)
-    } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not delete review.') }
+    } catch (e: unknown) { setActionError(e instanceof Error ? e.message : 'Could not delete review.') }
     finally { setBusy(false) }
   }
 
   return <section className={styles.section} aria-labelledby="reviews-title">
     <h2 id="reviews-title">Guest reviews</h2>
     {error && <p role="alert" className={styles.error}>{error}</p>}
+    {actionError && <p role="alert" className={styles.error}>{actionError}</p>}
 
     {!reviews ? <>{!error && <LoadingSkeleton label="Loading reviews" count={2} />}{error && <button onClick={() => setRefresh(value => value + 1)}>Retry</button>}</> : <>
       <p>{reviews.count ? `${Number(reviews.average_rating).toFixed(1)} / 5` : 'No rating yet'} · {reviews.count} review{reviews.count === 1 ? '' : 's'}</p>

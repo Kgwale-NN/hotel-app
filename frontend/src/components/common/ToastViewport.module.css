@@ -1,7 +1,7 @@
 .viewport {
   position: fixed;
   top: max(18px, env(safe-area-inset-top));
-  left: max(18px, env(safe-area-inset-left));
+  right: max(18px, env(safe-area-inset-right));
   width: min(370px, calc(100vw - 36px));
   display: grid;
   gap: 10px;
@@ -27,5 +27,5 @@
 .toast button { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; }
 .toast button:hover { background: #eee1d0; }
 .toast button:focus-visible { outline: 2px solid #86603d; outline-offset: 2px; }
-@keyframes arrive { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes arrive { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) { .toast { animation: none; } }
