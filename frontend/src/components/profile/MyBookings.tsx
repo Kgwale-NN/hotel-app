@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import { ArrowUpRight } from 'lucide-react'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import { useLocation, Link } from 'react-router-dom'
@@ -16,7 +17,7 @@ export default function MyBookings() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [actionError, setActionError] = useState('')
-  const [message, setMessage] = useState('')
+  const notify = useToast()
   const [cancellingId, setCancellingId] = useState('')
   const [payingId, setPayingId] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
@@ -49,7 +50,7 @@ export default function MyBookings() {
 
   async function handlePayment(id: string) {
     if (busy) return
-    setPayingId(id); setMessage(''); setActionError('')
+    setPayingId(id); setActionError('')
     try { const payment = await createBookingPayment(id); window.location.assign(payment.checkout_url) }
     catch (caught: unknown) { setActionError(caught instanceof Error ? caught.message : 'Could not start payment.') }
     finally { setPayingId('') }
@@ -57,18 +58,18 @@ export default function MyBookings() {
 
   async function handleCancel(id: string) {
     if (busy) return
-    setCancellingId(id); setMessage(''); setActionError('')
+    setCancellingId(id); setActionError('')
     try {
       await cancelMyBooking(id)
       setBookings(current => current.map(booking => booking.id === id ? { ...booking, status: 'cancelled' } : booking))
-      setMessage('Your booking has been cancelled.')
+      notify('Your booking has been cancelled.')
     } catch (caught: unknown) { setActionError(caught instanceof Error ? caught.message : 'Could not cancel this booking.') }
     finally { setCancellingId('') }
   }
 
   return <main className={styles.page}>
     <header className={styles.heading}><div><p className={styles.eyebrow}>YOUR STAYS, ALL IN ONE PLACE</p><h1>My bookings</h1><p className={styles.subtitle}>Look forward to your next getaway, or revisit a stay to remember.</p></div><Link className={styles.explore} to="/accommodations">Book another stay <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link></header>
-    {message && <p className={styles.notice} role="status">{message}</p>}
+
     {actionError && <p className={styles.error} role="alert">{actionError}</p>}
     {loading ? <LoadingSkeleton label="Loading your reservations" /> : error ? <section className={styles.empty}><span className={styles.emptyIcon}><AccountMenuIcon name="bookings" /></span><h2>Let’s find your bookings.</h2><p role="alert">{error}</p><button className={styles.primary} onClick={() => { setLoading(true); setError(''); setRetry(value => value + 1) }}>Try again</button></section> : bookings.length === 0 ? <section className={styles.empty}><span className={styles.emptyIcon}><AccountMenuIcon name="bookings" /></span><h2>Your next stay starts here.</h2><p>You haven’t made a reservation yet. Explore our rooms and find your perfect stay.</p><Link className={styles.primary} to="/accommodations">Find a room <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link></section> : <>
       <div className={styles.filters} role="group" aria-label="Filter bookings">{filters.map(item => <button type="button" key={item.value} aria-pressed={filter === item.value} className={filter === item.value ? styles.activeFilter : ''} onClick={() => setFilter(item.value)}>{item.label}<span>{item.count}</span></button>)}</div>

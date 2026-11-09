@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import EmptyState from '../common/EmptyState'
 import { useState, type FormEvent } from 'react'
@@ -13,18 +14,18 @@ export default function ProfilePage() {
   const [draft, setDraft] = useState<{ name: string; phone: string } | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const notify = useToast()
   const name = draft?.name ?? profile?.full_name ?? ''
   const phone = draft?.phone ?? profile?.phone ?? ''
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (busy || !profile) return
-    setBusy(true); setError(''); setMessage('')
+    setBusy(true); setError('')
     try {
       const updated = await saveProfile(name.trim(), phone.trim() || null)
       dispatch(profileUpdated(updated)); setDraft(null)
-      setMessage('Your personal details have been saved.')
+      notify('Your personal details have been saved.')
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not save your details.') }
     finally { setBusy(false) }
   }
@@ -34,7 +35,7 @@ export default function ProfilePage() {
     {loading && <LoadingSkeleton label="Loading your profile..." count={3} />}
     {(error || sessionError) && <p role="alert" className={styles.error}>{error || sessionError}</p>}
     {status === 'failed' && <button disabled={busy} onClick={() => void dispatch(loadSession())}>Retry loading profile</button>}
-    {message && <p role="status" className={styles.success}>{message}</p>}
+
     {!loading && !profile && <EmptyState title="Make yourself at home." action={<a href="/">Go home to sign in</a>}>Sign in to manage your personal account.</EmptyState>}
     {profile && <section className={styles.panel}><h2>Personal details</h2>
       <label>Email address<p>{profile.email}</p></label>

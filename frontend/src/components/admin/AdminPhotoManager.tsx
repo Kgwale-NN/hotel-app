@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import EmptyState from '../common/EmptyState'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
@@ -17,7 +18,7 @@ export default function AdminPhotoManager({ accommodationId, accommodationName, 
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const notify = useToast()
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState('')
   const [description, setDescription] = useState(accommodationName)
@@ -41,10 +42,10 @@ export default function AdminPhotoManager({ accommodationId, accommodationName, 
 
   async function change(action: () => Promise<unknown>, success: string) {
     if (locked) return
-    setBusy(true); onBusyChange(true); setError(''); setMessage('')
+    setBusy(true); onBusyChange(true); setError('')
     try {
       await action()
-      setMessage(success)
+      notify(success)
       setFile(null); setPreview(''); setReplacement(undefined); setRemoving(undefined)
       if (fileInput.current) fileInput.current.value = ''
       setPhotos(await getRoomPhotos(accommodationId))
@@ -65,7 +66,7 @@ export default function AdminPhotoManager({ accommodationId, accommodationName, 
     <p>Add photos or replace an existing one. The main photo appears on room cards; all photos appear on the room details page.</p>
     {loading && <LoadingSkeleton cards count={2} label="Loading room photos" />}
     {error && <p role="alert" className={styles.error}>{error}</p>}
-    {message && <p role="status" className={styles.success}>{message}</p>}
+
     <div className={styles.gallery}>
       {photos.map((photo, index) => <article key={photo.id} className={styles.card}>
         <img decoding="async" src={photo.image_url} alt={photo.alt_text || accommodationName} />

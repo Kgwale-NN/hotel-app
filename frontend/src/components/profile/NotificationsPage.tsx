@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import { Bell, CalendarDays, Check, CheckCheck, ChevronRight, Megaphone, RefreshCw, Settings2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -16,7 +17,7 @@ export default function NotificationsPage({ admin = false }: { admin?: boolean }
   const [notifications, setNotifications] = useState<GuestNotification[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const notify = useToast()
   const [busyId, setBusyId] = useState<string | null>(null)
   const [filter, setFilter] = useState('all')
   const [refresh, setRefresh] = useState(0)
@@ -31,17 +32,17 @@ export default function NotificationsPage({ admin = false }: { admin?: boolean }
 
   async function markRead(id?: string) {
     if (busyId || loading) return
-    setBusyId(id || 'all'); setError(''); setMessage('')
+    setBusyId(id || 'all'); setError('')
     try {
       if (id) {
         const updated = await markNotificationRead(id)
         setNotifications(current => current.map(item => item.id === updated.id ? { ...item, read_at: updated.read_at } : item))
-        setMessage('Notification marked as read.')
+        notify('Notification marked as read.')
       } else {
         await markAllNotificationsRead()
         const readAt = new Date().toISOString()
         setNotifications(current => current.map(item => ({ ...item, read_at: item.read_at || readAt })))
-        setMessage('All notifications marked as read.')
+        notify('All notifications marked as read.')
       }
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not update notifications.') }
     finally { setBusyId(null) }
@@ -61,11 +62,11 @@ export default function NotificationsPage({ admin = false }: { admin?: boolean }
       <div className={styles.toolbar}>
         <div className={styles.filters} role="group" aria-label="Filter notifications">{filters.map(item => <button key={item.value} type="button" aria-pressed={filter === item.value} onClick={() => setFilter(item.value)}>{item.label}{item.value === 'unread' && !loading && unreadCount > 0 && <span className={styles.count}>{unreadCount}</span>}</button>)}</div>
         <div className={styles.tools}>
-          <button className={styles.refresh} type="button" aria-label="Refresh notifications" title="Refresh notifications" disabled={loading || Boolean(busyId)} onClick={() => { setLoading(true); setError(''); setMessage(''); setRefresh(current => current + 1) }}><RefreshCw size={17} className={loading ? styles.spinning : undefined} aria-hidden="true" /></button>
+          <button className={styles.refresh} type="button" aria-label="Refresh notifications" title="Refresh notifications" disabled={loading || Boolean(busyId)} onClick={() => { setLoading(true); setError(''); setRefresh(current => current + 1) }}><RefreshCw size={17} className={loading ? styles.spinning : undefined} aria-hidden="true" /></button>
           <button className={styles.markAll} type="button" disabled={loading || Boolean(busyId) || unreadCount === 0} onClick={() => void markRead()}><CheckCheck size={17} aria-hidden="true" />{busyId === 'all' ? 'Updating…' : 'Mark all as read'}</button>
         </div>
       </div>
-      {message && <p className={styles.success} role="status"><Check size={16} aria-hidden="true" />{message}</p>}
+
       {error && <p className={styles.error} role="alert">{error}</p>}
       {loading ? <div className={styles.loading}><LoadingSkeleton label="Loading notifications" count={4} /></div> : <>
         <div className={styles.listHeading}><span>{filter === 'all' ? 'Latest updates' : filter === 'unread' ? 'Unread updates' : 'Read updates'}</span><span role="status">{visible.length} {visible.length === 1 ? 'message' : 'messages'}</span></div>

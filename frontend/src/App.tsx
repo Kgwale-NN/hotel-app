@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import ToastViewport from './components/common/ToastViewport'
 import EmptyState from './components/common/EmptyState'
 import LoadingSkeleton from './components/common/LoadingSkeleton'
 import { PageHistory } from './components/layout/NavigationHistory'
@@ -26,6 +27,7 @@ function App() {
   return (
     <BrowserRouter>
       <PageHistory />
+      <ToastViewport />
       <Suspense fallback={<main style={{ maxWidth: 1100, margin: "0 auto", padding: 24 }}><LoadingSkeleton label="Opening page" /></main>}><Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/auth/return" element={<AuthReturn />} />

@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import EmptyState from '../common/EmptyState'
 import { useEffect, useState, type FormEvent } from 'react'
@@ -17,7 +18,7 @@ export default function AdminAccommodations() {
   const [photoBusy, setPhotoBusy] = useState(false)
   const working = busy || photoBusy
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const notify = useToast()
   const [search, setSearch] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
@@ -32,7 +33,7 @@ export default function AdminAccommodations() {
 
   async function openItem(id: string) {
     if (working) return
-    setBusy(true); setError(''); setMessage('')
+    setBusy(true); setError('')
     try {
       setSelected(await inventoryRequest<InventoryItem>(`/accommodations/${id}`))
       setCreating(false)
@@ -42,11 +43,11 @@ export default function AdminAccommodations() {
 
   async function mutate(path: string, method: string, body?: object, close = false) {
     if (working) return
-    setBusy(true); setError(''); setMessage('')
+    setBusy(true); setError('')
     try {
       await inventoryRequest(path, method, body)
       if (close) { setCreating(false); setSelected(null); setDeleteId(null) }
-      setMessage('Changes saved successfully.')
+      notify('Changes saved successfully.')
       setItems(await inventoryRequest<InventoryItem[]>('/accommodations'))
       if (!close && selected) setSelected(await inventoryRequest<InventoryItem>(`/accommodations/${selected.id}`))
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not save changes.') }
@@ -62,12 +63,12 @@ export default function AdminAccommodations() {
       room_type: String(data.get('room_type')).trim(), bed_description: String(data.get('bed_description')).trim(),
       capacity: Number(data.get('capacity')), price_per_night: String(data.get('price_per_night')),
     }
-    setBusy(true); setError(''); setMessage('')
+    setBusy(true); setError('')
     try {
       const saved = await inventoryRequest<InventoryItem>(creating ? '/accommodations' : `/accommodations/${selected!.id}`, creating ? 'POST' : 'PATCH', creating ? { ...fields, hotel_id: data.get('hotel_id'), currency: 'ZAR' } : fields)
       setSelected(await inventoryRequest<InventoryItem>(`/accommodations/${saved.id}`))
       setCreating(false)
-      setMessage('Room details saved. You can update photos below.')
+      notify('Room details saved. You can update photos below.')
       setItems(await inventoryRequest<InventoryItem[]>('/accommodations'))
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not save changes.') }
     finally { setBusy(false) }
@@ -75,10 +76,10 @@ export default function AdminAccommodations() {
 
   const visible = items.filter(item => `${item.name} ${item.hotel_name}`.toLowerCase().includes(search.toLowerCase()))
   return <section className={styles.page}>
-    <div className={styles.heading}><div><p>HOTEL ADMINISTRATION</p><h1>Accommodations</h1></div><button disabled={working} onClick={() => { setSelected(null); setCreating(true); setError(''); setMessage('') }}>Add accommodation</button></div>
+    <div className={styles.heading}><div><p>HOTEL ADMINISTRATION</p><h1>Accommodations</h1></div><button disabled={working} onClick={() => { setSelected(null); setCreating(true); setError('') }}>Add accommodation</button></div>
     <p>Manage listings, nightly prices and physical room availability.</p>
     {error && <p role="alert" className={styles.error}>{error}</p>}
-    {message && <p role="status" className={styles.success}>{message}</p>}
+
     {(creating || selected) && <section className={styles.panel} aria-label="Accommodation editor">
       <h2>{creating ? 'New accommodation' : `Edit ${selected!.name}`}</h2>
       <form key={creating ? 'new' : selected!.id} onSubmit={save}>

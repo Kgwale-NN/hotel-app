@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import EmptyState from '../common/EmptyState'
 import { useState, type FormEvent } from 'react'
@@ -12,17 +13,17 @@ export default function SettingsPage() {
   const [preference, setPreference] = useState<boolean | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const notify = useToast()
   const loading = status === 'idle' || status === 'loading'
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (busy || !user) return
-    setBusy(true); setError(''); setMessage('')
+    setBusy(true); setError('')
     try {
       const updated = await saveMarketingPreference(preference ?? user.marketing_opt_in)
       dispatch(profileUpdated(updated)); setPreference(null)
-      setMessage('Your settings have been saved.')
+      notify('Your settings have been saved.')
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not save settings.') }
     finally { setBusy(false) }
   }
@@ -32,7 +33,7 @@ export default function SettingsPage() {
     {loading && <LoadingSkeleton label="Loading settings..." count={3} />}
     {(error || sessionError) && <p role="alert" className={styles.error}>{error || sessionError}</p>}
     {status === 'failed' && <button onClick={() => void dispatch(loadSession())}>Retry loading settings</button>}
-    {message && <p role="status" className={styles.success}>{message}</p>}
+
     {!loading && !user && <EmptyState title="Make yourself at home." action={<a href="/">Go home to sign in</a>}>Sign in to manage your personal account.</EmptyState>}
     {user && <section className={styles.panel}><h2>Promotions</h2><p>Receive hotel offers and promotional notifications. Booking updates are sent separately.</p>
       <form onSubmit={save}><fieldset disabled={busy}>

@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import { ArrowUpRight, ArrowLeft, Check } from 'lucide-react'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import EmptyState from '../common/EmptyState'
@@ -27,7 +28,7 @@ function RoomDetails({ id }: { id: string | undefined }) {
   const [accommodation, setAccommodation] = useState<AccommodationDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [favouriteMessage, setFavouriteMessage] = useState('')
+  const notify = useToast()
   const [savingFavourite, setSavingFavourite] = useState(false)
   const [saved, setSaved] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
@@ -36,9 +37,9 @@ function RoomDetails({ id }: { id: string | undefined }) {
   async function handleSaveFavourite() {
     if (!id || savingFavourite || saved) return
     if (!user) { setAuthOpen(true); return }
-    setSavingFavourite(true); setFavouriteMessage('')
-    try { await addFavourite(id); setSaved(true); setFavouriteMessage('Added to your favourites.') }
-    catch (caught: unknown) { setFavouriteMessage(caught instanceof Error ? caught.message : 'Could not save this room.') }
+    setSavingFavourite(true)
+    try { await addFavourite(id); setSaved(true); notify('Added to your favourites.') }
+    catch (caught: unknown) { notify(caught instanceof Error ? caught.message : 'Could not save this room.', 'error') }
     finally { setSavingFavourite(false) }
   }
 
@@ -80,7 +81,7 @@ function RoomDetails({ id }: { id: string | undefined }) {
         <ShareAccommodation key={accommodation.id} id={accommodation.id} name={accommodation.name} hotelName={hotel.name} />
       </div>
     </header>
-    {favouriteMessage && <p className={styles.notice} role="status">{favouriteMessage}</p>}
+
     <RoomGallery photos={photos} roomName={accommodation.name} />
     <div className={styles.bodyGrid}>
       <div className={styles.details}>

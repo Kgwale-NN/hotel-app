@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import { ArrowUpRight } from 'lucide-react'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import { useEffect, useState } from 'react'
@@ -49,7 +50,7 @@ export default function MyFavourites() {
   const [loadError, setLoadError] = useState('')
   const [actionError, setActionError] = useState('')
   const [removingId, setRemovingId] = useState('')
-  const [message, setMessage] = useState('')
+  const notify = useToast()
   const [retry, setRetry] = useState(0)
 
   useEffect(() => {
@@ -63,11 +64,11 @@ export default function MyFavourites() {
 
   async function handleRemove(id: string, name: string) {
     if (removingId) return
-    setRemovingId(id); setActionError(''); setMessage('')
+    setRemovingId(id); setActionError('')
     try {
       await removeFavourite(id)
       setFavourites(current => current.filter(item => item.id !== id))
-      setMessage(`${name} removed from your favourites.`)
+      notify(`${name} removed from your favourites.`)
     } catch (error: unknown) { setActionError(error instanceof Error ? error.message : 'Could not remove this room. Please try again.') }
     finally { setRemovingId('') }
   }
@@ -78,7 +79,7 @@ export default function MyFavourites() {
       <Link to="/accommodations" className={styles.explore}>Explore rooms <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link>
     </header>
     {actionError && <p role="alert" className={styles.error}>{actionError}</p>}
-    {message && <p role="status" className={styles.success}>{message}</p>}
+
     {loading ? <LoadingSkeleton cards label="Loading your saved rooms" count={2} /> : loadError ? <section className={styles.empty} aria-labelledby="favourites-error"><span className={styles.emptyIcon}><AccountMenuIcon name="saved" /></span><h2 id="favourites-error">Your collection is taking a moment.</h2><p role="alert">{loadError}</p><button type="button" className={styles.primary} onClick={() => { setLoading(true); setLoadError(''); setRetry(value => value + 1) }}>Try again</button></section> : favourites.length === 0 ? <section className={styles.empty} aria-labelledby="favourites-empty"><span className={styles.emptyIcon}><AccountMenuIcon name="saved" /></span><h2 id="favourites-empty">Save a room you love.</h2><p>Tap the heart on a room to keep it here for your next stay.</p><Link to="/accommodations" className={styles.primary}>Find your next stay <span aria-hidden="true"><ArrowUpRight size={18} aria-hidden="true" /></span></Link></section> : <>
       <div className={styles.collectionBar}><p className={styles.count}>{favourites.length} saved {favourites.length === 1 ? 'room' : 'rooms'}</p><p className={styles.tip}>Tap a heart to remove a room.</p></div>
       <div className={styles.grid}>{favourites.map(item => <FavouriteCard key={item.id} item={item} removingId={removingId} onRemove={(id, name) => void handleRemove(id, name)} />)}</div>

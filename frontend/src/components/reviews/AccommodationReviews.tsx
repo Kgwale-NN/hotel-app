@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import EmptyState from '../common/EmptyState'
 import { useEffect, useState, type FormEvent } from 'react'
@@ -12,7 +13,7 @@ export default function AccommodationReviewsSection({ accommodationId }: { accom
   const userId = user?.id || null
   const sessionLoaded = sessionStatus === 'ready'
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const notify = useToast()
   const [rating, setRating] = useState('5')
   const [comment, setComment] = useState('')
   const [editing, setEditing] = useState(false)
@@ -34,21 +35,21 @@ export default function AccommodationReviewsSection({ accommodationId }: { accom
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (busy || !comment.trim()) return
-    setBusy(true); setError(''); setMessage('')
+    setBusy(true); setError('')
     try {
       await writeReview(ownReview ? ownReview.id : accommodationId, ownReview ? 'PATCH' : 'POST', { rating: Number(rating), comment: comment.trim() })
-      setEditing(false); setComment(''); setMessage('Your review has been saved.'); setRefresh(value => value + 1)
+      setEditing(false); setComment(''); notify('Your review has been saved.'); setRefresh(value => value + 1)
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not save review.') }
     finally { setBusy(false) }
   }
 
   async function remove() {
     if (!ownReview || busy) return
-    setBusy(true); setError(''); setMessage('')
+    setBusy(true); setError('')
     try {
       await writeReview(ownReview.id, 'DELETE')
       setDeleting(false); setEditing(false); setComment(''); setRating('5')
-      setMessage('Your review has been deleted.'); setRefresh(value => value + 1)
+      notify('Your review has been deleted.'); setRefresh(value => value + 1)
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Could not delete review.') }
     finally { setBusy(false) }
   }
@@ -56,7 +57,7 @@ export default function AccommodationReviewsSection({ accommodationId }: { accom
   return <section className={styles.section} aria-labelledby="reviews-title">
     <h2 id="reviews-title">Guest reviews</h2>
     {error && <p role="alert" className={styles.error}>{error}</p>}
-    {message && <p role="status">{message}</p>}
+
     {!reviews ? <>{!error && <LoadingSkeleton label="Loading reviews" count={2} />}{error && <button onClick={() => setRefresh(value => value + 1)}>Retry</button>}</> : <>
       <p>{reviews.count ? `${Number(reviews.average_rating).toFixed(1)} / 5` : 'No rating yet'} · {reviews.count} review{reviews.count === 1 ? '' : 's'}</p>
       {reviews.reviews.length === 0 && <EmptyState kind="reviews" title="Every stay has a story.">No guest reviews yet. Guests can share their experience after a completed stay.</EmptyState>}

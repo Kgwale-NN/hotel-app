@@ -1,3 +1,4 @@
+import { useToast } from '../../store/useToast'
 import LoadingSkeleton from '../common/LoadingSkeleton'
 import EmptyState from '../common/EmptyState'
 import { useEffect, useState, type FormEvent } from 'react'
@@ -19,7 +20,7 @@ export default function AdminReservations() {
   const [bookings, setBookings] = useState<AdminBooking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [notice, setNotice] = useState('')
+  const notify = useToast()
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState(() => searchParams.get('search') || '')
   const [busy, setBusy] = useState(false)
@@ -40,7 +41,6 @@ export default function AdminReservations() {
     const data = new FormData(event.currentTarget)
     setBusy(true)
     setError('')
-    setNotice('')
     try {
       if (mode === 'complete') {
         await completeAdminBooking(booking.id)
@@ -52,7 +52,7 @@ export default function AdminReservations() {
         } : { status: mode === 'approve' ? 'confirmed' : 'cancelled', ...(mode === 'cancel' ? { cancellation_reason: data.get('reason') } : {}) }, mode === 'edit')
       }
       setPanel(null)
-      setNotice('Reservation updated successfully.')
+      notify('Reservation updated successfully.')
       setBookings(await getAdminBookings())
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Could not update the reservation.')
@@ -75,7 +75,7 @@ export default function AdminReservations() {
           <label>Search reservations<input type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Guest, reference or room…" /></label>
           <label>Status<select value={filter} onChange={e => setFilter(e.target.value)}><option value="all">All reservations</option>{statuses.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}</select></label>
         </div>
-        {notice && <p className={styles.notice} role="status">{notice}</p>}
+
         {error && <p className={styles.error} role="alert">{error} <a href="/api/auth/google">Sign in</a></p>}
         {loading ? <LoadingSkeleton label="Loading reservations…" /> : <p className={styles.count}>{visible.length} reservation{visible.length === 1 ? '' : 's'}</p>}
         {!loading && !error && visible.length === 0 && <EmptyState kind="bookings" title="No reservations found.">New records will appear here. If you have applied filters, try clearing them.</EmptyState>}

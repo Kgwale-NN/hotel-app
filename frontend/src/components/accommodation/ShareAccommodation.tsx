@@ -1,9 +1,11 @@
+import { useToast } from '../../store/useToast'
 import { useState } from 'react'
 import styles from './ShareAccommodation.module.css'
 
 type Props = { id: string; name: string; hotelName: string }
 export default function ShareAccommodation({ id, name, hotelName }: Props) {
   const [busy, setBusy] = useState(false)
+  const notify = useToast()
   const [message, setMessage] = useState('')
   const [showLink, setShowLink] = useState(false)
   const url = new URL(`/accommodations/${encodeURIComponent(id)}`, window.location.origin).href
@@ -14,7 +16,7 @@ export default function ShareAccommodation({ id, name, hotelName }: Props) {
     try {
       if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable')
       await navigator.clipboard.writeText(url)
-      setMessage('Accommodation link copied.'); setShowLink(false)
+      notify('Accommodation link copied.'); setShowLink(false)
     } catch {
       setShowLink(true)
       setMessage('Select the link below and copy it to share this accommodation.')
@@ -27,7 +29,7 @@ export default function ShareAccommodation({ id, name, hotelName }: Props) {
     setBusy(true); setMessage('')
     try {
       await navigator.share({ title: `${name} | ${hotelName}`, text: `Take a look at ${name} at ${hotelName}.`, url })
-      setMessage('Sharing completed.')
+      notify('Sharing completed.')
     } catch (error: unknown) {
       if (!(error instanceof DOMException && error.name === 'AbortError')) {
         setShowLink(true); setMessage('Device sharing is unavailable. Copy the link below instead.')
