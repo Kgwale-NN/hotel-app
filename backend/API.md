@@ -130,10 +130,10 @@ Isolated checks: `npm run build` then `node --test tests/room-photos.test.cjs` f
 
 Receipt checks: `node --test tests/booking-receipt.test.cjs` from `backend` after building; `node --test tests/bookingReceipt.test.cjs` from `frontend`. Provider and database calls in backend tests are mocked.
 
-## Payment approval and remembered sessions
+## Payment confirmation and remembered sessions
 
-Successful Paystack verification/webhooks record payment and leave an eligible reservation pending. Guest booking responses include `payment_received`; a paid pending reservation awaits hotel approval and cannot start another checkout. Its rooms remain reserved and the unpaid-expiry job excludes it. The guest and all administrators receive inbox notifications in the same transaction. Repeated successful events do not duplicate those notifications.
+Successful Paystack verification/webhooks record payment and automatically confirm an eligible pending reservation when payment arrives before its deadline. Guest booking responses include `payment_received`; paid reservations cannot start another checkout. The guest receives a booking confirmation and administrators receive an informational notification in the same transaction. Repeated successful events do not duplicate confirmations or notifications.
 
-Administrators review paid reservations through `/admin/reservations` or the Notifications inbox, then approve with the existing booking-status endpoint. Only approval changes the booking to confirmed and notifies the guest. Late payments and cancelled/expired reservations require hotel review; payment does not reopen them.
+No admin approval is required for a valid on-time payment. Administrators can still manage reservations. Late payments and cancelled/expired reservations require hotel review; payment does not reopen them.
 
 Email sign-in and Google sign-in both honour Remember me: selected sessions persist for 30 days; unselected sessions use a browser-session cookie. Google sign-in accepts `remember_me=true`. Signup checks password confirmation before sending registration.

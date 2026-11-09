@@ -34,7 +34,7 @@ Built with **React, TypeScript, Redux Toolkit, Node.js, Express, and PostgreSQL*
 
 Hotel Heaven brings the guest experience and hotel administration into one application. Visitors can explore accommodations, compare prices, view facilities and location information, and check dates before signing in. Registered guests can reserve rooms, complete a Paystack checkout, save favourites, manage their profile, and follow booking updates.
 
-Administrators have a separate dashboard for accommodation inventory, physical rooms, photos, reservations, and guest notifications. Successful payment records that money was received; an administrator must approve the reservation before it becomes confirmed.
+Administrators have a separate dashboard for accommodation inventory, physical rooms, photos, reservations, and guest notifications. Verified, on-time payment automatically confirms an eligible reservation and notifies the guest and administrators.
 
 The frontend communicates with a TypeScript Express API. PostgreSQL stores related hotel, room, user, booking, payment, and notification records. Authentication uses server-side sessions stored in PostgreSQL.
 
@@ -46,8 +46,8 @@ Mamedupi is planning a weekend in Polokwane and wants to find a comfortable room
 2. She searches by dates, price, and guest capacity, then opens a room's details to view its photos, amenities, policies, and map.
 3. She creates an account with Google or an email address and password, then saves a room to her favourites.
 4. She selects available physical rooms, enters guest details, and creates a reservation.
-5. She pays through Paystack and sees **Awaiting hotel approval** while the hotel reviews her stay.
-6. An administrator receives an inbox notification and approves the paid reservation.
+5. She pays through Paystack, and the backend verifies her payment.
+6. Her booking is automatically confirmed, and both she and the administrators receive inbox notifications.
 7. She receives a confirmation notification and can view the reservation in **My bookings**.
 8. After the hotel marks her stay completed, she can leave a rating and review.
 
@@ -82,10 +82,10 @@ Mamedupi is planning a weekend in Polokwane and wants to find a comfortable room
 - Room locking during creation to prevent overlapping reservations.
 - Paystack checkout, authenticated verification, and signed webhook handling.
 - Payment amount and currency matching before accepting success.
-- Paid reservations awaiting manual admin approval.
+- Automatic confirmation after verified, on-time payment.
 - Booking history, payment return details, and cancellation of eligible unpaid pending reservations.
 - Expiry of unpaid reservations according to their stored deadline.
-- Duplicate successful events do not generate repeated approval notifications.
+- Duplicate successful events do not generate repeated confirmation notifications.
 
 ### Profile, reviews, and notifications
 
@@ -126,14 +126,12 @@ flowchart TD
     C --> D[Paystack checkout]
     D --> E{Verified successful payment?}
     E -->|No| F[Show payment status or retry]
-    E -->|Yes, before deadline| G[Payment received: awaiting admin approval]
-    G --> H[Guest and admin inbox notifications]
-    H --> I[Administrator approves paid reservation]
-    I --> J[Booking confirmed and guest notified]
+    E -->|Yes, before deadline| G[Automatically confirm booking]
+    G --> H[Guest confirmation and admin inbox notification]
     E -->|Yes, after deadline or booking unavailable| K[Payment needs hotel review]
 ```
 
-**Payment success and booking confirmation are separate events.** A paid reservation stays `pending` until an administrator approves it. Its rooms remain reserved while it awaits review, and another checkout is blocked. A late payment does not reopen an expired or cancelled reservation.
+**The backend verifies payment before confirming a booking.** A valid payment before the deadline automatically confirms a pending reservation in the same database transaction. Another checkout is blocked once payment is received. A late payment does not reopen an expired or cancelled reservation.
 
 An unpaid reservation can expire. Paid or confirmed reservations require hotel assistance for cancellation and any refund; the guest cancellation endpoint does not cancel them automatically.
 
@@ -369,7 +367,7 @@ PostgreSQL foreign keys connect the application records and keep reusable hotel 
 
 An **accommodation** is a listing/category; a **room** is a physical bookable unit. A booking can contain multiple rooms through `booking_rooms`. The saved nightly rate preserves the booking's price when a listing price later changes.
 
-Booking status and payment status are stored separately. For example, a payment can be `succeeded` while its booking is still `pending` for admin approval.
+Booking status and payment status are stored separately. For example, a late payment can be `succeeded` while its booking remains `expired` and requires hotel review.
 
 ## API Overview
 
@@ -403,7 +401,7 @@ Authenticated browser requests use the session cookie. Protected mutations send 
 | 2. Authentication | Google OAuth, email accounts, secure sessions, remember me, guest/admin roles |
 | 3. Hotel discovery | Homepage, accommodation cards, search, filters, galleries, map and sharing |
 | 4. Reservations | Date and room selection, capacity checks, booking history and cancellation |
-| 5. Payments and approval | Paystack checkout, verified events, admin review, guest confirmation |
+| 5. Payments and confirmation | Paystack checkout, verified events, automatic confirmation, exception review |
 | 6. Guest account | Profile editing, favourites, reviews, notifications and preferences |
 | 7. Administration | Dashboard, inventory CRUD, physical rooms, photos and guest updates |
 | 8. Presentation and delivery | Responsive layouts, icons, skeleton states, optimized photos and deployment |
@@ -443,15 +441,15 @@ npm run build
 node --test tests/bookingReceipt.test.cjs
 ```
 
-The isolated backend tests cover password authentication, session renewal, Google remember-me, authorization, photo uploads, payment matching, duplicate events, paid-room holds, admin approval, and booking receipt responses. Database/provider calls in these tests are mocked; they do not prove that a live provider or hosted database is configured correctly.
+The isolated backend tests cover password authentication, session renewal, Google remember-me, authorization, photo uploads, payment matching, duplicate events, paid-room holds, automatic confirmation, admin payment safeguards, and booking receipt responses. Database/provider calls in these tests are mocked; they do not prove that a live provider or hosted database is configured correctly.
 
 Before a release, manually check:
 
 1. Guest browsing, search, room details, and direct-link refreshes.
 2. Email signup, password confirmation, Google login, remember me, and logout.
 3. Availability, reservation creation, Paystack test checkout, and the payment return page.
-4. Paid reservation stays pending, admin notification arrives, approval confirms the stay, and the guest receives an update.
-5. Repeated verification does not create another charge or duplicate approval notifications.
+4. Verified on-time payment automatically confirms the reservation and notifies the guest and administrators.
+5. Repeated verification does not create another charge or duplicate confirmation notifications.
 6. Favourites, profile updates, read/unread notifications, and completed-stay reviews.
 7. Unauthorized users cannot open admin actions or modify another user's records.
 8. Photo changes remain available after a redeploy when persistent storage is configured.
@@ -485,7 +483,7 @@ Follow [DEPLOYMENT.md](DEPLOYMENT.md) for database restoration, proxy/session co
 | OAuth redirect mismatch | Register the exact callback URL used by that environment |
 | Google sign-in returns to the wrong frontend | Check `FRONTEND_URL` and the Vite port; keep local origin settings consistent |
 | API URL returns HTML or a Vercel 404 | Check the Vercel API rewrite and redeploy |
-| A payment succeeds but the booking is pending | This is expected until an administrator approves it |
+| A payment succeeds but the booking is pending | Check payment verification and backend logs; valid on-time payments should confirm automatically |
 | Uploaded photos disappear after deployment | Use persistent photo storage and copy existing upload files to it |
 
 ## Current Scope and Future Improvements
