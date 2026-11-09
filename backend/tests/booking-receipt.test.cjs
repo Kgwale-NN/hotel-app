@@ -31,10 +31,10 @@ test('booking receipt exposes only verified, owned booking information', async t
       assert.match(select.sql,/b\.user_id = \$2/);assert.equal(select.values[1],'owner-test');
       assert.ok(!queries.some(q=>q.sql.includes('INSERT INTO notifications')));
     });
-    await t.test('successful payment stays pending and notifies guest and administrators', async () => {
+    await t.test('successful payment confirms the booking and notifies guest and administrators', async () => {
       reset();payment.payment_status='pending';payment.booking_status='pending';const res=response();await verifyBookingPayment(req(),res);
-      assert.equal(res.body.data.booking_status,'pending');assert.equal(res.body.data.booking_id,bookingId);
-      assert.ok(!queries.some(q=>q.sql.includes("SET status = 'confirmed'")));
+      assert.equal(res.body.data.booking_status,'confirmed');assert.equal(res.body.data.booking_id,bookingId);
+      assert.ok(queries.some(q=>q.sql.includes('UPDATE bookings SET status = $2')&&q.values[1]==='confirmed'));
       assert.equal(queries.filter(q=>q.sql.includes("INSERT INTO notifications")).length,2);
       assert.ok(queries.some(q=>q.sql.includes("WHERE role = 'admin'")));
     });

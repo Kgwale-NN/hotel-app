@@ -5,7 +5,7 @@ import pool from "../config/db";
 import { initializePaystackCheckout } from "../services/paystack.service";
 import { verifyPaystackTransaction } from "../services/paystack.service";
 import { PoolClient } from "pg";
-import { queuePaidBookingReview } from "../services/payment-review.service";
+import { confirmPaidBooking } from "../services/payment-confirmation.service";
 
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -67,7 +67,7 @@ export async function initializeBookingPayment(
 
     const paid = await pool.query("SELECT 1 FROM payments WHERE booking_id = $1 AND status IN ('succeeded', 'partially_refunded', 'refunded') LIMIT 1", [bookingId]);
     if (paid.rows.length) {
-      res.status(409).json({ message: "Payment already received. Your reservation is awaiting hotel approval." });
+      res.status(409).json({ message: "Payment already received. Check your booking details for confirmation." });
       return;
     }
     if (booking.status !== "pending") {
@@ -321,7 +321,7 @@ export async function handlePaystackWebhook(
       payment.payment_due_at !== null &&
       new Date(payment.payment_due_at).getTime() > Date.now();
 
-    await queuePaidBookingReview(client, payment, deadlineIsFuture);
+    await confirmPaidBooking(client, payment, deadlineIsFuture);
 
     await client.query("COMMIT");
     transactionStarted = false;
@@ -451,9 +451,9 @@ let client: PoolClient | undefined;
       payment.payment_due_at !== null &&
       new Date(payment.payment_due_at).getTime() > Date.now();
 
-    if (!paymentWasAlreadySuccessful) {
-      await queuePaidBookingReview(client, payment, deadlineIsFuture);
-    }
+    const bookingStatus = !paymentWasAlreadySuccessful
+      ? await confirmPaidBooking(client, payment, deadlineIsFuture)
+      : payment.booking_status;
 
     await client.query("COMMIT");
     transactionStarted = false;
@@ -463,10 +463,7 @@ let client: PoolClient | undefined;
         booking_id: payment.booking_id,
         amount: payment.amount,
         currency: payment.currency,
-        booking_status:
-          payment.booking_status === "pending"
-            ? (!paymentWasAlreadySuccessful && !deadlineIsFuture ? "expired" : "pending")
-            : payment.booking_status,
+        booking_status: bookingStatus,
       },
     });
     } catch (error: unknown) {
