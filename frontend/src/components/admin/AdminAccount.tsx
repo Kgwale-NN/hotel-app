@@ -1,3 +1,4 @@
+import AdminPasswordForm from './AdminPasswordForm'
 import { useToast } from '../../store/useToast'
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
@@ -65,6 +66,7 @@ function SettingsForm({ user }: { user: UserProfile }) {
       {error && <p role="alert" className={styles.error}>{error}</p>}
       <form className={styles.form} onSubmit={event => void save(event)}><label className={styles.checkbox}><input type="checkbox" checked={marketing} onChange={event => setMarketing(event.target.checked)} disabled={busy} />Send hotel promotions and special offers to my account.</label><div><button className={styles.button} disabled={busy}>{busy ? 'Saving…' : 'Save preferences'}</button></div></form>
     </div>
+    <AdminPasswordForm email={user.email} />
     <div className={styles.quickLinks}><Link className={styles.secondary} to="/admin/profile">Edit my profile</Link><Link className={styles.secondary} to="/profile/notifications">View my notifications</Link></div>
   </section>
 }

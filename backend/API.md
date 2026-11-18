@@ -137,3 +137,7 @@ Successful Paystack verification/webhooks record payment and automatically confi
 No admin approval is required for a valid on-time payment. Administrators can still manage reservations. Late payments and cancelled/expired reservations require hotel review; payment does not reopen them.
 
 Email sign-in and Google sign-in both honour Remember me: selected sessions persist for 30 days; unselected sessions use a browser-session cookie. Google sign-in accepts `remember_me=true`. Signup checks password confirmation before sending registration.
+
+### Administrator app password
+
+`POST /api/auth/admin/password` requires an authenticated admin session, CSRF token, and the authentication rate limit. Body: `password`, `confirm_password`, and optional `current_password`. A first password can be set from the existing Google-authenticated session; replacing a password requires the current app password. Only the current admin account is changed. Passwords must match and contain 15–128 characters. The existing email sign-in endpoint supports the same account and preserves its database admin role.

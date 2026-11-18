@@ -1,3 +1,4 @@
+import { setAdminPassword } from '../controllers/admin-password.controller';
 import { rateLimit } from 'express-rate-limit';
 import { registerWithPassword, loginWithPassword } from '../controllers/password-auth.controller';
 import { Router } from "express";
@@ -8,7 +9,7 @@ import {
   getCsrfToken,
   logout,
 } from "../controllers/auth.controller";
-import { requireAuth } from "../middleware/auth.middleware";
+import { requireAuth, requireAdmin } from "../middleware/auth.middleware";
 import { requireCsrf } from "../middleware/csrf.middleware"
 
 const authRouter = Router();
@@ -29,6 +30,8 @@ authRouter.use((_req, res, next) => {
 authRouter.get('/form-token', passwordAuthLimit, getCsrfToken);
 authRouter.post('/register', passwordAuthLimit, requireCsrf, registerWithPassword);
 authRouter.post('/login', passwordAuthLimit, requireCsrf, loginWithPassword);
+
+authRouter.post('/admin/password', passwordAuthLimit, requireAuth, requireAdmin, requireCsrf, setAdminPassword);
 authRouter.get("/google", startGoogleLogin);
 authRouter.get("/google/callback", googleCallback);
 

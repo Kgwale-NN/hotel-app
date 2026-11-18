@@ -15,3 +15,16 @@ export async function authenticateWithEmail(mode: 'signup' | 'signin', input: Em
   if (!response.ok) throw new Error(result.message || 'Could not complete your account request.')
   return result.data as UserProfile
 }
+
+export async function setAdminAppPassword(password: string, confirmation: string, currentPassword: string): Promise<void> {
+  const csrf = await fetch('/api/auth/csrf')
+  if (!csrf.ok) throw new Error('Please sign in to your admin account again.')
+  const { csrfToken } = await csrf.json()
+  const response = await fetch('/api/auth/admin/password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+    body: JSON.stringify({ password, confirm_password: confirmation, current_password: currentPassword }),
+  })
+  const result = await response.json()
+  if (!response.ok) throw new Error(result.message || 'Could not save your app password.')
+}

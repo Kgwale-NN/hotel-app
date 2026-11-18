@@ -320,6 +320,18 @@ WHERE LOWER(email) = LOWER('your-admin-email@example.com');
 
 Replace the placeholder with the intended administrator's email address. Sign out and back in, then open `/admin`. There are no default admin credentials or public admin-registration controls.
 
+### Facilitator access to the deployed admin dashboard
+
+- Website: [Hotel Heaven](https://hotel-app-alpha-nine.vercel.app/)
+- Admin email: `kgoalemothiba8@gmail.com`
+- App password: **Provided privately by the project owner. It is not stored in this repository.**
+
+The owner signs in with Google once, opens **Admin menu → Settings → Hotel-app password**, and saves a separate app password (at least 15 characters), entering it twice. Leave **Current app password** empty only for first-time setup; changing an existing app password requires the current one. This does not change the Google/email account password.
+
+The facilitator opens the website, selects **Sign up → Already have an account? Sign in**, and enters the admin email and privately shared **hotel-app password** in the form. Do not choose **Continue with Google**. The app opens the admin dashboard after successful sign-in; no Google QR code is needed. Sharing this account gives full admin access, so change the app password after the assessment.
+
+Push and deploy the backend and frontend changes before setting the password on the live website. Local and hosted databases have separate credentials; setting a password locally does not update the live account. The backend only allows signed-in administrators to set their own app password, stores a salted scrypt hash, and checks CSRF tokens and request limits. No database migration is needed if migration 010 has already been applied.
+
 ## Environment Variables
 
 Backend settings live in `backend/.env` locally and in the hosting provider's environment settings in production.
